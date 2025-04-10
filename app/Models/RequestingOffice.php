@@ -21,4 +21,10 @@ class RequestingOffice extends Model
     {
         return $this->hasMany(Request::class, 'requesting_office_id', 'requesting_office_id');
     }
+
+    public function annualAllotment()
+    {
+        // Example logic for annual allotment
+        return $this->hasOne(AnnualAllotment::class, 'requesting_office_id', 'requesting_office_id');
+    }
 }

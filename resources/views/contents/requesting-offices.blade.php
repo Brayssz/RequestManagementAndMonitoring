@@ -1,6 +1,6 @@
 @extends('layouts.app-layout')
 
-@section('title', 'User Management')
+@section('title', 'Requesting Offices Management')
 
 @section('content')
 
@@ -8,8 +8,8 @@
         <div class="page-header">
             <div class="add-item d-flex">
                 <div class="page-title">
-                    <h4>User</h4>
-                    <h6>Manage your users</h6>
+                    <h4>Requesting Offices</h4>
+                    <h6>Manage your requesting offices</h6>
                 </div>
             </div>
             <ul class="table-top-head">
@@ -23,11 +23,11 @@
                 </li>
             </ul>
             <div class="page-btn">
-                <a class="btn btn-added add-user"><i data-feather="plus-circle" class="me-2"></i>Add New
-                    User</a>
+                <a class="btn btn-added add-office"><i data-feather="plus-circle" class="me-2"></i>Add New
+                    Office</a>
             </div>
         </div>
-        <!-- /user list -->
+        <!-- /requesting offices list -->
         <div class="card table-list-card">
             <div class="card-body pb-0">
                 <div class="table-top table-top-two table-top-new d-flex ">
@@ -49,10 +49,10 @@
                             </div>
                             <div class="col-lg-4 col-sm-12">
                                 <div class="form-group ">
-                                    <select class="select position_filter form-control">
-                                        <option value="">Position</option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="Clerk">Clerk</option>
+                                    <select class="select type_filter form-control">
+                                        <option value="">Type</option>
+                                        <option value="school">School</option>
+                                        <option value="office">Office</option>
                                     </select>
                                 </div>
                             </div>
@@ -63,12 +63,12 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table user-table pb-3">
+                    <table class="table office-table pb-3">
                         <thead>
                             <tr>
-                                <th>User</th>
-                                <th>Email</th>
-                                <th>Position</th>
+                                <th>Office Name</th>
+                                <th>Type</th>
+                                <th>Requestor</th>
                                 <th>Status</th>
                                 <th class="no-sort">Action</th>
                             </tr>
@@ -83,7 +83,7 @@
             </div>
         </div>
     </div>
-    @livewire('contents.user-management')
+    @livewire('contents.requesting-office-management')
 
 @endsection
 
@@ -98,8 +98,8 @@
                 });
             @endif
 
-                if ($('.user-table').length > 0) {
-                var table = $('.user-table').DataTable({
+            if ($('.office-table').length > 0) {
+                var table = $('.office-table').DataTable({
                     "processing": true,
                     "serverSide": true,
                     "bFilter": true,
@@ -116,100 +116,56 @@
                         info: "_START_ - _END_ of _TOTAL_ items",
                     },
                     "ajax": {
-                        "url": "/users",
+                        "url": "/requesting-offices",
                         "type": "GET",
                         "headers": {
                             "Accept": "application/json"
                         },
                         "data": function (d) {
                             d.status = $('.status_filter').val();
-                            d.position = $('.position_filter').val();
+                            d.type = $('.type_filter').val();
                         },
                         "dataSrc": "data"
                     },
-                    "columns": [{
-                        "data": null,
-                        "render": function (data, type, row) {
-
-                            const colors = {
-                                A: 'bg-primary',
-                                B: 'bg-success',
-                                C: 'bg-info',
-                                D: 'bg-warning',
-                                E: 'bg-danger',
-                                F: 'bg-secondary',
-                                G: 'bg-dark',
-                                H: 'bg-light',
-                                I: 'bg-primary',
-                                J: 'bg-success',
-                                K: 'bg-info',
-                                L: 'bg-warning',
-                                M: 'bg-danger',
-                                N: 'bg-secondary',
-                                O: 'bg-dark',
-                                P: 'bg-light',
-                                Q: 'bg-primary',
-                                R: 'bg-success',
-                                S: 'bg-info',
-                                T: 'bg-warning',
-                                U: 'bg-danger',
-                                V: 'bg-secondary',
-                                W: 'bg-dark',
-                                X: 'bg-light',
-                                Y: 'bg-primary',
-                                Z: 'bg-success'
-                            };
-
-                            const firstLetter = row.name ? row.name.charAt(0).toUpperCase() : 'A';
-                            const bgColor = colors[firstLetter] || 'bg-secondary';
-
-                            return `
-                                        <div class="userimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <span class="avatar ${bgColor} avatar-rounded">
-                                                    <span class="avatar-title">${firstLetter}</span>
-                                                </span>
-                                            </a>
-                                            <div>
-                                                <a href="javascript:void(0);">${row.name}</a>
-                                            </div>
-                                        </div>
-                                    `;
-
-                        }
-                    },
-                    {
-                        "data": "email",
-                        "render": function (data, type, row) {
-                            return `<a href="mailto:${data}">${data}</a>`;
-                        }
-                    },
-                    {
-                        "data": "position",
-                        "render": function (data, type, row) {
-                            return data.charAt(0).toUpperCase() + data.slice(1);
-                        }
-                    },
-                    {
-                        "data": null,
-                        "render": function (data, type, row) {
-                            return row.status === "active" ?
-                                `<span class="badge badge-linesuccess">Active</span>` :
-                                `<span class="badge badge-linedanger">Deactivated</span>`;
-                        }
-                    },
-                    {
-                        "data": null,
-                        "render": function (data, type, row) {
-                            return `
+                    "columns": [
+                        {
+                            "data": "name",
+                            "render": function (data, type, row) {
+                                return `<a href="javascript:void(0);">${data}</a>`;
+                            }
+                        },
+                        {
+                            "data": "type",
+                            "render": function (data, type, row) {
+                                return data.charAt(0).toUpperCase() + data.slice(1);
+                            }
+                        },
+                        {
+                            "data": "requestor.name",
+                            "render": function (data, type, row) {
+                                return data ? `<a href="javascript:void(0);">${data}</a>` : 'N/A';
+                            }
+                        },
+                        {
+                            "data": null,
+                            "render": function (data, type, row) {
+                                return row.status === "active" ?
+                                    `<span class="badge badge-linesuccess">Active</span>` :
+                                    `<span class="badge badge-linedanger">Deactivated</span>`;
+                            }
+                        },
+                        {
+                            "data": null,
+                            "render": function (data, type, row) {
+                                return `
                                     <div class="edit-delete-action">
-                                        <a class="me-2 p-2 edit-user" data-userid="${row.id}">
+                                        <a class="me-2 p-2 edit-office" data-officeid="${row.requesting_office_id}">
                                             <i data-feather="edit" class="feather-edit"></i>
                                         </a>
                                     </div>
                                 `;
+                            }
                         }
-                    }
                     ],
                     "createdRow": function (row, data, dataIndex) {
                         $(row).find('td').eq(4).addClass('action-table-data');
@@ -224,7 +180,7 @@
                             table.draw();
                         });
 
-                        $('.position_filter').on('change', function () {
+                        $('.type_filter').on('change', function () {
                             table.draw();
                         });
                     },

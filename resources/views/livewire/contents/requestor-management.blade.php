@@ -1,14 +1,14 @@
-<div class="modal fade" id="add-user-modal" wire:ignore.self>
+<div class="modal fade" id="add-requestor-modal" wire:ignore.self>
     <div class="modal-dialog modal-dialog-centered modal-xl custom-modal-two">
         <div class="modal-content">
             <div class="page-wrapper-new p-0">
                 <div class="content">
                     <div class="modal-header border-0 custom-modal-header">
                         <div class="page-title">
-                            @if ($submit_func == 'add-user')
-                                <h4>Add User</h4>
+                            @if ($submit_func == 'add-requestor')
+                                <h4>Add Requestor</h4>
                             @else
-                                <h4>Edit User</h4>
+                                <h4>Edit Requestor</h4>
                             @endif
                         </div>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -16,7 +16,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form wire:submit.prevent="submit_user">
+                        <form wire:submit.prevent="submit_requestor">
                             @csrf
                             <div class="card mb-0">
                                 <div class="card-body">
@@ -50,14 +50,20 @@
                                             <div class="col-lg-6 col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="position">Position</label>
-                                                    <input type="text" id="position" class="form-control"
-                                                        placeholder="Enter position" wire:model.lazy="position">
+                                                    <div wire:ignore>
+                                                        <select class="select" id="position" name="position"
+                                                            wire:model="position">
+                                                            <option value="">Choose</option>
+                                                            <option value="holder">Program Holder</option>
+                                                            <option value="principal">Principal</option>
+                                                        </select>
+                                                    </div>
                                                     @error('position')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                             </div>
-                                            @if ($submit_func == 'edit-user')
+                                            @if ($submit_func == 'edit-requestor')
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="status">Status</label>
@@ -76,39 +82,6 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <div class="pass-info">
-                                            <div class="card-title-head" wire:ignore>
-                                                <h6><span><i data-feather="info"
-                                                            class="feather-edit"></i></span>Password</h6>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-6 col-md-6 input-blocks">
-                                                    <label for="password">Password</label>
-                                                    <div class="mb-3 pass-group">
-                                                        <input type="password" class="pass-input" id="password"
-                                                            wire:model.lazy="password"
-                                                            placeholder="Enter your password">
-                                                        <span class="fas toggle-password fa-eye-slash"></span>
-                                                    </div>
-                                                    @error('password')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 input-blocks">
-                                                    <label for="password_confirmation">Confirm Password</label>
-                                                    <div class="mb-3 pass-group">
-                                                        <input type="password" class="pass-inputa"
-                                                            id="password_confirmation"
-                                                            wire:model.lazy="password_confirmation"
-                                                            placeholder="Confirm your password">
-                                                        <span class="fas toggle-passworda fa-eye-slash"></span>
-                                                    </div>
-                                                    @error('password_confirmation')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +99,7 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                handleUserActions();
+                handleRequestorActions();
             });
 
             function initSelect() {
@@ -135,10 +108,10 @@
                     width: '100%'
                 });
             }
-            function handleUserActions() {
+            function handleRequestorActions() {
                 $(document).on('change', '[id]', handleInputChange);
-                $(document).on('click', '.add-user', openAddUserModal);
-                $(document).on('click', '.edit-user', openEditUserModal);
+                $(document).on('click', '.add-requestor', openAddRequestorModal);
+                $(document).on('click', '.edit-requestor', openEditRequestorModal);
             }
 
             function handleInputChange(e) {
@@ -151,22 +124,22 @@
                 }
             }
 
-            function openAddUserModal() {
-                @this.set('submit_func', 'add-user');
+            function openAddRequestorModal() {
+                @this.set('submit_func', 'add-requestor');
 
                 @this.call('resetFields').then(() => {
                     initSelectVal("");
-                    $('#add-user-modal').modal('show');
+                    $('#add-requestor-modal').modal('show');
                 });
             }
 
-            function openEditUserModal() {
-                const userId = $(this).data('userid');
+            function openEditRequestorModal() {
+                const requestorId = $(this).data('requestorid');
 
-                @this.set('submit_func', 'edit-user');
-                @this.call('getUser', userId).then(() => {
+                @this.set('submit_func', 'edit-requestor');
+                @this.call('getRequestor', requestorId).then(() => {
                     populateEditForm();
-                    $('#add-user-modal').modal('show');
+                    $('#add-requestor-modal').modal('show');
                 });
             }
 

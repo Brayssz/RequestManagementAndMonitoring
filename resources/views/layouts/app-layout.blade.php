@@ -178,19 +178,25 @@
                                 </li>
                             </ul>
                         </li>
+
                         <li class="submenu-open">
                             <h6 class="submenu-hdr">Management</h6>
                             <ul>
                                 <li class="{{ Request::is('users') ? 'active' : '' }}">
                                     <a href="/users"><i data-feather="user"></i><span>Users</span></a>
                                 </li>
-                                <li class="{{ Request::is('books') ? 'active' : '' }}">
-                                    <a href="/books"><i data-feather="book"></i><span>Books</span></a>
+                                <li class="{{ Request::is('requesting-offices') ? 'active' : '' }}">
+                                    <a href="/requesting-offices"><i data-feather="briefcase"></i><span>Offices | Schools</span></a>
                                 </li>
-                                <li class="{{ Request::is('schools') ? 'active' : '' }}">
-                                    <a href="/schools"><i data-feather="home"></i><span>Schools</span></a>
+                                <li class="{{ Request::is('requestors') ? 'active' : '' }}">
+                                    <a href="/requestors"><i data-feather="users"></i><span>Requestors</span></a>
                                 </li>
-
+                                <li class="{{ Request::is('fund-sources') ? 'active' : '' }}">
+                                    <a href="/fund-sources"><i data-feather="credit-card"></i><span>Fund Sources</span></a>
+                                </li>
+                                <li class="{{ Request::is('allotments') ? 'active' : '' }}">
+                                    <a href="/allotments"><i data-feather="pie-chart"></i><span>Annual Allotment</span></a>
+                                </li>
                             </ul>
                         </li>
 
@@ -208,6 +214,7 @@
                                 </li>
                             </ul>
                         </li>
+
                         <li class="submenu-open">
                             <h6 class="submenu-hdr">Reports</h6>
                             <ul>
@@ -237,7 +244,6 @@
 
                             </ul>
                         </li>
-
 
                     </ul>
                 </div>
@@ -304,14 +310,13 @@
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/number-to-words"></script>
+    
 
-    @vite(['resources/assets/js/script.js', 'resources/assets/js/custom-select2.js', 'resources/assets/js/mask.js', 'resources/assets/js/theme-script.js'])
+    @vite(['resources/assets/js/script.js', 'resources/assets/js/custom-select2.js', 'resources/assets/js/mask.js', 'resources/assets/js/theme-script.js', 'resources/assets/js/mask.js' ])
     @livewireScripts
 
     @stack('scripts')
-
-
-
 </body>
 
 </html>

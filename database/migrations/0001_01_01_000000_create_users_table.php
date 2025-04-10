@@ -54,6 +54,13 @@ return new class extends Migration
             $table->foreign('requesting_office_id')->references('requesting_office_id')->on('requesting_offices')->onDelete('set null');
         });
 
+        Schema::create('fund_sources', function (Blueprint $table) {
+            $table->id('fund_source_id');
+            $table->string('name');
+            $table->string('status')->default('active');
+            $table->timestamps();
+        });
+
         Schema::create('requests', function (Blueprint $table) {
             $table->id('request_id');
         
@@ -67,7 +74,7 @@ return new class extends Migration
 
             $table->decimal('utilize_funds', 15, 2)->nullable(); 
 
-            $table->string('fund_source')->nullable();   
+            $table->unsignedBigInteger('fund_source_id')->nullable();
         
             $table->text('nature_of_request')->nullable();
             $table->date('signed_chief_date')->nullable();
@@ -79,6 +86,8 @@ return new class extends Migration
             $table->timestamps();
         
             $table->foreign('requesting_office_id')->references('requesting_office_id')->on('requesting_offices')->onDelete('set null');
+            $table->foreign('fund_source_id')->references('fund_source_id')->on('fund_sources')->onDelete('set null');
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

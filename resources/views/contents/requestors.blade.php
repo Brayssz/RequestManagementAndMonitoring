@@ -1,6 +1,6 @@
 @extends('layouts.app-layout')
 
-@section('title', 'User Management')
+@section('title', 'Requestor Management')
 
 @section('content')
 
@@ -8,8 +8,8 @@
         <div class="page-header">
             <div class="add-item d-flex">
                 <div class="page-title">
-                    <h4>User</h4>
-                    <h6>Manage your users</h6>
+                    <h4>Requestor</h4>
+                    <h6>Manage your requestors</h6>
                 </div>
             </div>
             <ul class="table-top-head">
@@ -23,11 +23,11 @@
                 </li>
             </ul>
             <div class="page-btn">
-                <a class="btn btn-added add-user"><i data-feather="plus-circle" class="me-2"></i>Add New
-                    User</a>
+                <a class="btn btn-added add-requestor"><i data-feather="plus-circle" class="me-2"></i>Add New
+                    Requestor</a>
             </div>
         </div>
-        <!-- /user list -->
+        <!-- /requestor list -->
         <div class="card table-list-card">
             <div class="card-body pb-0">
                 <div class="table-top table-top-two table-top-new d-flex ">
@@ -51,8 +51,8 @@
                                 <div class="form-group ">
                                     <select class="select position_filter form-control">
                                         <option value="">Position</option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="Clerk">Clerk</option>
+                                        <option value="holder">Program Holder</option>
+                                        <option value="principal">Principal</option>
                                     </select>
                                 </div>
                             </div>
@@ -63,10 +63,10 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table user-table pb-3">
+                    <table class="table requestor-table pb-3">
                         <thead>
                             <tr>
-                                <th>User</th>
+                                <th>Requestor</th>
                                 <th>Email</th>
                                 <th>Position</th>
                                 <th>Status</th>
@@ -83,7 +83,7 @@
             </div>
         </div>
     </div>
-    @livewire('contents.user-management')
+    @livewire('contents.requestor-management')
 
 @endsection
 
@@ -98,8 +98,8 @@
                 });
             @endif
 
-                if ($('.user-table').length > 0) {
-                var table = $('.user-table').DataTable({
+            if ($('.requestor-table').length > 0) {
+                var table = $('.requestor-table').DataTable({
                     "processing": true,
                     "serverSide": true,
                     "bFilter": true,
@@ -116,7 +116,7 @@
                         info: "_START_ - _END_ of _TOTAL_ items",
                     },
                     "ajax": {
-                        "url": "/users",
+                        "url": "/requestors",
                         "type": "GET",
                         "headers": {
                             "Accept": "application/json"
@@ -203,7 +203,7 @@
                         "render": function (data, type, row) {
                             return `
                                     <div class="edit-delete-action">
-                                        <a class="me-2 p-2 edit-user" data-userid="${row.id}">
+                                        <a class="me-2 p-2 edit-requestor" data-requestorid="${row.requestor_id}">
                                             <i data-feather="edit" class="feather-edit"></i>
                                         </a>
                                     </div>
