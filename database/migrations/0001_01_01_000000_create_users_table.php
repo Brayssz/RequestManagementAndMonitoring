@@ -75,6 +75,8 @@ return new class extends Migration
             $table->decimal('utilize_funds', 15, 2)->nullable(); 
 
             $table->unsignedBigInteger('fund_source_id')->nullable();
+
+            $table->unsignedBigInteger('allotment_id')->nullable(); // Added allotment foreign key
         
             $table->text('nature_of_request')->nullable();
             $table->date('signed_chief_date')->nullable();
@@ -87,7 +89,7 @@ return new class extends Migration
         
             $table->foreign('requesting_office_id')->references('requesting_office_id')->on('requesting_offices')->onDelete('set null');
             $table->foreign('fund_source_id')->references('fund_source_id')->on('fund_sources')->onDelete('set null');
-
+            $table->foreign('allotment_id')->references('allotment_id')->on('annual_allotments')->onDelete('set null'); 
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

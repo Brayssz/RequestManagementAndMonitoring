@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        //     'position' => 'admin',
-        //     'password' => Hash::make('password'), // Ensure password is hashed
-        //     'status' => 'active',
-        // ]);
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'position' => 'admin',
+            'password' => Hash::make('password'), // Ensure password is hashed
+            'status' => 'active',
+        ]);
 
         Requestor::create([
             'name' => 'John Doe',

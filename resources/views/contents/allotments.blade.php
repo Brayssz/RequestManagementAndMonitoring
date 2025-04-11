@@ -48,15 +48,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-12">
-                                <div class="form-group">
-                                    <select class="select status_filter form-control">
-                                        <option value="">Status</option>
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
+                          
                         </div>
 
                     </div>
@@ -70,7 +62,6 @@
                                 <th>Assigned Personnel</th>
                                 <th>Year</th>
                                 <th>Amount</th>
-                                <th>Status</th>
                                 <th class="no-sort">Action</th>
                             </tr>
                         </thead>
@@ -179,14 +170,6 @@
                             }
                         },
                         {
-                            "data": "status",
-                            "render": function (data, type, row) {
-                                return data === "active" ?
-                                    `<span class="badge badge-linesuccess">Active</span>` :
-                                    `<span class="badge badge-linedanger">Inactive</span>`;
-                            }
-                        },
-                        {
                             "data": null,
                             "render": function (data, type, row) {
                                 return `
@@ -200,7 +183,7 @@
                         }
                     ],
                     "createdRow": function (row, data, dataIndex) {
-                        $(row).find('td').eq(5).addClass('action-table-data');
+                        $(row).find('td').eq(4).addClass('action-table-data');
                     },
                     "initComplete": function (settings, json) {
                         $('.dataTables_filter').appendTo('#tableSearch');

@@ -7,6 +7,7 @@ use App\Http\Controllers\Contents\FundSourceController;
 use App\Http\Controllers\Contents\RequestingOfficeController;
 use App\Http\Controllers\Contents\RequestorController;
 use App\Http\Controllers\Contents\UserController;
+use App\Http\Controllers\Contents\RequestController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,3 +29,5 @@ Route::get('requestors', [RequestorController::class,'showRequestors'])->name('r
 Route::get('fund-sources', [FundSourceController::class, 'showFundSources'])->name('fund-sources');
 
 Route::get('allotments', [AllotmentController::class, 'showAllotments'])->name('allotments');
+
+Route::get('recieve-requests', [RequestController::class, 'showRequests'])->name('recieve-requests');
