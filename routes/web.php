@@ -30,4 +30,4 @@ Route::get('fund-sources', [FundSourceController::class, 'showFundSources'])->na
 
 Route::get('allotments', [AllotmentController::class, 'showAllotments'])->name('allotments');
 
-Route::get('recieve-requests', [RequestController::class, 'showRequests'])->name('recieve-requests');
+Route::get('receive-requests', [RequestController::class, 'showRequests'])->name('receive-requests');

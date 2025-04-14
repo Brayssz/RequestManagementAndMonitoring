@@ -48,6 +48,25 @@
                                             </div>
                                             <div class="col-lg-6 col-md-6">
                                                 <div class="mb-3">
+                                                    <label class="form-label" for="fund_source_id">Fund Source</label>
+                                                    <div wire:ignore>
+                                                        <select class="select" id="fund_source_id"
+                                                            name="fund_source_id"
+                                                            wire:model="fund_source_id">
+                                                            <option value="">Choose Fund Source</option>
+                                                            @foreach ($fund_sources as $fund_source)
+                                                                <option value="{{ $fund_source->fund_source_id }}">
+                                                                    {{ $fund_source->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    @error('fund_source_id')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6">
+                                                <div class="mb-3">
                                                     <label class="form-label" for="amount">Amount</label>
                                                     <input type="text" class="form-control currency"
                                                         placeholder="Enter amount" id="amount currency"

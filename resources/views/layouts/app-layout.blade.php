@@ -203,8 +203,8 @@
                         <li class="submenu-open">
                             <h6 class="submenu-hdr">Transactions</h6>
                             <ul>
-                                <li class="{{ Request::is('inventory') ? 'active' : '' }}">
-                                    <a href="/inventory"><i data-feather="archive"></i><span>Recieve Request</span></a>
+                                <li class="{{ Request::is('receive-requests') ? 'active' : '' }}">
+                                    <a href="/receive-requests"><i data-feather="archive"></i><span>Recieve Request</span></a>
                                 </li>
                                 <li class="{{ Request::is('book-request') ? 'active' : '' }}">
                                     <a href="/book-request"><i data-feather="book-open"></i><span>Release</span></a>

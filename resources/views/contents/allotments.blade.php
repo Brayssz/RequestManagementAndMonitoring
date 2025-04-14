@@ -61,7 +61,9 @@
                                 <th>Office | School</th>
                                 <th>Assigned Personnel</th>
                                 <th>Year</th>
+                                <th>Fund Source</th>
                                 <th>Amount</th>
+                                <th>Balance</th>
                                 <th class="no-sort">Action</th>
                             </tr>
                         </thead>
@@ -143,7 +145,14 @@
                                 `;
                             }
                         },
+                        
                         { "data": "year" },
+                        { 
+                            "data": "fund_source.name",
+                            "render": function (data, type, row) {
+                                return data || 'N/A';
+                            }
+                        },
                         { 
                             "data": "amount",
                             "render": function (data, type, row) {
@@ -155,6 +164,31 @@
                                             <div>
                                                 <a href="javascript:void(0);">${formattedAmount}</a>
                                                 <span class="emp-team text-muted">${amountInWords}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                                return `
+                                    <div class="userimgname">
+                                        <div>
+                                            <a href="javascript:void(0);">₱ 0</a>
+                                            <span class="emp-team">zero pesos</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        },
+                        { 
+                            "data": "balance",
+                            "render": function (data, type, row) {
+                                if (data) {
+                                    const formattedBalance = `₱ ${parseFloat(data).toLocaleString('en-US')}`;
+                                    const balanceInWords = numberToWords.toWords(parseFloat(data)).replace(/,/g, '') + ' pesos';
+                                    return `
+                                        <div class="userimgname">
+                                            <div>
+                                                <a href="javascript:void(0);">${formattedBalance}</a>
+                                                <span class="emp-team text-muted">${balanceInWords}</span>
                                             </div>
                                         </div>
                                     `;
@@ -183,7 +217,7 @@
                         }
                     ],
                     "createdRow": function (row, data, dataIndex) {
-                        $(row).find('td').eq(4).addClass('action-table-data');
+                        $(row).find('td').eq(6).addClass('action-table-data');
                     },
                     "initComplete": function (settings, json) {
                         $('.dataTables_filter').appendTo('#tableSearch');

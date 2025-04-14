@@ -42,7 +42,7 @@
                                     <select class="select status_filter form-control">
                                         <option value="">Status</option>
                                         <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
+                                        <option value="released">Released</option>
                                         <option value="rejected">Rejected</option>
                                     </select>
                                 </div>
@@ -64,10 +64,7 @@
                                 <th>Amount</th>
                                 <th>Utilize Funds</th>
                                 <th>Fund Source</th>
-                                <th>Allotment</th>
-                                <th>Signed Chief Date</th>
-                                <th>Date Transmitted</th>
-                                <th>Remarks</th>
+                                <th>Allotment Year</th>
                                 <th>Status</th>
                                 <th class="no-sort">Action</th>
                             </tr>
@@ -84,6 +81,7 @@
     </div>
 
     @livewire('contents.receive-request')
+
 @endsection
 
 @push('scripts')
@@ -115,7 +113,7 @@
                         info: "_START_ - _END_ of _TOTAL_ items",
                     },
                     "ajax": {
-                        "url": "/recieve-requests",
+                        "url": "/receive-requests",
                         "type": "GET",
                         "headers": {
                             "Accept": "application/json"
@@ -127,8 +125,18 @@
                     },
                     "columns": [
                         { "data": "dts_tracker_number" },
-                        { "data": "dts_date" },
-                        { "data": "sgod_date_received" },
+                        { 
+                            "data": "dts_date", 
+                            "render": function(data, type, row) {
+                                return data ? moment(data).format('MMMM D, YYYY') : 'N/A';
+                            } 
+                        },
+                        { 
+                            "data": "sgod_date_received", 
+                            "render": function(data, type, row) {
+                                return data ? moment(data).format('MMMM D, YYYY') : 'N/A';
+                            } 
+                        },
                         { 
                             "data": "requesting_office.name", 
                             "render": function(data, type, row) {
@@ -142,12 +150,14 @@
                                 return data ? `₱ ${parseFloat(data).toLocaleString('en-US')}` : '₱ 0';
                             } 
                         },
-                        { "data": "utilize_funds" },
+                        { 
+                            "data": "utilize_funds", 
+                            "render": function(data, type, row) {
+                                return data ? `₱ ${parseFloat(data).toLocaleString('en-US')}` : '₱ 0';
+                            } 
+                        },
                         { "data": "fund_source.name" },
                         { "data": "allotment.year" },
-                        { "data": "signed_chief_date" },
-                        { "data": "date_transmitted" },
-                        { "data": "remarks" },
                         { "data": "status" },
                         { 
                             "data": null, 
@@ -163,7 +173,7 @@
                         }
                     ],
                     "createdRow": function(row, data, dataIndex) {
-                        $(row).find('td').eq(13).addClass('action-table-data');
+                        $(row).find('td').eq(10).addClass('action-table-data');
                     },
                     "initComplete": function(settings, json) {
                         $('.dataTables_filter').appendTo('#tableSearch');

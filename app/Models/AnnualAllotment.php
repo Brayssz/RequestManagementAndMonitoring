@@ -14,6 +14,8 @@ class AnnualAllotment extends Model
     protected $fillable = [
         'requesting_office_id',
         'amount',
+        'balance',
+        'fund_source_id',
         'year',
         'status',
     ];
@@ -22,5 +24,9 @@ class AnnualAllotment extends Model
     {
         return $this->belongsTo(RequestingOffice::class, 'requesting_office_id', 'requesting_office_id');
     }
-}
 
+    public function fundSource()
+    {
+        return $this->belongsTo(FundSource::class, 'fund_source_id', 'fund_source_id');
+    }
+}

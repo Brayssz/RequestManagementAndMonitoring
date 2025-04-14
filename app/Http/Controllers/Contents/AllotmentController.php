@@ -11,7 +11,7 @@ class AllotmentController extends Controller
     public function showAllotments(Request $request)
     {
         if ($request->ajax()) {
-            $query = AnnualAllotment::query()->with('requestingOffice', 'requestingOffice.requestor');
+            $query = AnnualAllotment::query()->with('requestingOffice', 'requestingOffice.requestor', 'fundSource');
 
             if ($request->filled('year')) {
                 $query->where('year', $request->year);
