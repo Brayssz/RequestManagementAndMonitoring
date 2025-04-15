@@ -24344,6 +24344,11 @@ table tbody td.action-table-data a .feather-x {
   height: 14px;
 }
 
+table tbody td.action-table-data a .feather-send{
+  width: 14px;
+  height: 14px;
+}
+
 table tbody td.action-table-data a .feather-download {
   width: 14px;
   height: 14px;

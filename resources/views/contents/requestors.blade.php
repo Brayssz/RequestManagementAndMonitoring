@@ -227,12 +227,21 @@
                         $('.position_filter').on('change', function () {
                             table.draw();
                         });
+                        initTippy();
                     },
                     "drawCallback": function (settings) {
                         feather.replace();
+                        initTippy();
                     },
                 });
             }
+
+            const initTippy = () => {
+                tippy('.edit-requestor', {
+                    content: "Edit Requestor",
+                });
+               
+            };
 
         });
     </script>

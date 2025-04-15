@@ -11,7 +11,7 @@ class RequestController extends Controller
     public function showRequests(HttpRequest $request)
     {
         if ($request->ajax()) {
-            $query = RequestModel::query()->with('requestingOffice', 'fundSource', 'allotment');
+            $query = RequestModel::query()->with('requestingOffice', 'fundSource', 'allotment', 'transmittedOffice');
 
             if ($request->filled('status')) {
                 $query->where('status', $request->status);

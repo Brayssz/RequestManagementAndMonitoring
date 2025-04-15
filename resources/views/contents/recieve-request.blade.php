@@ -42,8 +42,7 @@
                                     <select class="select status_filter form-control">
                                         <option value="">Status</option>
                                         <option value="pending">Pending</option>
-                                        <option value="released">Released</option>
-                                        <option value="rejected">Rejected</option>
+                                        <option value="transmitted">Transmitted</option>
                                     </select>
                                 </div>
                             </div>
@@ -53,12 +52,11 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table requests-table pb-3">
+                    <table class="table requests-table pb-3 fs-14">
                         <thead>
                             <tr>
                                 <th>DTS Tracker Number</th>
                                 <th>DTS Date</th>
-                                <th>SGOD Date Received</th>
                                 <th>Requesting Office</th>
                                 <th>Nature of Request</th>
                                 <th>Amount</th>
@@ -66,6 +64,8 @@
                                 <th>Fund Source</th>
                                 <th>Allotment Year</th>
                                 <th>Status</th>
+                                <th>Transmitted Office</th>
+                                <th>Remarks</th>
                                 <th class="no-sort">Action</th>
                             </tr>
                         </thead>
@@ -81,6 +81,7 @@
     </div>
 
     @livewire('contents.receive-request')
+    @livewire('contents.transmit-request')
 
 @endsection
 
@@ -132,15 +133,16 @@
                             } 
                         },
                         { 
-                            "data": "sgod_date_received", 
+                            "data": null, 
                             "render": function(data, type, row) {
-                                return data ? moment(data).format('MMMM D, YYYY') : 'N/A';
-                            } 
-                        },
-                        { 
-                            "data": "requesting_office.name", 
-                            "render": function(data, type, row) {
-                                return data || 'N/A';
+                                return `
+                                    <div class="userimgname ">
+                                        <div>
+                                            <a href="javascript:void(0);">${row.requesting_office.name || 'N/A'}</a>
+                                            <span class="emp-team text-muted">${row.sgod_date_received ? moment(row.sgod_date_received).format('MMMM D, YYYY') : 'N/A'}</span>
+                                        </div>
+                                    </div>
+                                `;
                             } 
                         },
                         { "data": "nature_of_request" },
@@ -158,7 +160,33 @@
                         },
                         { "data": "fund_source.name" },
                         { "data": "allotment.year" },
-                        { "data": "status" },
+                        { 
+                            "data": null, 
+                            "render": function(data, type, row) {
+                                return row.status === "pending" ? 
+                                    `<span class="badge badge-linewarning">Pending</span>` : 
+                                    `<span class="badge badge-linesuccess">Transmitted</span>`;
+                            } 
+                        },
+                        { 
+                            "data": null, 
+                            "render": function(data, type, row) {
+                                return `
+                                    <div class="userimgname ">
+                                        <div>
+                                            <a href="javascript:void(0);">${row.transmitted_office.name || 'Not yet transmitted'}</a>
+                                            <span class="emp-team text-muted">${row.date_transmitted ? moment(row.date_transmitted).format('MMMM D, YYYY') : 'Not yet transmitted'}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            } 
+                        },
+                        { 
+                            "data": "remarks", 
+                            "render": function(data, type, row) {
+                                return data || 'Not yet transmitted';
+                            } 
+                        },
                         { 
                             "data": null, 
                             "render": function(data, type, row) {
@@ -167,13 +195,16 @@
                                         <a class="me-2 p-2 edit-request" data-requestid="${row.request_id}">
                                             <i data-feather="edit" class="feather-edit"></i>
                                         </a>
+                                        <a class="me-2 p-2 transmit-request" data-requestid="${row.request_id}">
+                                            <i data-feather="send" class="feather-send"></i>
+                                        </a>
                                     </div>
                                 `;
                             } 
                         }
                     ],
                     "createdRow": function(row, data, dataIndex) {
-                        $(row).find('td').eq(10).addClass('action-table-data');
+                        $(row).find('td').eq(11).addClass('action-table-data');
                     },
                     "initComplete": function(settings, json) {
                         $('.dataTables_filter').appendTo('#tableSearch');
@@ -183,12 +214,24 @@
                         $('.status_filter').on('change', function() {
                             table.draw();
                         });
+
+                        initTippy();
                     },
                     "drawCallback": function(settings) {
                         feather.replace();
+                        initTippy();
                     },
                 });
             }
+
+            const initTippy = () => {
+                tippy('.edit-request', {
+                    content: "Edit Request",
+                });
+                tippy('.transmit-request', {
+                    content: "Transmit Request",
+                });
+            };
 
         });
     </script>

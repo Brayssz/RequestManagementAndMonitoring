@@ -22,6 +22,7 @@ class Request extends Model
         'date_transmitted',
         'remarks',
         'status',
+        'transmitted_office_id', 
     ];
     
 
@@ -42,5 +43,10 @@ class Request extends Model
     public function allotment()
     {
         return $this->belongsTo(AnnualAllotment::class, 'allotment_id', 'allotment_id'); // Added allotment relationship
+    }
+
+    public function transmittedOffice()
+    {
+        return $this->belongsTo(RequestingOffice::class, 'transmitted_office_id', 'requesting_office_id'); // Added transmitted office relationship
     }
 }

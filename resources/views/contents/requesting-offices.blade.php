@@ -183,12 +183,21 @@
                         $('.type_filter').on('change', function () {
                             table.draw();
                         });
+                        initTippy();
                     },
                     "drawCallback": function (settings) {
                         feather.replace();
+                        initTippy();
                     },
                 });
             }
+
+            const initTippy = () => {
+                tippy('.edit-office', {
+                    content: "Edit Office",
+                });
+               
+            };
 
         });
     </script>

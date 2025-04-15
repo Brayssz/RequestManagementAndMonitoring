@@ -57,7 +57,7 @@
                                                             <option value="">Choose</option>
                                                                 @foreach ($allotments as $allotment)
                                                                     <option value="{{ $allotment->allotment_id }}">
-                                                                        {{ $allotment->year }}
+                                                                        {{ $allotment->year }} - {{$allotment->fundSource->name}} - ₱{{ number_format($allotment->balance, 2) }}
                                                                     </option>
                                                                 @endforeach
                                                             @else
@@ -101,36 +101,6 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                               
-                                                <div class="col-lg-6 col-md-6">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="amount">Amount</label>
-                                                        <input type="number" class="form-control" id="amount"
-                                                            wire:model.lazy="amount" step="0.01">
-                                                        @error('amount')
-                                                            <span class="text-danger">{{ $message }}</span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="fund_source_id">Fund
-                                                            Source</label>
-                                                        <select class="form-control" id="fund_source_id"
-                                                            wire:model.lazy="fund_source_id">
-                                                            <option value="">Choose</option>
-                                                            @foreach ($fundSources as $source)
-                                                                <option value="{{ $source->fund_source_id }}">
-                                                                    {{ $source->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('fund_source_id')
-                                                            <span class="text-danger">{{ $message }}</span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                              
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="nature_of_request">Nature of
@@ -142,6 +112,20 @@
                                                         @enderror
                                                     </div>
                                                 </div>
+                                               
+                                                <div class="col-lg-12 col-md-12">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="amount">Requested Amount</label>
+                                                        <input type="number" class="form-control" id="amount"
+                                                            wire:model.lazy="amount" step="0.01">
+                                                        @error('amount')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                               
+                                              
+                                             
                                             </div>
                                         </div>
                                     </div>

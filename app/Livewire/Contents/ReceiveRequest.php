@@ -62,7 +62,6 @@ class ReceiveRequest extends Component
     public function updateAllotmentBalance()
     {
         AnnualAllotment::where('allotment_id', $this->allotment_id)
-            ->where('fund_source_id', $this->fund_source_id)
             ->where('requesting_office_id', $this->requesting_office_id)
             ->decrement('balance', $this->amount);
     }
@@ -74,7 +73,6 @@ class ReceiveRequest extends Component
         $savings = $previousAmount - $this->utilize_funds;
 
         AnnualAllotment::where('allotment_id', $this->allotment_id)
-            ->where('fund_source_id', $this->fund_source_id)
             ->where('requesting_office_id', $this->requesting_office_id)
             ->increment('balance', $savings);
 
@@ -97,7 +95,6 @@ class ReceiveRequest extends Component
             'sgod_date_received' => 'required|date',
             'requesting_office_id' => 'required|integer|exists:requesting_offices,requesting_office_id',
             'amount' => 'required|numeric|min:0',
-            'fund_source_id' => 'required|integer|exists:fund_sources,fund_source_id',
             'allotment_id' => 'required|integer|exists:annual_allotments,allotment_id',
             'nature_of_request' => 'required|string|max:255',
             'utilize_funds' => 'nullable|numeric',
@@ -129,8 +126,7 @@ class ReceiveRequest extends Component
         $this->validate();
 
         $allotment = AnnualAllotment::where('allotment_id', $this->allotment_id)
-            ->where('fund_source_id', $this->fund_source_id)
-            ->where('requesting_office_id', $this->requesting_office_id)->get();
+            ->where('requesting_office_id', $this->requesting_office_id)->first();
 
         if ($this->checkIfExist()) {
             $this->updateAllotmentBalanceWithSavings();
@@ -147,7 +143,7 @@ class ReceiveRequest extends Component
                 'requesting_office_id' => $this->requesting_office_id,
                 'amount' => $this->amount,
                 'utilize_funds' => $this->utilize_funds,
-                'fund_source_id' => $this->fund_source_id,
+                'fund_source_id' => $allotment->fund_source_id,
                 'allotment_id' => $this->allotment_id,
                 'nature_of_request' => $this->nature_of_request,
             ]);
@@ -161,7 +157,7 @@ class ReceiveRequest extends Component
             $this->request->requesting_office_id = $this->requesting_office_id;
             $this->request->amount = $this->amount;
             $this->request->utilize_funds = $this->utilize_funds;
-            $this->request->fund_source_id = $this->fund_source_id;
+            $this->request->fund_source_id = $allotment->fund_source_id;
             $this->request->allotment_id = $this->allotment_id;
             $this->request->nature_of_request = $this->nature_of_request;
 

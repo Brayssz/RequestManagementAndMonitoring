@@ -34,7 +34,8 @@
                     <div class="search-set mb-0 d-flex w-100 justify-content-start">
 
                         <div class="search-input text-left">
-                            <a href="" class="btn btn-searchset"><i data-feather="search" class="feather-search"></i></a>
+                            <a href="" class="btn btn-searchset"><i data-feather="search"
+                                    class="feather-search"></i></a>
                         </div>
 
                         <div class="row mt-sm-3 mt-xs-3 mt-lg-0 w-sm-100 flex-grow-1">
@@ -89,7 +90,7 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             @if (session('message'))
                 toastr.success("{{ session('message') }}", "Success", {
@@ -98,7 +99,7 @@
                 });
             @endif
 
-                if ($('.user-table').length > 0) {
+            if ($('.user-table').length > 0) {
                 var table = $('.user-table').DataTable({
                     "processing": true,
                     "serverSide": true,
@@ -121,49 +122,50 @@
                         "headers": {
                             "Accept": "application/json"
                         },
-                        "data": function (d) {
+                        "data": function(d) {
                             d.status = $('.status_filter').val();
                             d.position = $('.position_filter').val();
                         },
                         "dataSrc": "data"
                     },
                     "columns": [{
-                        "data": null,
-                        "render": function (data, type, row) {
+                            "data": null,
+                            "render": function(data, type, row) {
 
-                            const colors = {
-                                A: 'bg-primary',
-                                B: 'bg-success',
-                                C: 'bg-info',
-                                D: 'bg-warning',
-                                E: 'bg-danger',
-                                F: 'bg-secondary',
-                                G: 'bg-dark',
-                                H: 'bg-light',
-                                I: 'bg-primary',
-                                J: 'bg-success',
-                                K: 'bg-info',
-                                L: 'bg-warning',
-                                M: 'bg-danger',
-                                N: 'bg-secondary',
-                                O: 'bg-dark',
-                                P: 'bg-light',
-                                Q: 'bg-primary',
-                                R: 'bg-success',
-                                S: 'bg-info',
-                                T: 'bg-warning',
-                                U: 'bg-danger',
-                                V: 'bg-secondary',
-                                W: 'bg-dark',
-                                X: 'bg-light',
-                                Y: 'bg-primary',
-                                Z: 'bg-success'
-                            };
+                                const colors = {
+                                    A: 'bg-primary',
+                                    B: 'bg-success',
+                                    C: 'bg-info',
+                                    D: 'bg-warning',
+                                    E: 'bg-danger',
+                                    F: 'bg-secondary',
+                                    G: 'bg-dark',
+                                    H: 'bg-light',
+                                    I: 'bg-primary',
+                                    J: 'bg-success',
+                                    K: 'bg-info',
+                                    L: 'bg-warning',
+                                    M: 'bg-danger',
+                                    N: 'bg-secondary',
+                                    O: 'bg-dark',
+                                    P: 'bg-light',
+                                    Q: 'bg-primary',
+                                    R: 'bg-success',
+                                    S: 'bg-info',
+                                    T: 'bg-warning',
+                                    U: 'bg-danger',
+                                    V: 'bg-secondary',
+                                    W: 'bg-dark',
+                                    X: 'bg-light',
+                                    Y: 'bg-primary',
+                                    Z: 'bg-success'
+                                };
 
-                            const firstLetter = row.name ? row.name.charAt(0).toUpperCase() : 'A';
-                            const bgColor = colors[firstLetter] || 'bg-secondary';
+                                const firstLetter = row.name ? row.name.charAt(0).toUpperCase() :
+                                    'A';
+                                const bgColor = colors[firstLetter] || 'bg-secondary';
 
-                            return `
+                                return `
                                         <div class="userimgname">
                                             <a href="javascript:void(0);" class="product-img">
                                                 <span class="avatar ${bgColor} avatar-rounded">
@@ -176,63 +178,69 @@
                                         </div>
                                     `;
 
-                        }
-                    },
-                    {
-                        "data": "email",
-                        "render": function (data, type, row) {
-                            return `<a href="mailto:${data}">${data}</a>`;
-                        }
-                    },
-                    {
-                        "data": "position",
-                        "render": function (data, type, row) {
-                            return data.charAt(0).toUpperCase() + data.slice(1);
-                        }
-                    },
-                    {
-                        "data": null,
-                        "render": function (data, type, row) {
-                            return row.status === "active" ?
-                                `<span class="badge badge-linesuccess">Active</span>` :
-                                `<span class="badge badge-linedanger">Deactivated</span>`;
-                        }
-                    },
-                    {
-                        "data": null,
-                        "render": function (data, type, row) {
-                            return `
+                            }
+                        },
+                        {
+                            "data": "email",
+                            "render": function(data, type, row) {
+                                return `<a href="mailto:${data}">${data}</a>`;
+                            }
+                        },
+                        {
+                            "data": "position",
+                            "render": function(data, type, row) {
+                                return data.charAt(0).toUpperCase() + data.slice(1);
+                            }
+                        },
+                        {
+                            "data": null,
+                            "render": function(data, type, row) {
+                                return row.status === "active" ?
+                                    `<span class="badge badge-linesuccess">Active</span>` :
+                                    `<span class="badge badge-linedanger">Deactivated</span>`;
+                            }
+                        },
+                        {
+                            "data": null,
+                            "render": function(data, type, row) {
+                                return `
                                     <div class="edit-delete-action">
                                         <a class="me-2 p-2 edit-user" data-userid="${row.id}">
                                             <i data-feather="edit" class="feather-edit"></i>
                                         </a>
                                     </div>
                                 `;
+                            }
                         }
-                    }
                     ],
-                    "createdRow": function (row, data, dataIndex) {
+                    "createdRow": function(row, data, dataIndex) {
                         $(row).find('td').eq(4).addClass('action-table-data');
                     },
-                    "initComplete": function (settings, json) {
+                    "initComplete": function(settings, json) {
                         $('.dataTables_filter').appendTo('#tableSearch');
                         $('.dataTables_filter').appendTo('.search-input');
                         feather.replace();
                         hideLoader();
 
-                        $('.status_filter').on('change', function () {
+                        $('.status_filter').on('change', function() {
                             table.draw();
                         });
 
-                        $('.position_filter').on('change', function () {
+                        $('.position_filter').on('change', function() {
                             table.draw();
                         });
+
+                        tippy('.edit-user', {
+                            content: "Edit User",
+                        });
                     },
-                    "drawCallback": function (settings) {
+                    "drawCallback": function(settings) {
                         feather.replace();
                     },
                 });
             }
+
+
 
         });
     </script>

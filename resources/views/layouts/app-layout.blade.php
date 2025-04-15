@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
 
     @vite(['resources/assets/css/style.css', 'resources/assets/css/sidebar.css'])
     {{-- @livewireStyles<!-- Styles - --}}
@@ -204,11 +205,9 @@
                             <h6 class="submenu-hdr">Transactions</h6>
                             <ul>
                                 <li class="{{ Request::is('receive-requests') ? 'active' : '' }}">
-                                    <a href="/receive-requests"><i data-feather="archive"></i><span>Recieve Request</span></a>
+                                    <a href="/receive-requests"><i data-feather="archive"></i><span>Requests</span></a>
                                 </li>
-                                <li class="{{ Request::is('book-request') ? 'active' : '' }}">
-                                    <a href="/book-request"><i data-feather="book-open"></i><span>Release</span></a>
-                                </li>
+                                
                             </ul>
                         </li>
 
@@ -287,6 +286,9 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/number-to-words"></script>
+
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
     
 
     @vite(['resources/assets/js/script.js', 'resources/assets/js/custom-select2.js', 'resources/assets/js/mask.js', 'resources/assets/js/theme-script.js', 'resources/assets/js/mask.js' ])
