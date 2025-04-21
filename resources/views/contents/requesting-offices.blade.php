@@ -141,7 +141,7 @@
                             }
                         },
                         {
-                            "data": "requestor.name",
+                            "data": "requestor_obj.name",
                             "render": function (data, type, row) {
                                 return data ? `<a href="javascript:void(0);">${data}</a>` : 'N/A';
                             }

@@ -4,6 +4,8 @@ use App\Http\Controllers\Contents\AllotmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Contents\AuthController;
 use App\Http\Controllers\Contents\FundSourceController;
+use App\Http\Controllers\Contents\PDFController;
+use App\Http\Controllers\Contents\ReportController;
 use App\Http\Controllers\Contents\RequestingOfficeController;
 use App\Http\Controllers\Contents\RequestorController;
 use App\Http\Controllers\Contents\UserController;
@@ -31,3 +33,10 @@ Route::get('fund-sources', [FundSourceController::class, 'showFundSources'])->na
 Route::get('allotments', [AllotmentController::class, 'showAllotments'])->name('allotments');
 
 Route::get('receive-requests', [RequestController::class, 'showRequests'])->name('receive-requests');
+
+Route::get('summary-report', [ReportController::class, 'generateMonthlySummary'])->name('summary-report');
+
+Route::get('summary-report-pdf', [PDFController::class, 'generateMonthlySummary'])->name('summary-report-pdf');
+
+Route::get('request-history-report', [ReportController::class, 'requestHistoryReport'])->name('request-history-report');
+Route::get('request-history-report-pdf', [PDFController::class, 'requestHistoryReport'])->name('request-history-report-pdf');

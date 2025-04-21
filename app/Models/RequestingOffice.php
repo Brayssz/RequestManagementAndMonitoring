@@ -12,7 +12,7 @@ class RequestingOffice extends Model
         'name', 'type', 'requestor', 'status',
     ];
 
-    public function requestor()
+    public function requestor_obj()
     {
         return $this->belongsTo(Requestor::class, 'requestor', 'requestor_id');
     }

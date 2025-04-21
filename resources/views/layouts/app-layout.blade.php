@@ -214,8 +214,11 @@
                         <li class="submenu-open">
                             <h6 class="submenu-hdr">Reports</h6>
                             <ul>
-                                <li class="{{ Request::is('delivery-transactions-report') ? 'active' : '' }}">
-                                    <a href="delivery-transactions-report"><i data-feather="truck"></i><span>Report 1</span></a>
+                                <li class="{{ Request::is('summary-report') ? 'active' : '' }}">
+                                    <a href="summary-report"><i data-feather="file-text"></i><span>Summary Report</span></a>
+                                </li>
+                                <li class="{{ Request::is('request-history-report') ? 'active' : '' }}">
+                                    <a href="request-history-report"><i data-feather="file-text"></i><span>Request History Report</span></a>
                                 </li>
                             </ul>
                         </li>

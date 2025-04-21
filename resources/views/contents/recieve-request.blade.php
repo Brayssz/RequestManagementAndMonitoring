@@ -124,16 +124,17 @@
                         },
                         "dataSrc": "data"
                     },
-                    "columns": [
-                        { "data": "dts_tracker_number" },
-                        { 
-                            "data": "dts_date", 
+                    "columns": [{
+                            "data": "dts_tracker_number"
+                        },
+                        {
+                            "data": "dts_date",
                             "render": function(data, type, row) {
                                 return data ? moment(data).format('MMMM D, YYYY') : 'N/A';
-                            } 
+                            }
                         },
-                        { 
-                            "data": null, 
+                        {
+                            "data": null,
                             "render": function(data, type, row) {
                                 return `
                                     <div class="userimgname ">
@@ -143,52 +144,67 @@
                                         </div>
                                     </div>
                                 `;
-                            } 
+                            }
                         },
-                        { "data": "nature_of_request" },
-                        { 
-                            "data": "amount", 
-                            "render": function(data, type, row) {
-                                return data ? `₱ ${parseFloat(data).toLocaleString('en-US')}` : '₱ 0';
-                            } 
+                        {
+                            "data": "nature_of_request"
                         },
-                        { 
-                            "data": "utilize_funds", 
+                        {
+                            "data": "amount",
                             "render": function(data, type, row) {
-                                return data ? `₱ ${parseFloat(data).toLocaleString('en-US')}` : '₱ 0';
-                            } 
+                                return data ? `₱ ${parseFloat(data).toLocaleString('en-US')}` :
+                                    '₱ 0';
+                            }
                         },
-                        { "data": "fund_source.name" },
-                        { "data": "allotment.year" },
-                        { 
-                            "data": null, 
+                        {
+                            "data": "utilize_funds",
                             "render": function(data, type, row) {
-                                return row.status === "pending" ? 
-                                    `<span class="badge badge-linewarning">Pending</span>` : 
+                                return data ? `₱ ${parseFloat(data).toLocaleString('en-US')}` :
+                                    '₱ 0';
+                            }
+                        },
+                        {
+                            "data": "fund_source.name"
+                        },
+                        {
+                            "data": "allotment.year"
+                        },
+                        {
+                            "data": null,
+                            "render": function(data, type, row) {
+                                return row.status === "pending" ?
+                                    `<span class="badge badge-linewarning">Pending</span>` :
                                     `<span class="badge badge-linesuccess">Transmitted</span>`;
-                            } 
+                            }
                         },
-                        { 
-                            "data": null, 
-                            "render": function(data, type, row) {
+                        {
+                            data: null,
+                            render: function(data, type, row) {
+                                const transmittedOfficeName = row.transmitted_office?.name ||
+                                    'Not yet transmitted';
+                                const transmittedDate = row.date_transmitted ?
+                                    moment(row.date_transmitted).format('MMMM D, YYYY') :
+                                    'Not yet transmitted';
+
                                 return `
-                                    <div class="userimgname ">
+                                    <div class="userimgname">
                                         <div>
-                                            <a href="javascript:void(0);">${row.transmitted_office.name || 'Not yet transmitted'}</a>
-                                            <span class="emp-team text-muted">${row.date_transmitted ? moment(row.date_transmitted).format('MMMM D, YYYY') : 'Not yet transmitted'}</span>
+                                            <a href="javascript:void(0);">${transmittedOfficeName}</a>
+                                            <span class="emp-team text-muted">${transmittedDate}</span>
                                         </div>
                                     </div>
                                 `;
-                            } 
+                            }
                         },
-                        { 
-                            "data": "remarks", 
+
+                        {
+                            "data": "remarks",
                             "render": function(data, type, row) {
                                 return data || 'Not yet transmitted';
-                            } 
+                            }
                         },
-                        { 
-                            "data": null, 
+                        {
+                            "data": null,
                             "render": function(data, type, row) {
                                 return `
                                     <div class="edit-delete-action">
@@ -200,7 +216,7 @@
                                         </a>
                                     </div>
                                 `;
-                            } 
+                            }
                         }
                     ],
                     "createdRow": function(row, data, dataIndex) {

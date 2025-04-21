@@ -49,4 +49,9 @@ class Request extends Model
     {
         return $this->belongsTo(RequestingOffice::class, 'transmitted_office_id', 'requesting_office_id'); // Added transmitted office relationship
     }
+
+    public function getRequestor()
+    {
+        return $this->requestingOffice ? $this->requestingOffice->requestor->name : null;
+    }
 }

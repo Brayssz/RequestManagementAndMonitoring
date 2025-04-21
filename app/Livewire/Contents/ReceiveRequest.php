@@ -87,6 +87,19 @@ class ReceiveRequest extends Component
                 ->exists();
     }
 
+    public function updateExistingRequestUtilize()
+    {
+        $latest_request = Request::where('requesting_office_id', $this->requesting_office_id)
+            ->where('allotment_id', $this->allotment_id)
+            ->latest()
+            ->first();
+
+        if ($latest_request) {
+            $latest_request->utilize_funds = $this->utilize_funds;
+            $latest_request->save();
+        }
+    }
+
     protected function rules()
     {
         return [
@@ -130,6 +143,7 @@ class ReceiveRequest extends Component
 
         if ($this->checkIfExist()) {
             $this->updateAllotmentBalanceWithSavings();
+            $this->updateExistingRequestUtilize();
         } else {
             $this->updateAllotmentBalance();
         }
@@ -142,7 +156,6 @@ class ReceiveRequest extends Component
                 'sgod_date_received' => $this->sgod_date_received,
                 'requesting_office_id' => $this->requesting_office_id,
                 'amount' => $this->amount,
-                'utilize_funds' => $this->utilize_funds,
                 'fund_source_id' => $allotment->fund_source_id,
                 'allotment_id' => $this->allotment_id,
                 'nature_of_request' => $this->nature_of_request,
@@ -156,7 +169,6 @@ class ReceiveRequest extends Component
             $this->request->sgod_date_received = $this->sgod_date_received;
             $this->request->requesting_office_id = $this->requesting_office_id;
             $this->request->amount = $this->amount;
-            $this->request->utilize_funds = $this->utilize_funds;
             $this->request->fund_source_id = $allotment->fund_source_id;
             $this->request->allotment_id = $this->allotment_id;
             $this->request->nature_of_request = $this->nature_of_request;

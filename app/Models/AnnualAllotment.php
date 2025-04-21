@@ -29,4 +29,9 @@ class AnnualAllotment extends Model
     {
         return $this->belongsTo(FundSource::class, 'fund_source_id', 'fund_source_id');
     }
+
+    public function requests()
+    {
+        return $this->hasMany(Request::class, 'allotment_id', 'allotment_id');
+    }
 }

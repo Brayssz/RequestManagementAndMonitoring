@@ -11,7 +11,7 @@ class RequestingOfficeController extends Controller
     public function showRequestingOffices(Request $request)
     {
         if ($request->ajax()) {
-            $query = RequestingOffice::query()->with('requestor');
+            $query = RequestingOffice::query()->with('requestor_obj');
 
             if ($request->filled('type')) {
                 $query->where('type', $request->type);
