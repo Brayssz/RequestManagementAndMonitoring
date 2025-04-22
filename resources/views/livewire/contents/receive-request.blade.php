@@ -29,27 +29,34 @@
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="requesting_office_id">Requesting
-                                                            Office</label>
-                                                        <select class="form-control" id="requesting_office_id"
-                                                            wire:model.lazy="requesting_office_id"
-                                                            wire:change="populateAllotments">
-                                                            <option value="">Choose</option>
-                                                            @foreach ($requestingOffices as $office)
-                                                                <option value="{{ $office->requesting_office_id }}">
-                                                                    {{ $office->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
+                                                        <label class="form-label" for="requesting_office_id">Requesting Office</label>
+                                                        <div wire:ignore>
+                                                            <select class="select" id="requesting_office_id"
+                                                                name="requesting_office_id"
+                                                                wire:model.lazy="requesting_office_id"
+                                                                wire:change="populateAllotments"
+                                                                @if ($requestingOffices->isEmpty()) disabled @endif>
+                                                                <option value="">Choose</option>
+                                                                @foreach ($requestingOffices as $office)
+                                                                    <option value="{{ $office->requesting_office_id }}">
+                                                                        {{ $office->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        @if ($requestingOffices->isEmpty())
+                                                            <span class="text-danger">No available requesting office records. Please add a new requesting office or set an existing one to active.</span>
+                                                        @endif
                                                         @error('requesting_office_id')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
                                                 </div>
+                                               
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="allotment_id">Allotment</label>
-                                                        <select class="form-control allotment_id" id="allotment_id"
+                                                        <select class="form-control allotment_id select" id="allotment_id"
                                                             wire:model.lazy="allotment_id"
                                                             @if (!$requesting_office_id || $allotments->isEmpty()) disabled @endif>
                                                             
@@ -69,6 +76,7 @@
                                                         @enderror
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="dts_date">DTS Date</label>
@@ -123,9 +131,6 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                               
-                                              
-                                             
                                             </div>
                                         </div>
                                     </div>

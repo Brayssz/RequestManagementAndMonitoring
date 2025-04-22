@@ -111,7 +111,7 @@
                             <span class="user-detail">
                                 <span class="avatar-title">{{ strtoupper(Auth::user()->name) }}</span>
 
-                                <span class="user-role">Administrator</span>
+                                <span class="user-role">{{ ucfirst(Auth::user()->position) }}</span>
 
 
                             </span>
@@ -131,7 +131,7 @@
                                 <div class="profilesets">
                                     <h6>{{ strtoupper(Auth::user()->name) }}
                                     </h6>
-                                    <h5>Administrator</h5>
+                                    <h5>{{ ucfirst(Auth::user()->position) }}</h5>
 
                                 </div>
                             </div>
@@ -166,71 +166,78 @@
         </div>
         <!-- /Header -->
 
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-inner slimscroll">
-                <div id="sidebar-menu" class="sidebar-menu">
-                    <ul>
-                        <li class="submenu-open">
-                            <h6 class="submenu-hdr">Main</h6>
-                            <ul>
-                                <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
-                                    <a href="/dashboard"><i data-feather="grid"></i><span>Dashboard</span></a>
-                                </li>
-                            </ul>
-                        </li>
+        @if(Auth::user()->position == 'admin')
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-inner slimscroll">
+                    <div id="sidebar-menu" class="sidebar-menu">
+                        <ul>
+                            <li class="submenu-open">
+                                <h6 class="submenu-hdr">Main</h6>
+                                <ul>
+                                    <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
+                                        <a href="/dashboard"><i data-feather="grid"></i><span>Dashboard</span></a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="submenu-open">
+                                <h6 class="submenu-hdr">Management</h6>
+                                <ul>
+                                    <li class="{{ Request::is('users') ? 'active' : '' }}">
+                                        <a href="/users"><i data-feather="user"></i><span>Users</span></a>
+                                    </li>
+                                    <li class="{{ Request::is('requesting-offices') ? 'active' : '' }}">
+                                        <a href="/requesting-offices"><i data-feather="briefcase"></i><span>Offices | Schools</span></a>
+                                    </li>
+                                    <li class="{{ Request::is('requestors') ? 'active' : '' }}">
+                                        <a href="/requestors"><i data-feather="users"></i><span>Requestors</span></a>
+                                    </li>
+                                    <li class="{{ Request::is('fund-sources') ? 'active' : '' }}">
+                                        <a href="/fund-sources"><i data-feather="credit-card"></i><span>Fund Sources</span></a>
+                                    </li>
+                                    <li class="{{ Request::is('allotments') ? 'active' : '' }}">
+                                        <a href="/allotments"><i data-feather="pie-chart"></i><span>Annual Allotment</span></a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        <li class="submenu-open">
-                            <h6 class="submenu-hdr">Management</h6>
-                            <ul>
-                                <li class="{{ Request::is('users') ? 'active' : '' }}">
-                                    <a href="/users"><i data-feather="user"></i><span>Users</span></a>
-                                </li>
-                                <li class="{{ Request::is('requesting-offices') ? 'active' : '' }}">
-                                    <a href="/requesting-offices"><i data-feather="briefcase"></i><span>Offices | Schools</span></a>
-                                </li>
-                                <li class="{{ Request::is('requestors') ? 'active' : '' }}">
-                                    <a href="/requestors"><i data-feather="users"></i><span>Requestors</span></a>
-                                </li>
-                                <li class="{{ Request::is('fund-sources') ? 'active' : '' }}">
-                                    <a href="/fund-sources"><i data-feather="credit-card"></i><span>Fund Sources</span></a>
-                                </li>
-                                <li class="{{ Request::is('allotments') ? 'active' : '' }}">
-                                    <a href="/allotments"><i data-feather="pie-chart"></i><span>Annual Allotment</span></a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li class="submenu-open">
+                                <h6 class="submenu-hdr">Transactions</h6>
+                                <ul>
+                                    <li class="{{ Request::is('receive-requests') ? 'active' : '' }}">
+                                        <a href="/receive-requests"><i data-feather="archive"></i><span>Requests</span></a>
+                                    </li>
+                                    
+                                </ul>
+                            </li>
 
-                        <li class="submenu-open">
-                            <h6 class="submenu-hdr">Transactions</h6>
-                            <ul>
-                                <li class="{{ Request::is('receive-requests') ? 'active' : '' }}">
-                                    <a href="/receive-requests"><i data-feather="archive"></i><span>Requests</span></a>
-                                </li>
-                                
-                            </ul>
-                        </li>
+                            <li class="submenu-open">
+                                <h6 class="submenu-hdr">Reports</h6>
+                                <ul>
+                                    <li class="{{ Request::is('summary-report') ? 'active' : '' }}">
+                                        <a href="summary-report"><i data-feather="file-text"></i><span>Summary Report</span></a>
+                                    </li>
+                                    <li class="{{ Request::is('request-history-report') ? 'active' : '' }}">
+                                        <a href="request-history-report"><i data-feather="file-text"></i><span>Request History Report</span></a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        <li class="submenu-open">
-                            <h6 class="submenu-hdr">Reports</h6>
-                            <ul>
-                                <li class="{{ Request::is('summary-report') ? 'active' : '' }}">
-                                    <a href="summary-report"><i data-feather="file-text"></i><span>Summary Report</span></a>
-                                </li>
-                                <li class="{{ Request::is('request-history-report') ? 'active' : '' }}">
-                                    <a href="request-history-report"><i data-feather="file-text"></i><span>Request History Report</span></a>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="page-wrapper">
-            @yield('content')
-        </div>
+        @endif
+        
+        @if (Auth::user()->position == 'admin')
+            <div class="page-wrapper">
+                @yield('content')
+            </div>
+        @else
+            <div class="page-wrapper mx-3">
+                @yield('content')
+            </div>
+        @endif
+      
 
         {{-- @livewire('content.layout') --}}
 

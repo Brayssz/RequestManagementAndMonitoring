@@ -50,8 +50,14 @@
                                             <div class="col-lg-6 col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="position">Position</label>
-                                                    <input type="text" id="position" class="form-control"
-                                                        placeholder="Enter position" wire:model.lazy="position">
+                                                    <div wire:ignore>
+                                                        <select id="position" class="form-control select"
+                                                            wire:model="position">
+                                                            <option value="">Choose</option>
+                                                            <option value="admin">Admin</option>
+                                                            <option value="clerk">Clerk</option>
+                                                        </select>
+                                                    </div>
                                                     @error('position')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror

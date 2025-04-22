@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <div class="content">
+    <div class="content mx-3">
         <div class="page-header">
             <div class="add-item d-flex">
                 <div class="page-title">
@@ -136,11 +136,13 @@
                         {
                             "data": null,
                             "render": function(data, type, row) {
+                                const requestingOfficeName = row.requesting_office?.name || 'N/A';
+                                const sgodDateReceived = row.sgod_date_received ? moment(row.sgod_date_received).format('MMMM D, YYYY') : 'N/A';
                                 return `
-                                    <div class="userimgname ">
+                                    <div class="userimgname">
                                         <div>
-                                            <a href="javascript:void(0);">${row.requesting_office.name || 'N/A'}</a>
-                                            <span class="emp-team text-muted">${row.sgod_date_received ? moment(row.sgod_date_received).format('MMMM D, YYYY') : 'N/A'}</span>
+                                            <a href="javascript:void(0);">${requestingOfficeName}</a>
+                                            <span class="emp-team text-muted">${sgodDateReceived}</span>
                                         </div>
                                     </div>
                                 `;

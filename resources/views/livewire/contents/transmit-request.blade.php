@@ -43,15 +43,17 @@
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="transmitted_office_id">Transmitted Office</label>
-                                                        <select class="form-control" id="transmitted_office_id"
-                                                            wire:model.lazy="transmitted_office_id">
-                                                            <option value="">Choose</option>
-                                                            @foreach ($requestingOffices as $office)
-                                                                <option value="{{ $office->requesting_office_id }}">
-                                                                    {{ $office->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
+                                                        <div wire:ignore>
+                                                            <select id="transmitted_office_id" class="form-control select"
+                                                                wire:model="transmitted_office_id">
+                                                                <option value="">Choose</option>
+                                                                @foreach ($requestingOffices as $office)
+                                                                    <option value="{{ $office->requesting_office_id }}">
+                                                                        {{ $office->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
                                                         @error('transmitted_office_id')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror

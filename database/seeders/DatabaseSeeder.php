@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         Requestor::create([
             'name' => 'John Doe',
             'email' => 'johndoe@example.com',
-            'position' => 'school head',
+            'position' => 'principal',
             'status' => 'active',
         ]);
     }

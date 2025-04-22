@@ -30,6 +30,19 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('users')->with('success', 'Login successful!');
+        if(Auth::user()->position == 'admin'){
+            return redirect()->route('users')->with('success', 'Login successful!');
+        } elseif(Auth::user()->position == 'clerk'){
+            return redirect()->route('receive-requests')->with('success', 'Login successful!');
+        }
+
+        // return redirect()->route('users')->with('success', 'Login successful!');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        return redirect()->route('login')->with('success', 'Logout successful!');
     }
 }

@@ -55,13 +55,17 @@
                                                     <label class="form-label" for="requestor">Requestor</label>
                                                     <div wire:ignore>
                                                         <select class="select requestor" id="requestor" name="requestor"
-                                                            wire:model="requestor">
+                                                            wire:model="requestor" 
+                                                            @if ($requestors->isEmpty()) disabled @endif>
                                                             <option value="">Choose</option>
                                                             @foreach ($requestors as $requestor)
                                                                 <option value="{{ $requestor->requestor_id }}">{{ $requestor->name }} - ({{$requestor->position}})</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
+                                                    @if ($requestors->isEmpty())
+                                                        <span class="text-danger">No available requestor records. Please add a new requestor or set an existing one to active.</span>
+                                                    @endif
                                                     @error('requestor')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror

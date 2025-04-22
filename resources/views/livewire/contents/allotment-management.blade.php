@@ -28,19 +28,20 @@
                                         <div class="row">
                                             <div class="col-lg-6 col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label" for="requesting_office_id">Requesting
-                                                        Office</label>
+                                                    <label class="form-label" for="requesting_office_id">Requesting Office</label>
                                                     <div wire:ignore>
-                                                        <select class="select" id="requesting_office_id"
-                                                            name="requesting_office_id"
-                                                            wire:model="requesting_office_id">
+                                                        <select class="select requesting-office" id="requesting_office_id" name="requesting_office_id"
+                                                            wire:model="requesting_office_id" 
+                                                            @if ($requestingOffices->isEmpty()) disabled @endif>
                                                             <option value="">Choose</option>
                                                             @foreach ($requestingOffices as $office)
-                                                                <option value="{{ $office->requesting_office_id }}">
-                                                                    {{ $office->name }}</option>
+                                                                <option value="{{ $office->requesting_office_id }}">{{ $office->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
+                                                    @if ($requestingOffices->isEmpty())
+                                                        <span class="text-danger">No available requesting office records. Please add a new office or set an existing one to active.</span>
+                                                    @endif
                                                     @error('requesting_office_id')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -52,7 +53,8 @@
                                                     <div wire:ignore>
                                                         <select class="select" id="fund_source_id"
                                                             name="fund_source_id"
-                                                            wire:model="fund_source_id">
+                                                            wire:model="fund_source_id"
+                                                            @if ($fund_sources->isEmpty()) disabled @endif>
                                                             <option value="">Choose Fund Source</option>
                                                             @foreach ($fund_sources as $fund_source)
                                                                 <option value="{{ $fund_source->fund_source_id }}">
@@ -60,6 +62,9 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
+                                                    @if ($fund_sources->isEmpty())
+                                                        <span class="text-danger">No available fund source records. Please add a new fund source or set an existing one to active.</span>
+                                                    @endif
                                                     @error('fund_source_id')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror

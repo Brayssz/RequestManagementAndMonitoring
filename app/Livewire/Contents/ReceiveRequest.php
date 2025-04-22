@@ -116,9 +116,13 @@ class ReceiveRequest extends Component
 
     public function mount() 
     {
-        $this->requestingOffices = RequestingOffice::whereHas('annualAllotment')->get();
+        $this->requestingOffices = RequestingOffice::whereHas('annualAllotment', function ($query) {
+            $query->whereHas('fundSource', function ($subQuery) {
+            $subQuery->where('status', 'active');
+            });
+        })->where('status', 'active')->get();
 
-        $this->fundSources = FundSource::all();
+        $this->fundSources = FundSource::where('status', 'active')->get();
         // $this->allotments = AnnualAllotment::all();
     }
 

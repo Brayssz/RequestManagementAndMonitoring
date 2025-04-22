@@ -131,9 +131,9 @@
                         { 
                             "data": "requesting_office",
                             "render": function (data, type, row) {
-                                const requestorName = data && data.requestor && data.requestor.name ? data.requestor.name : 'N/A';
-                                const requestorPosition = data && data.requestor && data.requestor.position 
-                                    ? (data.requestor.position === 'holder' ? 'Program Holder' : data.requestor.position) 
+                                const requestorName = data && data.requestor_obj && data.requestor_obj.name ? data.requestor_obj.name : 'N/A';
+                                const requestorPosition = data && data.requestor_obj && data.requestor_obj.position 
+                                    ? (data.requestor_obj.position === 'holder' ? 'Program Holder' : data.requestor_obj.position) 
                                     : 'N/A';
                                 return `
                                     <div class="userimgname">
@@ -145,7 +145,6 @@
                                 `;
                             }
                         },
-                        
                         { "data": "year" },
                         { 
                             "data": "fund_source.name",
