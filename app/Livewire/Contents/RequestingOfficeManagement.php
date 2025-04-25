@@ -43,7 +43,9 @@ class RequestingOfficeManagement extends Component
 
     public function mount()
     {
-        $this->requestors = Requestor::where('status', 'active')->get();
+        $this->requestors = Requestor::where('status', 'active')
+            ->whereDoesntHave('requestingOffices')
+            ->get();
     }
 
     public function render()
