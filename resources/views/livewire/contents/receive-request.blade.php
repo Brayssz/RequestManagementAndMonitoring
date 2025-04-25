@@ -31,7 +31,7 @@
                                                     <div class="mb-3">
                                                         <label class="form-label" for="requesting_office_id">Requesting Office</label>
                                                         <div wire:ignore>
-                                                            <select class="select" id="requesting_office_id"
+                                                            <select class="form-control" id="requesting_office_id"
                                                                 name="requesting_office_id"
                                                                 wire:model.lazy="requesting_office_id"
                                                                 wire:change="populateAllotments"
@@ -224,6 +224,17 @@
                 });
             });
 
+            $(document).on('change', '.select', function() {
+                const selectedValue = $(this).val();
+                const elementId = $(this).attr('id');
+                console.log('Selected value:', selectedValue, 'from element ID:', elementId);
+                @this.set('requesting_office_id', selectedValue);
+                @this.call('populateAllotments');
+                // You can add additional logic here if needed
+            });
+
+            
+
             $(document).on('click', '.submit-utilize-funds', function() {
                 @this.call('submit_request');
             });
@@ -243,6 +254,8 @@
                     @this.call('getRequest', requestId).then(() => {
                         $('#add-request-modal').modal('show');
                         var allotment_id = @this.get('allotment_id');
+                        var requesting_office_id = @this.get('requesting_office_id');
+                        $('#requesting_office_id').val(requesting_office_id).change();
                         populateField(allotment_id);
                     });
                 });
