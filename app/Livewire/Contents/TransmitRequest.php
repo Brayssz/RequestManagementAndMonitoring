@@ -51,7 +51,7 @@ class TransmitRequest extends Component
         ]);
 
         session()->flash('message', 'Request transmitted successfully.');
-        return redirect()->route('contents.recieve-request');
+        return redirect()->route('receive-requests');
     }
 
     private function resetForm()

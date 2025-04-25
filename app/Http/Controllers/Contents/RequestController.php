@@ -21,7 +21,10 @@ class RequestController extends Controller
                 ->where(function ($q) {
                     $q->whereDoesntHave('transmittedOffice', function ($subQuery) {
                         $subQuery->where('status', 'active');
-                    })->orWhereNull('transmitted_office_id');
+                    })->orWhereNull('transmitted_office_id')
+                    ->orWhereHas('transmittedOffice', function ($subQuery) {
+                        $subQuery->where('status', 'active');
+                    });
                 })
                 ->with('allotment' ,'requestingOffice', 'fundSource', 'transmittedOffice', 'requestingOffice.requestor_obj');
 
