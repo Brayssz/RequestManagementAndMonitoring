@@ -14,9 +14,8 @@ class Request extends Model
         'sgod_date_received',
         'requesting_office_id',
         'amount',
-        'utilize_funds',
         'fund_source_id',
-        'allotment_id', 
+        'allotment_year', 
         'nature_of_request',
         'signed_chief_date',
         'date_transmitted',
@@ -40,10 +39,6 @@ class Request extends Model
         return $this->belongsTo(FundSource::class, 'fund_source_id', 'fund_source_id');
     }
 
-    public function allotment()
-    {
-        return $this->belongsTo(AnnualAllotment::class, 'allotment_id', 'allotment_id'); // Added allotment relationship
-    }
 
     public function transmittedOffice()
     {

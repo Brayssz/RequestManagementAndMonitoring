@@ -55,9 +55,10 @@
             <div class="header-left active">
                 <a href="index.html" class="logo logo-normal">
                     <div class="d-flex align-items-center">
-                        <img src="img/logo.jpg" alt="" class="me-2" style="max-height: 40px; max-width: 40px;" />
+                        <img src="img/logo.jpg" alt="" class="me-2"
+                            style="max-height: 40px; max-width: 40px;" />
                         <div class="text-start">
-                            <h5 class="mb-2">Back Office</h5>
+                            <h5 class="mb-2">SGOD Office</h5>
                             <p class="mb-0" style="font-size: 12px;">Koronadal City Division</p>
                         </div>
                     </div>
@@ -65,10 +66,10 @@
 
                 </a>
                 <a href="index.html" class="logo logo-white">
-                    <img src="img/logo.jpg" alt="" style="min-height: 40px; min-width: 40px;"/>
+                    <img src="img/logo.jpg" alt="" style="min-height: 40px; min-width: 40px;" />
                 </a>
                 <a href="index.html" class="logo-small">
-                    <img src="img/logo.jpg" alt="" style="min-height: 40px; min-width: 40px;"/>
+                    <img src="img/logo.jpg" alt="" style="min-height: 40px; min-width: 40px;" />
                 </a>
                 <a id="toggle_btn" href="javascript:void(0);">
                     <i data-feather="chevrons-left" class="feather-16"></i>
@@ -143,7 +144,8 @@
                                 <img src="img/icons/log-out.svg" class="me-2" alt="img" />Logout
                             </a>
 
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                style="display: none;">
                                 @csrf
                             </form>
                         </div>
@@ -166,78 +168,87 @@
         </div>
         <!-- /Header -->
 
-        @if(Auth::user()->position == 'admin')
-            <div class="sidebar" id="sidebar">
-                <div class="sidebar-inner slimscroll">
-                    <div id="sidebar-menu" class="sidebar-menu">
-                        <ul>
-                            <li class="submenu-open">
-                                <h6 class="submenu-hdr">Main</h6>
-                                <ul>
-                                    <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
-                                        <a href="/dashboard"><i data-feather="grid"></i><span>Dashboard</span></a>
-                                    </li>
-                                </ul>
-                            </li>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="submenu-open">
+                            <h6 class="submenu-hdr">Main</h6>
+                            <ul>
+                                <li class="{{ Request::is('dashboard') ? 'active' : '' }}">
+                                    <a href="/dashboard"><i data-feather="grid"></i><span>Dashboard</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        @if (Auth::user()->position == 'admin')
                             <li class="submenu-open">
                                 <h6 class="submenu-hdr">Management</h6>
                                 <ul>
                                     <li class="{{ Request::is('users') ? 'active' : '' }}">
                                         <a href="/users"><i data-feather="user"></i><span>Users</span></a>
                                     </li>
-                                    <li class="{{ Request::is('requesting-offices') ? 'active' : '' }}">
-                                        <a href="/requesting-offices"><i data-feather="briefcase"></i><span>Offices | Schools</span></a>
-                                    </li>
                                     <li class="{{ Request::is('requestors') ? 'active' : '' }}">
                                         <a href="/requestors"><i data-feather="users"></i><span>Requestors</span></a>
                                     </li>
+                                    <li class="{{ Request::is('requesting-offices') ? 'active' : '' }}">
+                                        <a href="/requesting-offices"><i
+                                                data-feather="briefcase"></i><span>Offices</span></a>
+                                    </li>
+                                    <li class="{{ Request::is('requesting-schools') ? 'active' : '' }}">
+                                        <a href="/requesting-schools"><i
+                                                data-feather="book"></i><span>Schools</span></a>
+                                    </li>
                                     <li class="{{ Request::is('fund-sources') ? 'active' : '' }}">
-                                        <a href="/fund-sources"><i data-feather="credit-card"></i><span>Fund Sources</span></a>
-                                    </li>
-                                    <li class="{{ Request::is('allotments') ? 'active' : '' }}">
-                                        <a href="/allotments"><i data-feather="pie-chart"></i><span>Annual Allotment</span></a>
+                                        <a href="/fund-sources"><i data-feather="credit-card"></i><span>Fund
+                                                Sources</span></a>
                                     </li>
                                 </ul>
                             </li>
+                        @endif
 
-                            <li class="submenu-open">
-                                <h6 class="submenu-hdr">Transactions</h6>
-                                <ul>
-                                    <li class="{{ Request::is('receive-requests') ? 'active' : '' }}">
-                                        <a href="/receive-requests"><i data-feather="archive"></i><span>Requests</span></a>
-                                    </li>
-                                    
-                                </ul>
-                            </li>
+                        <li class="submenu-open">
+                            <h6 class="submenu-hdr">Transactions</h6>
+                            <ul>
+                                <li class="{{ Request::is('receive-requests') ? 'active' : '' }}">
+                                    <a href="/receive-requests"><i
+                                            data-feather="archive"></i><span>Requests</span></a>
+                                </li>
 
-                            <li class="submenu-open">
-                                <h6 class="submenu-hdr">Reports</h6>
-                                <ul>
-                                    <li class="{{ Request::is('summary-report') ? 'active' : '' }}">
-                                        <a href="summary-report"><i data-feather="file-text"></i><span>Summary Report</span></a>
-                                    </li>
-                                    <li class="{{ Request::is('request-history-report') ? 'active' : '' }}">
-                                        <a href="request-history-report"><i data-feather="file-text"></i><span>Request History Report</span></a>
-                                    </li>
-                                </ul>
-                            </li>
+                            </ul>
+                        </li>
 
-                        </ul>
-                    </div>
+                        <li class="submenu-open">
+                            <h6 class="submenu-hdr">Reports</h6>
+                            <ul>
+                                <li class="{{ Request::is('summary-report') ? 'active' : '' }}">
+                                    <a href="summary-report"><i data-feather="file-text"></i><span>Summary
+                                            Report</span></a>
+                                </li>
+                                <li class="{{ Request::is('request-history-report') ? 'active' : '' }}">
+                                    <a href="request-history-report"><i data-feather="file-text"></i><span>Request
+                                            History Report</span></a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
                 </div>
             </div>
-        @endif
-        
-        @if (Auth::user()->position == 'admin')
-            <div class="page-wrapper">
-                @yield('content')
-            </div>
+        </div>
+
+        <div class="page-wrapper">
+            @yield('content')
+        </div>
+
+        {{-- @if (Auth::user()->position == 'admin')
+            
         @else
             <div class="page-wrapper mx-3">
                 @yield('content')
             </div>
-        @endif
-      
+        @endif --}}
+
 
         {{-- @livewire('content.layout') --}}
 
@@ -299,9 +310,9 @@
 
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
-    
 
-    @vite(['resources/assets/js/script.js', 'resources/assets/js/custom-select2.js', 'resources/assets/js/mask.js', 'resources/assets/js/theme-script.js', 'resources/assets/js/mask.js' ])
+
+    @vite(['resources/assets/js/script.js', 'resources/assets/js/custom-select2.js', 'resources/assets/js/mask.js', 'resources/assets/js/theme-script.js', 'resources/assets/js/mask.js'])
     @livewireScripts
 
     @stack('scripts')

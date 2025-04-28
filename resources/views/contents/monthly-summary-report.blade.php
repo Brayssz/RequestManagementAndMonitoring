@@ -62,13 +62,11 @@
                                 <th style="background-color: #f0f0f0;" rowspan="2">School Name</th>
                                 <th style="background-color: #f0f0f0;" rowspan="2">Fund Source</th>
                                 <th style="background-color: #f0f0f0;" rowspan="2">Allotment Year</th>
-                                <th style="background-color: #f0f0f0;" rowspan="2">Allotment Amount</th>
                                 <th style="background-color: #f0f0f0;" colspan="3">Quarter 1</th>
                                 <th style="background-color: #f0f0f0;" colspan="3">Quarter 2</th>
                                 <th style="background-color: #f0f0f0;" colspan="3">Quarter 3</th>
                                 <th style="background-color: #f0f0f0;" colspan="3">Quarter 4</th>
                                 <th style="background-color: #f0f0f0;" rowspan="2">Total Amount</th>
-                                <th style="background-color: #f0f0f0;" rowspan="2">Balance</th>
                             </tr>
                             <tr>
                                 <th style="background-color: #f0f0f0;">January</th>
@@ -124,7 +122,7 @@
                     'pagingType': 'numbers',
                     "ordering": true,
                     "order": [
-                        [2, 'desc']
+                        [0, 'desc']
                     ],
                     "columnDefs": [
                         { "orderable": false, "targets": '_all' } // Disable sorting for all columns
@@ -156,12 +154,6 @@
                         },
                         {
                             "data": "year"
-                        },
-                        {
-                            "data": "allotment_amount",
-                            "render": function(data) {
-                                return `₱ ${parseFloat(data).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                            }
                         },
                         {
                             "data": "monthly_request_amount.January",
@@ -237,12 +229,6 @@
                         },
                         {
                             "data": "total_amount",
-                            "render": function(data) {
-                                return `₱ ${parseFloat(data).toLocaleString('en-US')}`;
-                            }
-                        },
-                        {
-                            "data": "balance",
                             "render": function(data) {
                                 return `₱ ${parseFloat(data).toLocaleString('en-US')}`;
                             }

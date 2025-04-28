@@ -26,15 +26,16 @@
                                                 <h6><span><i data-feather="info" class="feather-edit"></i></span>Request
                                                     Information</h6>
                                             </div>
+
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="requesting_office_id">Requesting Office</label>
+                                                        <label class="form-label" for="requesting_office_id">Requesting
+                                                            Office</label>
                                                         <div wire:ignore>
-                                                            <select class="form-control" id="requesting_office_id"
-                                                                name="requesting_office_id"
+                                                            <select class="form-control select receive"
+                                                                id="requesting_office_id" name="requesting_office_id"
                                                                 wire:model.lazy="requesting_office_id"
-                                                                wire:change="populateAllotments"
                                                                 @if ($requestingOffices->isEmpty()) disabled @endif>
                                                                 <option value="">Choose</option>
                                                                 @foreach ($requestingOffices as $office)
@@ -45,38 +46,55 @@
                                                             </select>
                                                         </div>
                                                         @if ($requestingOffices->isEmpty())
-                                                            <span class="text-danger">No available requesting office records. Please add a new requesting office or set an existing one to active.</span>
+                                                            <span class="text-danger">No available requesting office
+                                                                records. Please add a new requesting office or set an
+                                                                existing one to active.</span>
                                                         @endif
                                                         @error('requesting_office_id')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
                                                 </div>
-                                               
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="allotment_id">Allotment</label>
-                                                        <select class="form-control allotment_id select" id="allotment_id"
-                                                            wire:model.lazy="allotment_id"
-                                                            @if (!$requesting_office_id || $allotments->isEmpty()) disabled @endif>
-                                                            
-                                                            @if ($requesting_office_id)
-                                                            <option value="">Choose</option>
-                                                                @foreach ($allotments as $allotment)
-                                                                    <option value="{{ $allotment->allotment_id }}">
-                                                                        {{ $allotment->year }} - {{$allotment->fundSource->name}} - ₱{{ number_format($allotment->balance, 2) }}
+                                                        <label class="form-label" for="fund_source_id">Fund
+                                                            Source</label>
+                                                        <div wire:ignore>
+                                                            <select class="form-control select receive"
+                                                                id="fund_source_id" name="fund_source_id"
+                                                                wire:model.lazy="fund_source_id"
+                                                                @if ($fundSources->isEmpty()) disabled @endif>
+                                                                <option value="">Choose</option>
+                                                                @foreach ($fundSources as $source)
+                                                                    <option value="{{ $source->fund_source_id }}">
+                                                                        {{ $source->name }}
                                                                     </option>
                                                                 @endforeach
-                                                            @else
-                                                                <option value="" selected>Please select Requesting Office first</option>
-                                                            @endif
-                                                        </select>
-                                                        @error('allotment_id')
+                                                            </select>
+                                                        </div>
+                                                        @if ($fundSources->isEmpty())
+                                                            <span class="text-danger">No available fund source records.
+                                                                Please add a new fund source or set an existing one to
+                                                                active.</span>
+                                                        @endif
+                                                        @error('fund_source_id')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                
+
+                                                <div class="col-lg-6 col-md-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="year">Allotment Year</label>
+                                                        <input type="number" class="form-control"
+                                                            placeholder="Enter year" id="allotment_year"
+                                                            wire:model.lazy="allotment_year">
+                                                        @error('year')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="dts_date">DTS Date</label>
@@ -87,11 +105,13 @@
                                                         @enderror
                                                     </div>
                                                 </div>
+
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="dts_tracker_number">DTS Tracker
                                                             Number</label>
-                                                        <input type="text" class="form-control" id="dts_tracker_number"
+                                                        <input type="text" class="form-control"
+                                                            id="dts_tracker_number"
                                                             wire:model.lazy="dts_tracker_number">
                                                         @error('dts_tracker_number')
                                                             <span class="text-danger">{{ $message }}</span>
@@ -102,7 +122,8 @@
                                                     <div class="mb-3">
                                                         <label class="form-label" for="sgod_date_received">SGOD Date
                                                             Received</label>
-                                                        <input type="date" class="form-control" id="sgod_date_received"
+                                                        <input type="date" class="form-control"
+                                                            id="sgod_date_received"
                                                             wire:model.lazy="sgod_date_received">
                                                         @error('sgod_date_received')
                                                             <span class="text-danger">{{ $message }}</span>
@@ -113,17 +134,18 @@
                                                     <div class="mb-3">
                                                         <label class="form-label" for="nature_of_request">Nature of
                                                             Request</label>
-                                                        <input type="text" class="form-control" id="nature_of_request"
-                                                            wire:model.lazy="nature_of_request">
+                                                        <input type="text" class="form-control"
+                                                            id="nature_of_request" wire:model.lazy="nature_of_request">
                                                         @error('nature_of_request')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
                                                 </div>
-                                               
+
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="amount">Requested Amount</label>
+                                                        <label class="form-label" for="amount">Requested
+                                                            Amount</label>
                                                         <input type="number" class="form-control" id="amount"
                                                             wire:model.lazy="amount" step="0.01">
                                                         @error('amount')
@@ -148,57 +170,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="utilize-fund-modal" wire:ignore.self>
-        <div class="modal-dialog modal-dialog-centered modal-md custom-modal-two">
-            <div class="modal-content">
-                <div class="page-wrapper-new p-0">
-                    <div class="content">
-                        <div class="modal-header border-0 custom-modal-header">
-                            <div class="page-title">
-                                <h4>Utilize Funds</h4>
-                            </div>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form wire:submit.prevent="submit_request">
-                                @csrf
-                                <div class="card mb-0">
-                                    <div class="card-body">
-                                        <div class="new-request-field">
-                                            <div class="card-title-head" wire:ignore>
-                                                <h6 class="previousAmount"><span><i data-feather="info" class="feather-edit"></i></span>Request
-                                                    Information</h6>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12">
-                                                    <div class="mb-3">
-                                                        <label class="form-label" for="utilize_funds">Utilize Funds</label>
-                                                        <input type="number" class="form-control" id="utilize_funds"
-                                                            wire:model.lazy="utilize_funds" step="0.01">
-                                                        @error('utilize_funds')
-                                                            <span class="text-danger">{{ $message }}</span>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                              
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer-btn mb-4 mt-0">
-                                    <button type="button" class="btn btn-cancel me-2"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-submit submit-utilize-funds">Submit</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', () => {
@@ -206,34 +178,30 @@
             });
 
             function handleRequestActions() {
+                $('select.receive').on('change', handleInputChange);
                 $(document).on('click', '.add-request', openAddRequestModal);
                 $(document).on('click', '.edit-request', openEditRequestModal);
             }
 
             $(document).on('click', '.submit-request', function() {
-                @this.call('checkIfExist').then((exists) => {
-                    if (exists) {
-                        @this.call('getPreviousAmount').then((previousAmount) => {
-                            console.log(previousAmount);
-                            $('.previousAmount').text('Previously Requested Amount: ₱ ' + new Intl.NumberFormat('en-PH', { minimumFractionDigits: 2 }).format(previousAmount));
-                            $('#utilize-fund-modal').modal('show');
-                        });
-                    } else {
-                        @this.call('submit_request');
-                    }
-                });
+
+                confirmAlert('Confirm Submission', 'Are you sure you want to submit this request?', function() {
+                    @this.call('submit_request');
+                }, 'Submit');
             });
 
-            $(document).on('change', '.select', function() {
-                const selectedValue = $(this).val();
-                const elementId = $(this).attr('id');
-                console.log('Selected value:', selectedValue, 'from element ID:', elementId);
-                @this.set('requesting_office_id', selectedValue);
-                @this.call('populateAllotments');
-                // You can add additional logic here if needed
-            });
+            function handleInputChange(e) {
+                console.log(e.target);
+                if ($(e.target).is('select.receive')) {
+                    const property = e.target.id;
+                    const value = e.target.value;
+                    @this.set(property, value);
 
-            
+                    console.log(`${property}: ${value}`);
+                }
+            }
+
+
 
             $(document).on('click', '.submit-utilize-funds', function() {
                 @this.call('submit_request');
@@ -250,21 +218,14 @@
                 const requestId = $(this).data('requestid');
                 @this.set('submit_func', 'edit-request');
 
-                @this.call('poplateAllAlotments').then(() => {
-                    @this.call('getRequest', requestId).then(() => {
-                        $('#add-request-modal').modal('show');
-                        var allotment_id = @this.get('allotment_id');
-                        var requesting_office_id = @this.get('requesting_office_id');
-                        $('#requesting_office_id').val(requesting_office_id).change();
-                        populateField(allotment_id);
-                    });
+                @this.call('getRequest', requestId).then(() => {
+                    $('#add-request-modal').modal('show');
+                    var requesting_office_id = @this.get('requesting_office_id');
+                    var fund_source_id = @this.get('fund_source_id');
+                    $('#requesting_office_id').val(requesting_office_id).change();
+                    $('#fund_source_id').val(fund_source_id).change();
                 });
             }
-
-            const populateField = function(value) {
-                $('.allotment_id').val(value).change();
-            };
-
         </script>
     @endpush
 </div>

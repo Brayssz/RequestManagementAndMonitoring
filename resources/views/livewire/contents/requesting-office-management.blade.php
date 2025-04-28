@@ -35,21 +35,7 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6 col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label" for="type">Type</label>
-                                                    <div wire:ignore>
-                                                        <select class="select" id="type" name="type" wire:model="type">
-                                                            <option value="">Choose</option>
-                                                            <option value="school">School</option>
-                                                            <option value="office">Office</option>
-                                                        </select>
-                                                    </div>
-                                                    @error('type')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                            </div>
+                                           
                                             <div class="col-lg-6 col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="requestor">Requestor</label>

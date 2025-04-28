@@ -83,13 +83,11 @@
                 <th rowspan="2">School Name</th>
                 <th rowspan="2">Fund Source</th>
                 <th rowspan="2">Allotment Year</th>
-                <th rowspan="2">Allotment Amount</th>
                 <th colspan="3">Quarter 1</th>
                 <th colspan="3">Quarter 2</th>
                 <th colspan="3">Quarter 3</th>
                 <th colspan="3">Quarter 4</th>
                 <th rowspan="2">Total Amount</th>
-                <th rowspan="2">Balance</th>
             </tr>
             <tr>
                 <th>January</th>
@@ -124,14 +122,11 @@
                 <td>{{ $record['school_name'] }}</td>
                 <td>{{ $record['fund_source'] }}</td>
                 <td>{{ $record['year'] }}</td>
-                <td class="currency-sign">&#8369; {{ number_format($record['allotment_amount'], 2) }}</td>
                 @php
-                    $totalAllotmentAmount += $record['allotment_amount'];
                     foreach ($record['monthly_request_amount'] as $month => $amount) {
                         $totalMonthly[$month] += $amount;
                     }
                     $totalAmount += $record['total_amount'];
-                    $totalBalance += $record['balance'];
                 @endphp
                 @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
                     <td class="currency-sign">
@@ -143,7 +138,6 @@
                     </td>
                 @endforeach
                 <td class="currency-sign">&#8369; {{ number_format($record['total_amount'], 2) }}</td>
-                <td class="currency-sign">&#8369; {{ number_format($record['balance'], 2) }}</td>
             </tr>
             @empty
             <tr>
@@ -152,7 +146,6 @@
             @endforelse
             <tr>
                 <th colspan="4" style="text-align: right;">Total</th>
-                <th  class="currency-sign">&#8369; {{ number_format($totalAllotmentAmount, 2) }}</th>
                 @foreach (['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
                     <th class="currency-sign">
                         @if ($totalMonthly[$month] > 0)
@@ -163,7 +156,6 @@
                     </th>
                 @endforeach
                 <th class="currency-sign">&#8369; {{ number_format($totalAmount, 2) }}</th>
-                <th class="currency-sign">&#8369; {{ number_format($totalBalance, 2) }}</th>
             </tr>
         </tbody>
     </table>

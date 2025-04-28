@@ -9,61 +9,75 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PDFController extends Controller
 {
+
+
     public function generateMonthlySummary(Request $request)
     {
-        $months = collect([
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
-        ]);
+        $query = \App\Models\RequestingOffice::with(['requests.fundSource']);
 
-        $query = \App\Models\AnnualAllotment::with(['requestingOffice', 'fundSource', 'requests']);
+        $offices = $query->get();
 
-        if ($request->filled('year')) {
-            $query->where('year', $request->year);
-        }
+        $report = $offices->flatMap(function ($office) {
+            $requests = $office->requests;
 
-        if ($request->filled('fund_source_id')) {
-            $query->where('fund_source_id', $request->fund_source_id);
-        }
+            if (request()->filled('year')) {
+                $requests = $requests->filter(function ($request) {
+                    return $request->allotment_year == request('year');
+                });
+            }
+        
+            if (request()->filled('fund_source_id')) {
+                $requests = $requests->filter(function ($request) {
+                    return $request->fund_source_id == request('fund_source_id');
+                });
+            }
 
-        $annualAllotments = $query->get();
+            $groupedRequests = $requests->groupBy(function ($request) {
+                return $request->allotment_year . '-' . ($request->fundSource->name ?? 'Unknown');
+            });
 
-        $report = $annualAllotments->map(function ($allotment) use ($months) {
-            $monthlyData = $months->mapWithKeys(function ($month, $index) use ($allotment) {
-                $monthlyRequests = $allotment->requests->filter(function ($request) use ($index) {
-                    return \Carbon\Carbon::parse($request->dts_date)->month === $index + 1;
+            return $groupedRequests->map(function ($group, $key) {
+                $months = collect([
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December'
+                ]);
+
+                $monthlyData = $months->mapWithKeys(function ($month, $index) use ($group) {
+                    $monthlyRequests = $group->filter(function ($request) use ($index) {
+                        return \Carbon\Carbon::parse($request->dts_date)->month === $index + 1;
+                    });
+
+                    $monthlyAmount = $monthlyRequests->sum(function ($request) {
+                        return $request->utilize_funds ?? $request->amount;
+                    });
+
+                    return [$month => $monthlyAmount ?: 0];
                 });
 
-                $monthlyAmount = $monthlyRequests->sum(function ($request) {
+                $totalAmount = $group->sum(function ($request) {
                     return $request->utilize_funds ?? $request->amount;
                 });
 
-                return [$month => $monthlyAmount ?: 0];
-            });
+                [$year, $fundSource] = explode('-', $key);
 
-            $totalAmount = $allotment->requests->sum(function ($request) {
-                return $request->utilize_funds ?? $request->amount;
-            });
-
-            return [
-                'school_name' => $allotment->requestingOffice->name,
-                'year' => $allotment->year,
-                'fund_source' => $allotment->fundSource->name,
-                'allotment_amount' => $allotment->amount,
-                'monthly_request_amount' => $monthlyData,
-                'total_amount' => $totalAmount,
-                'balance' => $allotment->balance,
-            ];
+                return [
+                    'school_name' => $group->first()->requestingOffice->name,
+                    'year' => $year,
+                    'fund_source' => $fundSource,
+                    'monthly_request_amount' => $monthlyData,
+                    'total_amount' => $totalAmount,
+                ];
+            })->values();
         });
 
         $fundSource = FundSource::where('fund_source_id', $request->fund_source_id)->first();
@@ -72,9 +86,77 @@ class PDFController extends Controller
         // return response()->json($report);
         $pdf = Pdf::loadView('pdf.monthly-summary-report-pdf', compact('report', 'fundSource', 'year'))
               ->setPaper('legal', 'landscape');
-        
-        return $pdf->stream('book_requests_report.pdf');
+
+        return $pdf->stream('monthly_summary_report.pdf');
     }
+
+    
+    // public function generateMonthlySummary(Request $request)
+    // {
+    //     $months = collect([
+    //         'January',
+    //         'February',
+    //         'March',
+    //         'April',
+    //         'May',
+    //         'June',
+    //         'July',
+    //         'August',
+    //         'September',
+    //         'October',
+    //         'November',
+    //         'December'
+    //     ]);
+
+    //     $query = \App\Models\AnnualAllotment::with(['requestingOffice', 'fundSource', 'requests']);
+
+    //     if ($request->filled('year')) {
+    //         $query->where('year', $request->year);
+    //     }
+
+    //     if ($request->filled('fund_source_id')) {
+    //         $query->where('fund_source_id', $request->fund_source_id);
+    //     }
+
+    //     $annualAllotments = $query->get();
+
+    //     $report = $annualAllotments->map(function ($allotment) use ($months) {
+    //         $monthlyData = $months->mapWithKeys(function ($month, $index) use ($allotment) {
+    //             $monthlyRequests = $allotment->requests->filter(function ($request) use ($index) {
+    //                 return \Carbon\Carbon::parse($request->dts_date)->month === $index + 1;
+    //             });
+
+    //             $monthlyAmount = $monthlyRequests->sum(function ($request) {
+    //                 return $request->utilize_funds ?? $request->amount;
+    //             });
+
+    //             return [$month => $monthlyAmount ?: 0];
+    //         });
+
+    //         $totalAmount = $allotment->requests->sum(function ($request) {
+    //             return $request->utilize_funds ?? $request->amount;
+    //         });
+
+    //         return [
+    //             'school_name' => $allotment->requestingOffice->name,
+    //             'year' => $allotment->year,
+    //             'fund_source' => $allotment->fundSource->name,
+    //             'allotment_amount' => $allotment->amount,
+    //             'monthly_request_amount' => $monthlyData,
+    //             'total_amount' => $totalAmount,
+    //             'balance' => $allotment->balance,
+    //         ];
+    //     });
+
+    //     $fundSource = FundSource::where('fund_source_id', $request->fund_source_id)->first();
+    //     $year = $request->year;
+
+    //     // return response()->json($report);
+    //     $pdf = Pdf::loadView('pdf.monthly-summary-report-pdf', compact('report', 'fundSource', 'year'))
+    //           ->setPaper('legal', 'landscape');
+        
+    //     return $pdf->stream('book_requests_report.pdf');
+    // }
 
 
     public function requestHistoryReport(Request $request)

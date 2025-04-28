@@ -1,6 +1,6 @@
 @extends('layouts.app-layout')
 
-@section('title', 'Requesting Offices Management')
+@section('title', 'Requesting Schools Management')
 
 @section('content')
 
@@ -8,8 +8,8 @@
         <div class="page-header">
             <div class="add-item d-flex">
                 <div class="page-title">
-                    <h4>Requesting Offices</h4>
-                    <h6>Manage your requesting offices</h6>
+                    <h4>Requesting Schools</h4>
+                    <h6>Manage your requesting schools</h6>
                 </div>
             </div>
             <ul class="table-top-head">
@@ -24,7 +24,7 @@
             </ul>
             <div class="page-btn">
                 <a class="btn btn-added add-office"><i data-feather="plus-circle" class="me-2"></i>Add New
-                    Office</a>
+                    School</a>
             </div>
         </div>
         <!-- /requesting offices list -->
@@ -47,8 +47,6 @@
                                     </select>
                                 </div>
                             </div>
-                           
-
                         </div>
 
                     </div>
@@ -58,7 +56,7 @@
                     <table class="table office-table pb-3">
                         <thead>
                             <tr>
-                                <th>Office Name</th>
+                                <th>School Name</th>
                                 <th>Requestor</th>
                                 <th>Status</th>
                                 <th class="no-sort">Action</th>
@@ -74,7 +72,7 @@
             </div>
         </div>
     </div>
-    @livewire('contents.requesting-office-management')
+    @livewire('contents.requesting-schools-management')
 
 @endsection
 
@@ -114,7 +112,7 @@
                         },
                         "data": function (d) {
                             d.status = $('.status_filter').val();
-                            d.type = 'office';
+                            d.type = 'school';
                         },
                         "dataSrc": "data"
                     },
@@ -125,7 +123,6 @@
                                 return `<a href="javascript:void(0);">${data}</a>`;
                             }
                         },
-                      
                         {
                             "data": "requestor_obj.name",
                             "render": function (data, type, row) {
@@ -166,7 +163,6 @@
                             table.draw();
                         });
 
-                       
                         initTippy();
                     },
                     "drawCallback": function (settings) {
@@ -178,7 +174,7 @@
 
             const initTippy = () => {
                 tippy('.edit-office', {
-                    content: "Edit Office",
+                    content: "Edit School",
                 });
                
             };

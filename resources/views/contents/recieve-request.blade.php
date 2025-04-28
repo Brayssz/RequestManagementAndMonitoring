@@ -60,7 +60,6 @@
                                 <th>Requesting Office</th>
                                 <th>Nature of Request</th>
                                 <th>Amount</th>
-                                <th>Utilize Funds</th>
                                 <th>Fund Source</th>
                                 <th>Allotment Year</th>
                                 <th>Status</th>
@@ -159,17 +158,10 @@
                             }
                         },
                         {
-                            "data": "utilize_funds",
-                            "render": function(data, type, row) {
-                                return data ? `₱ ${parseFloat(data).toLocaleString('en-US')}` :
-                                    '₱ 0';
-                            }
-                        },
-                        {
                             "data": "fund_source.name"
                         },
                         {
-                            "data": "allotment.year"
+                            "data": "allotment_year"
                         },
                         {
                             "data": null,
@@ -198,7 +190,6 @@
                                 `;
                             }
                         },
-
                         {
                             "data": "remarks",
                             "render": function(data, type, row) {
@@ -222,7 +213,7 @@
                         }
                     ],
                     "createdRow": function(row, data, dataIndex) {
-                        $(row).find('td').eq(11).addClass('action-table-data');
+                        $(row).find('td').eq(10).addClass('action-table-data');
                     },
                     "initComplete": function(settings, json) {
                         $('.dataTables_filter').appendTo('#tableSearch');

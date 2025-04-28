@@ -50,19 +50,19 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('annual_allotments', function (Blueprint $table) {
-            $table->id('allotment_id');
-            $table->unsignedBigInteger('requesting_office_id')->nullable();
-            $table->unsignedBigInteger('fund_source_id')->nullable(); // Added fund source foreign key
-            $table->decimal('amount', 15, 2);
-            $table->decimal('balance', 15, 2)->nullable(); // Added balance column
-            $table->year('year');
-            $table->string('status')->default('active');
-            $table->timestamps();
+        // Schema::create('annual_allotments', function (Blueprint $table) {
+        //     $table->id('allotment_id');
+        //     $table->unsignedBigInteger('requesting_office_id')->nullable();
+        //     $table->unsignedBigInteger('fund_source_id')->nullable(); // Added fund source foreign key
+        //     $table->decimal('amount', 15, 2);
+        //     $table->decimal('balance', 15, 2)->nullable(); // Added balance column
+        //     $table->year('year');
+        //     $table->string('status')->default('active');
+        //     $table->timestamps();
 
-            $table->foreign('requesting_office_id')->references('requesting_office_id')->on('requesting_offices')->onDelete('set null');
-            $table->foreign('fund_source_id')->references('fund_source_id')->on('fund_sources')->onDelete('set null'); 
-        });
+        //     $table->foreign('requesting_office_id')->references('requesting_office_id')->on('requesting_offices')->onDelete('set null');
+        //     $table->foreign('fund_source_id')->references('fund_source_id')->on('fund_sources')->onDelete('set null'); 
+        // });
 
         Schema::create('requests', function (Blueprint $table) {
             $table->id('request_id');
@@ -75,11 +75,9 @@ return new class extends Migration
         
             $table->decimal('amount', 15, 2)->nullable();
 
-            $table->decimal('utilize_funds', 15, 2)->nullable(); 
-
             $table->unsignedBigInteger('fund_source_id')->nullable();
 
-            $table->unsignedBigInteger('allotment_id')->nullable(); 
+            $table->year('allotment_year')->nullable(); 
 
             $table->unsignedBigInteger('transmitted_office_id')->nullable(); 
         
@@ -93,8 +91,7 @@ return new class extends Migration
             $table->timestamps();
         
             $table->foreign('requesting_office_id')->references('requesting_office_id')->on('requesting_offices')->onDelete('set null');
-            $table->foreign('fund_source_id')->references('fund_source_id')->on('fund_sources')->onDelete('set null');
-            $table->foreign('allotment_id')->references('allotment_id')->on('annual_allotments')->onDelete('set null'); 
+            $table->foreign('fund_source_id')->references('fund_source_id')->on('fund_sources')->onDelete('set null'); 
             $table->foreign('transmitted_office_id')->references('requesting_office_id')->on('requesting_offices')->onDelete('set null'); // Foreign key for transmitted office
         });
 

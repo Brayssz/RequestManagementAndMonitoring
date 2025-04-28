@@ -5,81 +5,89 @@ namespace App\Http\Controllers\Contents;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\FundSource;
+use App\Models\RequestingOffice;
 
 class ReportController extends Controller
 {
     public function generateMonthlySummary(Request $request)
     {
         if ($request->ajax()) {
-            $query = \App\Models\AnnualAllotment::query()->with(['requestingOffice', 'fundSource', 'requests']);
-
-            if ($request->filled('year')) {
-                $query->where('year', $request->year);
-            }
-
-            if ($request->filled('fund_source_id')) {
-                $query->where('fund_source_id', $request->fund_source_id);
-            }
+            $query = RequestingOffice::query()->whereHas('requests')->with(['requests.fundSource']);
 
             if ($request->filled('search') && !empty($request->input('search')['value'])) {
-            $search = $request->input('search')['value'];
-            $query->where(function ($q) use ($search) {
-                $q->where('amount', 'like', '%' . $search . '%')
-                ->orWhereHas('requestingOffice', function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%');
-                });
-            });
+                $search = $request->input('search')['value'];
+                $query->where('name', 'like', '%' . $search . '%');
             }
 
             $totalRecords = $query->count();
 
             $orderColumnIndex = $request->input('order')[0]['column'] ?? 0;
-            $orderColumn = $request->input('columns')[$orderColumnIndex]['data'] ?? 'allotment_id';
+            $orderColumn = $request->input('columns')[$orderColumnIndex]['data'] ?? 'name';
+
+            if (!in_array($orderColumn, ['name', 'another_valid_column'])) {
+                $orderColumn = 'name';
+            }
             $orderDirection = $request->input('order')[0]['dir'] ?? 'asc';
             $query->orderBy($orderColumn, $orderDirection);
 
             $start = $request->input('start', 0);
             $length = $request->input('length', 10);
-            $annualAllotments = $query->skip($start)->take($length)->get();
+            $offices = $query->skip($start)->take($length)->get();
 
-            $summary = $annualAllotments->map(function ($allotment) {
-            $months = collect([
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ]);
-
-            $monthlyData = $months->mapWithKeys(function ($month, $index) use ($allotment) {
-                $monthlyRequests = $allotment->requests->filter(function ($request) use ($index) {
-                return \Carbon\Carbon::parse($request->dts_date)->month === $index + 1;
+            $summary = $offices->flatMap(function ($office) {
+                $requests = $office->requests;
+            
+                if (request()->filled('year')) {
+                    $requests = $requests->filter(function ($request) {
+                        return $request->allotment_year == request('year');
+                    });
+                }
+            
+                if (request()->filled('fund_source_id')) {
+                    $requests = $requests->filter(function ($request) {
+                        return $request->fund_source_id == request('fund_source_id');
+                    });
+                }
+            
+                $groupedRequests = $requests->groupBy(function ($request) {
+                    return $request->allotment_year . '-' . ($request->fundSource->name ?? 'Unknown');
                 });
-
-                $monthlyAmount = $monthlyRequests->sum(function ($request) {
-                return $request->utilize_funds ?? $request->amount;
-                });
-
-                return [$month => $monthlyAmount ?: 0];
-            });
-
-            $totalAmount = $allotment->requests->sum(function ($request) {
-                return $request->utilize_funds ?? $request->amount;
-            });
-
-            return [
-                'school_name' => $allotment->requestingOffice->name,
-                'year' => $allotment->year,
-                'fund_source' => $allotment->fundSource->name,
-                'allotment_amount' => $allotment->amount,
-                'monthly_request_amount' => $monthlyData,
-                'total_amount' => $totalAmount,
-                'balance' => $allotment->balance,
-            ];
+            
+                return $groupedRequests->map(function ($group, $key) {
+                    $months = collect([
+                        'January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'
+                    ]);
+            
+                    $monthlyData = $months->mapWithKeys(function ($month, $index) use ($group) {
+                        $monthlyRequests = $group->filter(function ($request) use ($index) {
+                            return \Carbon\Carbon::parse($request->dts_date)->month === $index + 1;
+                        });
+            
+                        $monthlyAmount = $monthlyRequests->sum('amount');
+            
+                        return [$month => $monthlyAmount ?: 0];
+                    });
+            
+                    $totalAmount = $group->sum('amount');
+            
+                    [$year, $fundSource] = explode('-', $key);
+            
+                    return [
+                        'school_name' => $group->first()->requestingOffice->name,
+                        'year' => $year,
+                        'fund_source' => $fundSource,
+                        'monthly_request_amount' => $monthlyData,
+                        'total_amount' => $totalAmount,
+                    ];
+                })->values();
             });
 
             return response()->json([
-            "draw" => intval($request->input('draw', 1)),
-            "recordsTotal" => $totalRecords,
-            "recordsFiltered" => $totalRecords,
-            "data" => $summary
+                "draw" => intval($request->input('draw', 1)),
+                "recordsTotal" => $totalRecords,
+                "recordsFiltered" => $totalRecords,
+                "data" => $summary
             ]);
         }
 
@@ -108,15 +116,15 @@ class ReportController extends Controller
                 $search = $request->input('search')['value'];
                 $query->where(function ($q) use ($search) {
                     $q->where('dts_tracker_number', 'like', '%' . $search . '%')
-                      ->orWhereHas('requestingOffice', function ($q) use ($search) {
-                          $q->where('name', 'like', '%' . $search . '%');
-                      })
-                      ->orWhereHas('fundSource', function ($q) use ($search) {
-                          $q->where('name', 'like', '%' . $search . '%');
-                      })
-                      ->orWhereHas('requestingOffice.requestor', function ($q) use ($search) {
-                          $q->where('name', 'like', '%' . $search . '%');
-                      });
+                        ->orWhereHas('requestingOffice', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('fundSource', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('requestingOffice.requestor', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%');
+                        });
                 });
             }
 

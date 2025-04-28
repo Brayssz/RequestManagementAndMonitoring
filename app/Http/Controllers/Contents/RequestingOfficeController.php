@@ -55,6 +55,13 @@ class RequestingOfficeController extends Controller
             ]);
         }
 
-        return view('contents.requesting-offices');
+        // dd($request->type );
+        
+        if ($request->type == 'office') {
+            return view('contents.requesting-offices');
+        } else {
+            return view('contents.requesting-schools');
+        }
+        
     }
 }

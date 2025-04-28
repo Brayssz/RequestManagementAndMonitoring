@@ -2,11 +2,12 @@
 
 namespace App\Livewire\Contents;
 
+use Livewire\Component;
 use App\Models\RequestingOffice;
 use App\Models\Requestor;
-use Livewire\Component;
+use App\Models\FundSource;
 
-class RequestingOfficeManagement extends Component
+class RequestingSchoolsManagement extends Component
 {
     public $submit_func;
 
@@ -46,11 +47,6 @@ class RequestingOfficeManagement extends Component
             ->get();
     }
 
-    public function render()
-    {
-        return view('livewire.contents.requesting-office-management');
-    }
-
     public function resetFields()
     {
         $this->reset([
@@ -65,23 +61,34 @@ class RequestingOfficeManagement extends Component
         if ($this->submit_func == "add-requesting-office") {
             RequestingOffice::create([
                 'name' => $this->name,
-                'type' => 'office',
+                'type' => 'school',
                 'requestor' => $this->requestor,
                 'status' => 'active',
             ]);
 
-            session()->flash('message', 'Requesting Office successfully created.');
+            session()->flash('message', 'Requesting School successfully created.');
         } elseif ($this->submit_func == "edit-requesting-office") {
             $this->requestingOffice->name = $this->name;
-            $this->requestingOffice->type = 'office';
+            $this->requestingOffice->type = 'school';
             $this->requestingOffice->requestor = $this->requestor;
             $this->requestingOffice->status = $this->status;
 
             $this->requestingOffice->save();
 
-            session()->flash('message', 'Requesting Office successfully updated.');
+            session()->flash('message', 'Requesting School successfully updated.');
         }
 
-        return redirect()->route('requesting-offices');
+        return redirect()->route('requesting-schools');
+    }
+
+    public function populateRequestor()
+    {
+        $this->requestors = Requestor::where('status', 'active')
+            ->where('requestor_id',$this->requestor)
+            ->get();
+    }
+    public function render()
+    {
+        return view('livewire.contents.requesting-schools-management');
     }
 }

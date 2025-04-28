@@ -24,13 +24,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/users', [UserController::class, 'showUsers'])->name('users');
 
-Route::get('/requesting-offices', [RequestingOfficeController::class, 'showRequestingOffices'])->name('requesting-offices');
+Route::get('/requesting-offices', [RequestingOfficeController::class, 'showRequestingOffices'])->name('requesting-offices')->defaults('type', 'office');
+
+Route::get('/requesting-schools', [RequestingOfficeController::class, 'showRequestingOffices'])->name('requesting-schools')->defaults('type', 'schools');
 
 Route::get('requestors', [RequestorController::class,'showRequestors'])->name('requestors');
 
 Route::get('fund-sources', [FundSourceController::class, 'showFundSources'])->name('fund-sources');
-
-Route::get('allotments', [AllotmentController::class, 'showAllotments'])->name('allotments');
 
 Route::get('receive-requests', [RequestController::class, 'showRequests'])->name('receive-requests');
 
@@ -39,4 +39,5 @@ Route::get('summary-report', [ReportController::class, 'generateMonthlySummary']
 Route::get('summary-report-pdf', [PDFController::class, 'generateMonthlySummary'])->name('summary-report-pdf');
 
 Route::get('request-history-report', [ReportController::class, 'requestHistoryReport'])->name('request-history-report');
+
 Route::get('request-history-report-pdf', [PDFController::class, 'requestHistoryReport'])->name('request-history-report-pdf');

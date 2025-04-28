@@ -44,7 +44,7 @@
                                                     <div class="mb-3">
                                                         <label class="form-label" for="transmitted_office_id">Transmitted Office</label>
                                                         <div wire:ignore>
-                                                            <select id="transmitted_office_id" class="form-control"
+                                                            <select id="transmitted_office_id" class="form-control select transmit"
                                                                 wire:model="transmitted_office_id">
                                                                 <option value="">Choose</option>
                                                                 @foreach ($requestingOffices as $office)
@@ -92,7 +92,18 @@
             });
 
             function handleTransmitActions() {
+                $('select.transmit').on('change', handleInputChangeTransmit);
                 $(document).on('click', '.transmit-request', openTransmitRequestModal);
+            }
+
+            function handleInputChangeTransmit(e) {
+                if ($(e.target).is('select.transmit')) {
+                    const property = e.target.id;
+                    const value = e.target.value;
+                    @this.set(property, value);
+
+                    console.log(`${property}: ${value}`);
+                }
             }
 
             function openTransmitRequestModal() {

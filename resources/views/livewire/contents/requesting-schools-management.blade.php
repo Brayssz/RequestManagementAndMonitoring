@@ -1,14 +1,14 @@
-<div class="modal fade" id="add-fund-source-modal" wire:ignore.self>
-    <div class="modal-dialog modal-dialog-centered modal-md custom-modal-two">
+<div class="modal fade" id="add-requesting-office-modal" wire:ignore.self>
+    <div class="modal-dialog modal-dialog-centered modal-xl custom-modal-two">
         <div class="modal-content">
             <div class="page-wrapper-new p-0">
                 <div class="content">
                     <div class="modal-header border-0 custom-modal-header">
                         <div class="page-title">
-                            @if ($submit_func == 'add-fund-source')
-                                <h4>Add Fund Source</h4>
+                            @if ($submit_func == 'add-requesting-office')
+                                <h4>Add Requesting School</h4>
                             @else
-                                <h4>Edit Fund Source</h4>
+                                <h4>Edit Requesting School</h4>
                             @endif
                         </div>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -16,27 +16,49 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form wire:submit.prevent="submit_fund_source">
+                        <form wire:submit.prevent="submit_requesting_office">
                             @csrf
                             <div class="card mb-0">
                                 <div class="card-body">
                                     <div class="new-employee-field">
                                         <div class="card-title-head" wire:ignore>
-                                            <h6><span><i data-feather="info" class="feather-edit"></i></span>Fund Source Information</h6>
+                                            <h6><span><i data-feather="info" class="feather-edit"></i></span>Requesting School Information</h6>
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-12 col-md-12">
+                                            <div class="col-lg-6 col-md-6">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="name">Name</label>
-                                                    <input type="text" class="form-control" placeholder="Enter fund source name"
+                                                    <input type="text" class="form-control" placeholder="Enter name"
                                                         id="name" wire:model.lazy="name">
                                                     @error('name')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                             </div>
-                                            @if ($submit_func == 'edit-fund-source')
-                                                <div class="col-lg-12 col-md-12">
+                                           
+                                            <div class="col-lg-6 col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="requestor">Requestor</label>
+                                                    <div wire:ignore>
+                                                        <select class="select requestor" id="requestor" name="requestor"
+                                                            wire:model="requestor" 
+                                                            @if ($requestors->isEmpty()) disabled @endif>
+                                                            <option value="">Choose</option>
+                                                            @foreach ($requestors as $requestor)
+                                                                <option value="{{ $requestor->requestor_id }}">{{ $requestor->name }} - ({{$requestor->position}})</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    @if ($requestors->isEmpty())
+                                                        <span class="text-danger">No available requestor records. Please add a new requestor or set an existing one to active.</span>
+                                                    @endif
+                                                    @error('requestor')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            @if ($submit_func == 'edit-requesting-office')
+                                                <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="status">Status</label>
                                                         <div wire:ignore>
@@ -71,7 +93,7 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                handleFundSourceActions();
+                handleRequestingOfficeActions();
             });
 
             function initSelect() {
@@ -81,10 +103,10 @@
                 });
             }
 
-            function handleFundSourceActions() {
+            function handleRequestingOfficeActions() {
                 $(document).on('change', '[id]', handleInputChange);
-                $(document).on('click', '.add-fund-source', openAddFundSourceModal);
-                $(document).on('click', '.edit-fund-source', openEditFundSourceModal);
+                $(document).on('click', '.add-office', openAddRequestingOfficeModal);
+                $(document).on('click', '.edit-office', openEditRequestingOfficeModal);
             }
 
             function handleInputChange(e) {
@@ -97,36 +119,40 @@
                 }
             }
 
-            function openAddFundSourceModal() {
-                @this.set('submit_func', 'add-fund-source');
+            function openAddRequestingOfficeModal() {
+                @this.set('submit_func', 'add-requesting-office');
 
                 @this.call('resetFields').then(() => {
                     initSelectVal("");
-                    $('#add-fund-source-modal').modal('show');
+                    $('#add-requesting-office-modal').modal('show');
                 });
             }
 
-            function openEditFundSourceModal() {
-                const fundSourceId = $(this).data('fundsourceid');
+            function openEditRequestingOfficeModal() {
+                const officeId = $(this).data('officeid');
 
-                @this.set('fund_source_id', fundSourceId);
-
-                @this.set('submit_func', 'edit-fund-source');
-                @this.call('getFundSource', fundSourceId).then(() => {
+                @this.set('submit_func', 'edit-requesting-office');
+                
+                @this.call('getRequestingOffice', officeId).then(() => {
+                    @this.call("populateRequestor");
                     populateEditForm();
-                    $('#add-fund-source-modal').modal('show');
+
+                    $('#add-requesting-office-modal').modal('show');
                 });
             }
 
-            function initSelectVal(status) {
+            function initSelectVal(requestor, status) {
+
+                $('#requestor').val(requestor).change();
                 $('#status').val(status).change();
             }
 
             function populateEditForm() {
+                const requestor = @this.get('requestor');
                 const status = @this.get('status');
 
                 initSelect();
-                initSelectVal(status);
+                initSelectVal(requestor, status);
             }
         </script>
     @endpush
