@@ -43,7 +43,6 @@ class RequestingSchoolsManagement extends Component
     public function mount()
     {
         $this->requestors = Requestor::where('status', 'active')
-            ->whereDoesntHave('requestingOffices')
             ->get();
     }
 
