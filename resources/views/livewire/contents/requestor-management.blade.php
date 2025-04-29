@@ -56,7 +56,7 @@
                                                             <option value="">Choose</option>
                                                             <option value="holder">Program Holder</option>
                                                             <option value="principal">Principal</option>
-                                                            <option value="principal">Office</option>
+                                                            <option value="office">Office</option>
                                                         </select>
                                                     </div>
                                                     @error('position')
