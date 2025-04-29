@@ -168,6 +168,8 @@ class ReportController extends Controller
                     'amount' => $request->amount,
                     'utilize_amount' => $request->utilize_funds ?? $request->amount,
                     'nature_of_request' => $request->nature_of_request,
+                    'signed_chief_date' => $request->signed_chief_date,
+                    'transmitted_office' => $request->transmittedOffice->name ?? null,
                     'date_transmitted' => $request->date_transmitted,
                     'remarks' => $request->remarks,
                 ];

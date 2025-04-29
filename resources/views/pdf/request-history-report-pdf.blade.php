@@ -84,7 +84,9 @@
                 <th style="background-color: #f0f0f0;">Amount</th>
                 <th style="background-color: #f0f0f0;">Utilized Amount</th>
                 <th style="background-color: #f0f0f0;">Nature of Request</th>
+                <th style="background-color: #f0f0f0;">Signed Chief</th>
                 <th style="background-color: #f0f0f0;">Date Transmitted</th>
+                <th style="background-color: #f0f0f0;">Transmitted Office</th>
                 <th style="background-color: #f0f0f0;">Remarks</th>
             </tr>
         </thead>
@@ -100,7 +102,9 @@
                     <td class="currency-sign">&#8369; {{ number_format($record['amount'], 2) }}</td>
                     <td class="currency-sign">&#8369; {{ number_format($record['utilize_amount'], 2) }}</td>
                     <td>{{ $record['nature_of_request'] }}</td>
-                    <td>{{ $record['date_transmitted'] ?? '-' }}</td>
+                    <td>{{ $record['signed_chief_date'] ?? '-' }}</td>
+                    <td>{{ $record['date_transmitted'] ?? '-' }}</td>z
+                    <td>{{ $record['transmitted_office'] ?? '-' }}</td>
                     <td>{{ $record['remarks'] ?? '-' }}</td>
                 </tr>
             @empty

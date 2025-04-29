@@ -92,7 +92,9 @@
                                 <th style="background-color: #f0f0f0;">Amount</th>
                                 <th style="background-color: #f0f0f0;">Utilized Amount</th>
                                 <th style="background-color: #f0f0f0;">Nature of Request</th>
+                                <th style="background-color: #f0f0f0;">Signed Chief</th>
                                 <th style="background-color: #f0f0f0;">Date Transmitted</th>
+                                <th style="background-color: #f0f0f0;">Transmitted Office</th>
                                 <th style="background-color: #f0f0f0;">Remarks</th>
                             </tr>
                         </thead>
@@ -131,8 +133,8 @@
                 var table = $('.report-table').DataTable({
                     "processing": true,
                     "serverSide": true,
-                    "bFilter": true,
-                    "sDom": 'fBtlpi',
+                    "bFilter": false, // Disable the search input
+                    "sDom": 'Btlpi',
                     'pagingType': 'numbers',
                     "ordering": true,
                     "order": [
@@ -183,7 +185,19 @@
                         },
                         { "data": "nature_of_request" },
                         { 
+                            "data": "signed_chief_date",
+                            "render": function(data) {
+                                return data ? data : '-';
+                            }
+                        },
+                        { 
                             "data": "date_transmitted",
+                            "render": function(data) {
+                                return data ? data : '-';
+                            }
+                        },
+                        { 
+                            "data": "transmitted_office",
                             "render": function(data) {
                                 return data ? data : '-';
                             }
