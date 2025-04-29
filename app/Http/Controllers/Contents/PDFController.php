@@ -54,7 +54,7 @@ class PDFController extends Controller
 
                 $monthlyData = $months->mapWithKeys(function ($month, $index) use ($group) {
                     $monthlyRequests = $group->filter(function ($request) use ($index) {
-                        return \Carbon\Carbon::parse($request->dts_date)->month === $index + 1;
+                        return \Carbon\Carbon::parse($request->sgod_date_received)->month === $index + 1;
                     });
 
                     $monthlyAmount = $monthlyRequests->sum(function ($request) {
