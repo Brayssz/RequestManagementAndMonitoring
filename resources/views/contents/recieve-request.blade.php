@@ -63,6 +63,7 @@
                                 <th>Fund Source</th>
                                 <th>Allotment Year</th>
                                 <th>Status</th>
+                                <th>Signed Chief</th>
                                 <th>Transmitted Office</th>
                                 <th>Remarks</th>
                                 <th class="no-sort">Action</th>
@@ -177,6 +178,12 @@
                             }
                         },
                         {
+                            "data": "signed_chief_date",
+                            "render": function(data, type, row) {
+                                return data ? moment(data).format('MMMM D, YYYY') : 'Not yet transmitted | Signed';
+                            }
+                        },
+                        {
                             data: null,
                             render: function(data, type, row) {
                                 const transmittedOfficeName = row.transmitted_office?.name ||
@@ -227,7 +234,7 @@
                         }
                     ],
                     "createdRow": function(row, data, dataIndex) {
-                        $(row).find('td').eq(10).addClass('action-table-data');
+                        $(row).find('td').eq(11).addClass('action-table-data');
                     },
                     "initComplete": function(settings, json) {
                         $('.dataTables_filter').appendTo('#tableSearch');

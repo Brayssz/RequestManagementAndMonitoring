@@ -50,20 +50,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::create('annual_allotments', function (Blueprint $table) {
-        //     $table->id('allotment_id');
-        //     $table->unsignedBigInteger('requesting_office_id')->nullable();
-        //     $table->unsignedBigInteger('fund_source_id')->nullable(); // Added fund source foreign key
-        //     $table->decimal('amount', 15, 2);
-        //     $table->decimal('balance', 15, 2)->nullable(); // Added balance column
-        //     $table->year('year');
-        //     $table->string('status')->default('active');
-        //     $table->timestamps();
-
-        //     $table->foreign('requesting_office_id')->references('requesting_office_id')->on('requesting_offices')->onDelete('set null');
-        //     $table->foreign('fund_source_id')->references('fund_source_id')->on('fund_sources')->onDelete('set null'); 
-        // });
-
         Schema::create('requests', function (Blueprint $table) {
             $table->id('request_id');
         
@@ -116,10 +102,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('requests');
-        Schema::dropIfExists('requesting_offices');
+        Schema::dropIfExists('fund_sources');
         Schema::dropIfExists('requestors');
+        Schema::dropIfExists('requesting_offices');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('requests');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }

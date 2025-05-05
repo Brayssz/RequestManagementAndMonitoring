@@ -25,11 +25,11 @@ class DatabaseSeeder extends Seeder
             'status' => 'active',
         ]);
 
-        Requestor::create([
-            'name' => 'John Doe',
-            'email' => 'johndoe@example.com',
-            'position' => 'principal',
-            'status' => 'active',
-        ]);
+        // Requestor::create([
+        //     'name' => 'John Doe',
+        //     'email' => 'johndoe@example.com',
+        //     'position' => 'principal',
+        //     'status' => 'active',
+        // ]);
     }
 }

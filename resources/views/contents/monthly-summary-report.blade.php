@@ -20,12 +20,6 @@
             <div class="card-body pb-0">
                 <div class="table-top table-top-two table-top-new d-flex">
                     <div class="search-set mb-0 d-flex w-100 justify-content-start">
-
-                        <div class="search-input text-left">
-                            <a href="" class="btn btn-searchset"><i data-feather="search"
-                                    class="feather-search"></i></a>
-                        </div>
-
                         <div class="row mt-sm-3 mt-xs-3 mt-lg-0 w-sm-100 flex-grow-1">
                             <div class="col-lg-3 col-sm-12">
                                 <div class="form-group">
@@ -47,11 +41,20 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <select class="select office_filter form-control">
+                                        <option value="">Filter by Requesting Office/School</option>
+                                        @foreach ($offices_schools as $office_school)
+                                            <option value="{{ $office_school->requesting_office_id }}">{{ $office_school->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                          
                         </div>
-
-                      
-                       
-
                     </div>
                 </div>
 
@@ -117,8 +120,8 @@
                 var table = $('.report-table').DataTable({
                     "processing": true,
                     "serverSide": true,
-                    "bFilter": true,
-                    "sDom": 'fBtlpi',
+                    "bFilter": false, // Disable the search input
+                    "sDom": 'Btlpi', // Remove the search input from the DOM
                     'pagingType': 'numbers',
                     "ordering": true,
                     "order": [
@@ -142,6 +145,7 @@
                         "data": function(d) {
                             d.year = $('.year_filter').val();
                             d.fund_source_id = $('.fund_source_filter').val();
+                            d.requesting_office_id = $('.office_filter').val();
                         },
                         "dataSrc": "data"
                     },
@@ -242,7 +246,7 @@
                         $('.dataTables_filter').appendTo('.search-input');
                         feather.replace();
 
-                        $('.year_filter, .fund_source_filter').on('change', function() {
+                        $('.year_filter, .fund_source_filter, .office_filter').on('change', function() {
                             table.draw();
                         });
                     },

@@ -21,13 +21,19 @@
                 <div class="table-top table-top-two table-top-new d-flex">
                     <div class="search-set mb-0 d-flex w-100 justify-content-start">
 
-                        <div class="search-input text-left">
-                            <a href="" class="btn btn-searchset"><i data-feather="search"
-                                    class="feather-search"></i></a>
-                        </div>
-
                         <div class="row mt-sm-3 mt-xs-3 mt-lg-0 w-sm-100 flex-grow-1">
+
                             <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <select class="select office_filter form-control">
+                                        <option value="">Filter by Requesting Office/School</option>
+                                        @foreach ($offices_schools as $office_school)
+                                            <option value="{{ $office_school->requesting_office_id }}">{{ $office_school->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-sm-12">
                                 <div class="form-group">
                                     <select class="select month_filter form-control">
                                         <option value="">Filter by Month</option>
@@ -37,7 +43,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-12">
+                            <div class="col-lg-2 col-sm-12">
                                 <div class="form-group">
                                     <select class="select year_filter form-control">
                                         <option value="">Filter by Year</option>
@@ -47,12 +53,23 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-12">
+                            <div class="col-lg-2 col-sm-12">
                                 <div class="form-group">
                                     <select class="select fund_source_filter form-control">
                                         <option value="">Filter by Fund Source</option>
                                         @foreach ($fund_sources as $fund_source)
                                             <option value="{{ $fund_source->fund_source_id }}">{{ $fund_source->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-12">
+                                <div class="form-group">
+                                    <select class="select transmitted_filter form-control">
+                                        <option value="">Filter by Transmitted Office</option>
+                                        @foreach ($offices as $office)
+                                            <option value="{{ $office->requesting_office_id }}">{{ $office->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -75,7 +92,9 @@
                                 <th style="background-color: #f0f0f0;">Amount</th>
                                 <th style="background-color: #f0f0f0;">Utilized Amount</th>
                                 <th style="background-color: #f0f0f0;">Nature of Request</th>
+                                <th style="background-color: #f0f0f0;">Signed Chief</th>
                                 <th style="background-color: #f0f0f0;">Date Transmitted</th>
+                                <th style="background-color: #f0f0f0;">Transmitted Office</th>
                                 <th style="background-color: #f0f0f0;">Remarks</th>
                             </tr>
                         </thead>
@@ -114,8 +133,8 @@
                 var table = $('.report-table').DataTable({
                     "processing": true,
                     "serverSide": true,
-                    "bFilter": true,
-                    "sDom": 'fBtlpi',
+                    "bFilter": false, // Disable the search input
+                    "sDom": 'Btlpi',
                     'pagingType': 'numbers',
                     "ordering": true,
                     "order": [
@@ -139,6 +158,8 @@
                         "data": function(d) {
                             d.month = $('.month_filter').val();
                             d.fund_source_id = $('.fund_source_filter').val();
+                            d.requesting_office_id = $('.office_filter').val();
+                            d.transmitted_office_id = $('.transmitted_filter').val();
                             d.year = $('.year_filter').val();
                         },
                         "dataSrc": "data"
@@ -164,7 +185,19 @@
                         },
                         { "data": "nature_of_request" },
                         { 
+                            "data": "signed_chief_date",
+                            "render": function(data) {
+                                return data ? data : '-';
+                            }
+                        },
+                        { 
                             "data": "date_transmitted",
+                            "render": function(data) {
+                                return data ? data : '-';
+                            }
+                        },
+                        { 
+                            "data": "transmitted_office",
                             "render": function(data) {
                                 return data ? data : '-';
                             }
@@ -184,7 +217,7 @@
                         $('.dataTables_filter').appendTo('.search-input');
                         feather.replace();
 
-                        $('.month_filter, .fund_source_filter, .year_filter').on('change', function() {
+                        $('.month_filter, .fund_source_filter, .year_filter, .office_filter, .transmitted_filter').on('change', function() {
                             table.draw();
                         });
                     },
