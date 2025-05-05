@@ -43,6 +43,7 @@
                                         <option value="">Status</option>
                                         <option value="pending">Pending</option>
                                         <option value="transmitted">Transmitted</option>
+                                        <option value="returned">Returned</option>
                                     </select>
                                 </div>
                             </div>
