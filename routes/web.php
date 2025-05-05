@@ -41,3 +41,7 @@ Route::get('summary-report-pdf', [PDFController::class, 'generateMonthlySummary'
 Route::get('request-history-report', [ReportController::class, 'requestHistoryReport'])->name('request-history-report');
 
 Route::get('request-history-report-pdf', [PDFController::class, 'requestHistoryReport'])->name('request-history-report-pdf');
+
+Route::get('request-logs-report', [ReportController::class, 'requestLogsReport'])->name('request-logs-report');
+
+Route::get('request-logs-report-pdf', [PDFController::class, 'requestLogsReport'])->name('request-logs-report-pdf');

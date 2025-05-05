@@ -222,12 +222,16 @@
                             <h6 class="submenu-hdr">Reports</h6>
                             <ul>
                                 <li class="{{ Request::is('summary-report') ? 'active' : '' }}">
-                                    <a href="summary-report"><i data-feather="file-text"></i><span>Summary
+                                    <a href="summary-report"><i data-feather="bar-chart-2"></i><span>Summary
                                             Report</span></a>
                                 </li>
                                 <li class="{{ Request::is('request-history-report') ? 'active' : '' }}">
-                                    <a href="request-history-report"><i data-feather="file-text"></i><span>Request
+                                    <a href="request-history-report"><i data-feather="clock"></i><span>Request
                                             History Report</span></a>
+                                </li>
+                                <li class="{{ Request::is('request-logs-report') ? 'active' : '' }}">
+                                    <a href="request-logs-report"><i data-feather="list"></i><span>Request
+                                            Logs Report</span></a>
                                 </li>
                             </ul>
                         </li>

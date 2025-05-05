@@ -94,6 +94,38 @@
             function handleTransmitActions() {
                 $('select.transmit').on('change', handleInputChangeTransmit);
                 $(document).on('click', '.transmit-request', openTransmitRequestModal);
+                $(document).on('click', '.return-request', returnRequest);
+                $(document).on('click', '.delete-request', deleteRequest);
+            }
+
+            const deleteRequest = function() {
+                const requestId = $(this).data('requestid');
+
+                console.log(requestId);
+
+                window.confirmAlert(
+                    'Are you sure?',
+                    'You want to delete this request? You won\'t be able to retrieve it.',
+                    function() {
+                        @this.call('deleteRequest', requestId);
+                    },
+                    'Yes, delete it!'
+                );
+            }
+
+            const returnRequest = function() {
+                const requestId = $(this).data('requestid');
+
+                console.log(requestId);
+
+                window.confirmAlert(
+                    'Are you sure?',
+                    'You want to return this request?',
+                    function() {
+                        @this.call('returnRequest', requestId);
+                    },
+                    'Yes, return it!'
+                );
             }
 
             function handleInputChangeTransmit(e) {
@@ -110,6 +142,10 @@
                 const requestId = $(this).data('requestid');
                 @this.call('getRequest', requestId).then(() => {
                     $('#transmit-request-modal').modal('show');
+                    let transmitted_office_id = @this.get('transmitted_office_id');
+                    if (transmitted_office_id) {
+                        $('#transmitted_office_id').val(transmitted_office_id).trigger('change');
+                    }
                 });
             }
         </script>

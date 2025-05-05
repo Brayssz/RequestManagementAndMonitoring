@@ -27,6 +27,17 @@ class TransmitRequest extends Component
         $this->requestingOffices = RequestingOffice::where('type', 'office')->get();
     }
 
+    public function returnRequest($requestId)
+    {
+        $request = Request::where('request_id', $requestId)->first();
+        $request->update([
+            'status' => 'returned',
+        ]);
+
+        session()->flash('message', 'Request returned successfully.');
+        return redirect()->route('receive-requests');
+    }
+
     public function getRequest($id)
     {
         $request = Request::findOrFail($id);
@@ -51,6 +62,15 @@ class TransmitRequest extends Component
         ]);
 
         session()->flash('message', 'Request transmitted successfully.');
+        return redirect()->route('receive-requests');
+    }
+
+    public function deleteRequest($requestId)
+    {
+        $request = Request::where('request_id', $requestId)->first();
+        $request->delete();
+
+        session()->flash('message', 'Request deleted successfully.');
         return redirect()->route('receive-requests');
     }
 

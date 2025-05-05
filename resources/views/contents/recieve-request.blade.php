@@ -166,9 +166,14 @@
                         {
                             "data": null,
                             "render": function(data, type, row) {
-                                return row.status === "pending" ?
-                                    `<span class="badge badge-linewarning">Pending</span>` :
-                                    `<span class="badge badge-linesuccess">Transmitted</span>`;
+                                if (row.status === "pending") {
+                                    return `<span class="badge badge-linewarning">Pending</span>`;
+                                } else if (row.status === "transmitted") {
+                                    return `<span class="badge badge-linesuccess">Transmitted</span>`;
+                                } else if (row.status === "returned") {
+                                    return `<span class="badge badge-lineinfo">Returned</span>`;
+                                }
+                                return `<span class="badge badge-lineinfo">Unknown</span>`;
                             }
                         },
                         {
@@ -204,9 +209,18 @@
                                         <a class="me-2 p-2 edit-request" data-requestid="${row.request_id}">
                                             <i data-feather="edit" class="feather-edit"></i>
                                         </a>
-                                        <a class="me-2 p-2 transmit-request" data-requestid="${row.request_id}">
-                                            <i data-feather="send" class="feather-send"></i>
+                                        <a class="me-2 p-2 delete-request" data-requestid="${row.request_id}">
+                                            <i data-feather="trash-2" class="feather-trash-2"></i>
                                         </a>
+                                        ${row.status === 'transmitted' ? `
+                                            <a class="me-2 p-2 return-request" data-requestid="${row.request_id}">
+                                                <i data-feather="corner-up-left" class="feather-corner-up-left"></i>
+                                            </a>
+                                        ` : `
+                                            <a class="me-2 p-2 transmit-request" data-requestid="${row.request_id}">
+                                                <i data-feather="send" class="feather-send"></i>
+                                            </a>
+                                        `}
                                     </div>
                                 `;
                             }
@@ -239,6 +253,13 @@
                 });
                 tippy('.transmit-request', {
                     content: "Transmit Request",
+                });
+
+                tippy('.return-request', {
+                    content: "Return Request",
+                });
+                tippy('.delete-request', {
+                    content: "Delete Request",
                 });
             };
 

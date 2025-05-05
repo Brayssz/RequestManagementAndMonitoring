@@ -166,4 +166,87 @@ class ReportController extends Controller
 
         return view('contents.request-history-report', compact('fund_sources'));
     }
+
+    public function requestLogsReport(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = \App\Models\RequestActivityLog::query()->with(['request.requestingOffice.requestor_obj', 'request.fundSource', 'user']);
+
+            if ($request->filled('fund_source_id')) {
+                $query->whereHas('request', function ($q) use ($request) {
+                    $q->where('fund_source_id', $request->fund_source_id);
+                });
+            }
+            if ($request->filled('month')) {
+                $query->whereHas('request', function ($q) use ($request) {
+                    $q->whereMonth('sgod_date_received', '=', intval($request->month));
+                });
+            }
+
+            if ($request->filled('year')) {
+                $query->whereHas('request', function ($q) use ($request) {
+                    $q->whereYear('sgod_date_received', '=', intval($request->year));
+                });
+            }
+
+            if ($request->filled('search') && !empty($request->input('search')['value'])) {
+                $search = $request->input('search')['value'];
+                $query->where(function ($q) use ($search) {
+                    $q->where('activity', 'like', '%' . $search . '%')
+                        ->orWhereHas('request', function ($q) use ($search) {
+                            $q->where('dts_tracker_number', 'like', '%' . $search . '%')
+                                ->orWhereHas('requestingOffice', function ($q) use ($search) {
+                                    $q->where('name', 'like', '%' . $search . '%');
+                                })
+                                ->orWhereHas('fundSource', function ($q) use ($search) {
+                                    $q->where('name', 'like', '%' . $search . '%');
+                                });
+                        })
+                        ->orWhereHas('user', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%');
+                        });
+                });
+            }
+
+            $totalRecords = $query->count();
+
+            $orderColumn = 'created_at';
+            $orderDirection = $request->input('order')[0]['dir'] ?? 'asc';
+            $query->orderBy($orderColumn, $orderDirection);
+
+            $start = $request->input('start', 0);
+            $length = $request->input('length', 10);
+            $logs = $query->skip($start)->take($length)->get();
+
+            $data = $logs->map(function ($log) {
+                return [
+                    'dts_date' => $log->request->dts_date ?? null,
+                    'dts_tracker_number' => $log->request->dts_tracker_number ?? null,
+                    'sgod_date_received' => $log->request->sgod_date_received ?? null,
+                    'requestor' => $log->request->requestingOffice->requestor_obj->name ?? null,
+                    'requesting_office' => $log->request->requestingOffice->name ?? null,
+                    'fund_source' => $log->request->fundSource->name ?? null,
+                    'amount' => $log->request->amount ?? null,
+                    'utilize_amount' => $log->request->utilize_funds ?? $log->request->amount ?? null,
+                    'nature_of_request' => $log->request->nature_of_request ?? null,
+                    'date_transmitted' => $log->request->date_transmitted ?? null,
+                    'remarks' => $log->request->remarks ?? null,
+                    'actioned_by' => $log->user->name ?? null,
+                    'activity' => $log->activity,
+                    'log_date' => \Carbon\Carbon::parse($log->created_at)->format('Y-m-d'),
+                ];
+            });
+
+            return response()->json([
+                "draw" => intval($request->input('draw', 1)),
+                "recordsTotal" => $totalRecords,
+                "recordsFiltered" => $totalRecords,
+                "data" => $data
+            ]);
+        }
+
+        $fund_sources = FundSource::where('status', 'active')->get();
+
+        return view('contents.request-logs-report', compact('fund_sources'));
+    }
 }

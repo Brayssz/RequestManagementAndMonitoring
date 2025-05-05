@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use App\Models\RequestActivityLog;
 
 class Request extends Model
 {
@@ -48,5 +50,33 @@ class Request extends Model
     public function getRequestor()
     {
         return $this->requestingOffice ? $this->requestingOffice->requestor->name : null;
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($request) {
+            RequestActivityLog::create([
+                'request_id' => $request->request_id,
+                'user_id' => Auth::id(),
+                'activity' => 'Received.',
+                'created_at' => now(),
+            ])->timestamps = false;
+        });
+
+        static::updating(function ($request) {
+            if ($request->isDirty('status')) {
+                $newStatus = ucfirst($request->status);
+
+                RequestActivityLog::create([
+                    'request_id' => $request->request_id,
+                    'user_id' => Auth::id(),
+                    'activity' => $newStatus, 
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])->timestamps = false;
+            }
+        });
+
+       
     }
 }
