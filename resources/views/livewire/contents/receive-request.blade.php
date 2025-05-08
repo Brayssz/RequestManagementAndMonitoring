@@ -130,12 +130,12 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-6 col-md-6">
+                                                <div class="col-lg-12 col-md-12">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="nature_of_request">Nature of
                                                             Request</label>
-                                                        <input type="text" class="form-control"
-                                                            id="nature_of_request" wire:model.lazy="nature_of_request">
+                                                        <textarea class="form-control" id="nature_of_request" rows="3"
+                                                            wire:model.lazy="nature_of_request"></textarea>
                                                         @error('nature_of_request')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror

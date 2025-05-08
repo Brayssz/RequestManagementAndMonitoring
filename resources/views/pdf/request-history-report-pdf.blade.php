@@ -105,7 +105,15 @@
 
             <h3 style="text-align: center; margin-top: 0px;">Request History Report</h3>
         </div>
-        <h4 style="text-align: center; margin-bottom: 10px;">{{ trim(($month ? $month : '') . ' | ' . ($year ? $year : '') . ($fundSource ? ' | ' . $fundSource->name : '')) }}</h4>
+        @php
+            $reqOffice = $requestingOffice && $requestingOffice->name ? 'Requested by: ' . $requestingOffice->name : null;
+            $transOffice = $transmittedOffice && $transmittedOffice->name ? 'Transmitted to: ' . $transmittedOffice->name : null;
+        @endphp
+        <h4 style="text-align: center; margin-bottom: 10px;">
+            {{ collect([$month, $year, optional($fundSource)->name, $reqOffice, $transOffice])
+            ->filter(fn($value) => !empty($value))
+            ->implode(' | ') }}
+        </h4>
     </header>
     <footer>
         <table style="width: 100%; margin-top: 10px; border-collapse: collapse; border: none;">

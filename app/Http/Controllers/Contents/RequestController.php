@@ -12,33 +12,39 @@ class RequestController extends Controller
     {
         if ($request->ajax()) {
             $query = RequestModel::query()
-            ->whereHas('requestingOffice', function ($q) {
-                $q->where('status', 'active');
-            })
-            ->whereHas('fundSource', function ($q) {
-                $q->where('status', 'active');
-            })
-            ->where(function ($q) {
-                $q->whereDoesntHave('transmittedOffice', function ($subQuery) {
-                $subQuery->where('status', 'active');
-                })->orWhereNull('transmitted_office_id')
-                ->orWhereHas('transmittedOffice', function ($subQuery) {
-                $subQuery->where('status', 'active');
-                });
-            })
-            ->with('requestingOffice', 'fundSource', 'transmittedOffice', 'requestingOffice.requestor_obj');
+                ->whereHas('requestingOffice', function ($q) {
+                    $q->where('status', 'active');
+                })
+                ->whereHas('fundSource', function ($q) {
+                    $q->where('status', 'active');
+                })
+                ->where(function ($q) {
+                    $q->whereDoesntHave('transmittedOffice', function ($subQuery) {
+                        $subQuery->where('status', 'active');
+                    })->orWhereNull('transmitted_office_id')
+                        ->orWhereHas('transmittedOffice', function ($subQuery) {
+                            $subQuery->where('status', 'active');
+                        });
+                })
+                ->with('requestingOffice', 'fundSource', 'transmittedOffice', 'requestingOffice.requestor_obj');
 
             if ($request->filled('status')) {
-            $query->where('status', $request->status);
+                $query->where('status', $request->status);
             }
 
             if ($request->filled('search') && !empty($request->input('search')['value'])) {
-            $search = $request->input('search')['value'];
-            $query->where(function ($q) use ($search) {
-                $q->where('dts_tracker_number', 'like', '%' . $search . '%')
-                ->orWhere('nature_of_request', 'like', '%' . $search . '%')
-                ->orWhere('remarks', 'like', '%' . $search . '%');
-            });
+                $search = $request->input('search')['value'];
+                $query->where(function ($q) use ($search) {
+                    $q->where('dts_tracker_number', 'like', '%' . $search . '%')
+                        ->orWhere('nature_of_request', 'like', '%' . $search . '%')
+                        ->orWhere('remarks', 'like', '%' . $search . '%')
+                        ->orWhereHas('requestingOffice', function ($subQuery) use ($search) {
+                            $subQuery->where('name', 'like', '%' . $search . '%');
+                        })
+                        ->orWhereHas('transmittedOffice', function ($subQuery) use ($search) {
+                            $subQuery->where('name', 'like', '%' . $search . '%');
+                        });
+                });
             }
 
             $totalRecords = $query->count();
@@ -47,22 +53,22 @@ class RequestController extends Controller
             $orderColumn = $request->input('columns')[$orderColumnIndex]['data'] ?? 'request_id';
             $orderDirection = $request->input('order')[0]['dir'] ?? 'asc';
 
-            // Modify the order to prioritize pending status first
-            $query->orderByRaw("FIELD(status, 'pending') DESC")->orderBy($orderColumn, $orderDirection);
+            // Modify the order to prioritize the latest created_at first
+            $query->orderBy('created_at', 'desc')->orderBy($orderColumn, $orderDirection);
 
             $start = $request->input('start', 0);
             $length = $request->input('length', 10);
             $requests = $query->skip($start)->take($length)->get();
 
             $requests->transform(function ($request) {
-            return $request;
+                return $request;
             });
 
             return response()->json([
-            "draw" => intval($request->input('draw', 1)),
-            "recordsTotal" => $totalRecords,
-            "recordsFiltered" => $totalRecords,
-            "data" => $requests
+                "draw" => intval($request->input('draw', 1)),
+                "recordsTotal" => $totalRecords,
+                "recordsFiltered" => $totalRecords,
+                "data" => $requests
             ]);
         }
 

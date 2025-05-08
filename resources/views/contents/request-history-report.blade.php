@@ -126,7 +126,13 @@
                 var year = $('.year_filter').val();
                 var fund_source_id = $('.fund_source_filter').val();
                 var month = $('.month_filter').val();
-                window.open('/request-history-report-pdf?year=' + year + '&fund_source_id=' + fund_source_id + '&month=' + month, '_blank');
+                var requesting_office_id = $('.office_filter').val();
+                var transmitted_office_id = $('.transmitted_filter').val();
+                window.open('/request-history-report-pdf?year=' + year + 
+                            '&fund_source_id=' + fund_source_id + 
+                            '&month=' + month + 
+                            '&requesting_office_id=' + requesting_office_id + 
+                            '&transmitted_office_id=' + transmitted_office_id, '_blank');
             });
 
             if ($('.report-table').length > 0) {

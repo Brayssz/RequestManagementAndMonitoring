@@ -206,6 +206,18 @@ class ReportController extends Controller
                 });
             }
 
+            if ($request->filled('requesting_office_id')) {
+                $query->whereHas('request', function ($q) use ($request) {
+                    $q->where('requesting_office_id', $request->requesting_office_id);
+                });
+            }
+
+            if ($request->filled('transmitted_office_id')) {
+                $query->whereHas('request', function ($q) use ($request) {
+                    $q->where('transmitted_office_id', $request->transmitted_office_id);
+                });
+            }
+
             if ($request->filled('year')) {
                 $query->whereHas('request', function ($q) use ($request) {
                     $q->whereYear('sgod_date_received', '=', intval($request->year));
@@ -269,7 +281,9 @@ class ReportController extends Controller
         }
 
         $fund_sources = FundSource::where('status', 'active')->get();
+        $offices = RequestingOffice::where('status', 'active')->where('type', 'office')->get();
+        $offices_schools = RequestingOffice::where('status', 'active')->get();
 
-        return view('contents.request-logs-report', compact('fund_sources'));
+        return view('contents.request-logs-report', compact('fund_sources', 'offices', 'offices_schools'));
     }
 }

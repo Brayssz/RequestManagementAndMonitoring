@@ -26,7 +26,7 @@ class RequestingOfficeController extends Controller
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', '%' . $search . '%')
                         ->orWhere('type', 'like', '%' . $search . '%')
-                        ->orWhereHas('requestor', function ($q) use ($search) {
+                        ->orWhereHas('requestor_obj', function ($q) use ($search) {
                             $q->where('name', 'like', '%' . $search . '%');
                         });
                 });

@@ -6,20 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request Logs Report</title>
     <style>
+        @font-face {
+            font-family: 'OldEnglishTextMT';
+            src: url('{{ asset('fonts/oldenglishtextmts.ttf') }}') format('truetype');
+            font-weight: bold;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11px;
             margin: 0;
             padding: 0;
+        }
+
+        .old_english {
+            font-family: 'OldEnglishTextMT' !important;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #000;
             padding: 8px;
             font-size: 9px;
@@ -32,10 +42,8 @@
 
         .logo {
             text-align: center;
-            margin-bottom: 20px;
-            position: absolute;
-            top: 0px;
-            left: 50px;
+            margin-bottom: 7px;
+            margin-top: -2px;
         }
 
         .logo img {
@@ -45,30 +53,96 @@
         .currency-sign {
             font-family: DejaVu Sans !important;
         }
+
+        header {
+            position: fixed;
+            top: -270px;
+            left: 0px;
+            right: 0px;
+            height: 100px;
+            text-align: center;
+        }
+
+        footer {
+            position: fixed;
+            bottom: -40px;
+            left: 0px;
+            right: 0px;
+            height: 50px;
+            text-align: center;
+            font-size: 10px;
+            border-top: 2px solid #000;
+        }
+
+        @page {
+            margin-top: 300px;
+            margin-bottom: 120px;
+        }
+
+        .page-number:after {
+            content: "Page " counter(page);
+        }
+       
     </style>
 </head>
 
 <body>
-    <div class="logo">
-        <img src="{{ public_path('img/logo.jpg') }}" alt="Logo">
-    </div>
+    <header>
+        <div class="header">
+            <div class="logo">
+                <img src="{{ public_path('img/deped_logo.png') }}" alt="Logo">
+            </div>
 
-    <h4 style="text-align: center; margin-bottom: 10px;">Koronadal City Division - Back Office</h4>
-    <p style="text-align: center; margin-bottom: 5px;">Koronadal City, South Cotabato</p>
-    <p style="text-align: center; margin-bottom: 20px;">Region XII</p>
+            <p style="text-align: center; margin-bottom: -17px; font-size: 13px;" class="old_english">Republic of the
+                Philippines</p>
+            <p style="text-align: center; margin-bottom: -8px; font-size: 17px;" class="old_english">Department of
+                Education</p>
+            <p style="text-align: center; margin-bottom: -10px; letter-spacing: 4px;">SOCCSKSARGEN REGION</p>
+            <p style="text-align: center; margin-bottom: 20px; letter-spacing: 4px;">SCHOOLS DIVISION OF KORONADAL CITY
+            </p>
 
-    <div style="border-top: 1px solid #000; margin: 20px 0;"></div>
+            <div style="border-top: 2px solid #000; margin: 20px 0;"></div>
 
-    <h3 style="text-align: center; margin-top: 20px;">Request Logs Report</h3>
+            <h3 style="text-align: center; margin-top: 0px;">Request History Report</h3>
+        </div>
+        @php
+            $reqOffice = $requestingOffice && $requestingOffice->name ? 'Requested by: ' . $requestingOffice->name : null;
+            $transOffice = $transmittedOffice && $transmittedOffice->name ? 'Transmitted to: ' . $transmittedOffice->name : null;
+        @endphp
+        <h4 style="text-align: center; margin-bottom: 10px;">
+            {{ collect([$month, $year, optional($fundSource)->name, $reqOffice, $transOffice])
+            ->filter(fn($value) => !empty($value))
+            ->implode(' | ') }}
+        </h4>
+    </header>
+    <footer>
+        <table style="width: 100%; margin-top: 10px; border-collapse: collapse; border: none;">
+            <tr>
+                <!-- Logo Section (left side) -->
+                <td style="width: 19%; text-align: left; vertical-align: top; border: none;">
+                    <img src="{{ public_path('img/deped-matatag-logos.png') }}" alt="Logo"
+                        style="width: 140px; margin-right: 5px;">
+                    <img src="{{ public_path('img/logo.jpg') }}" alt="Logo" style="width: 65px;">
+                </td>
 
-    @if ($month || $year)
-        <h4 style="text-align: center; margin-bottom: 10px;"> {{ ($month ? $month : "") . " " . ($year ? $year : "") }}</h4>
-        
-    @endif
+                <!-- Address Info (right side) -->
+                <td
+                    style="width: 71%; text-align: left; vertical-align: top; border: none; font-size: 11px; padding: 0px !important; font-family: Arial, sans-serif;">
+                    <p style="margin: 1px 0;"><strong>Address:</strong> Jaycee Avenue, Corner Rizal St., Brgy. Zone IV,
+                        City of Koronadal</p>
+                    <p style="margin: 1px 0;"><strong>Telephone Nos:</strong> (083) 228-1209 / (083) 228-9706</p>
+                    <p style="margin: 1px 0;"><strong>Email Address:</strong> Koronadal.city@deped.gov.ph</p>
+                    <p style="margin: 1px 0;"><strong>Date Generated:</strong>
+                        {{ \Carbon\Carbon::now()->format('F d, Y h:i A') }}</p>
+                </td>
+                <td style="width: 10%; text-align: right; vertical-align: top; border: none; font-family: Arial, sans-serif;">
+                    <div class="page-number"></div>
+                </td>
+            </tr>
 
-    @if ($fundSource)
-        <h4 style="text-align: center; margin-bottom: 10px;">{{ $fundSource->name }}</h4>
-    @endif
+        </table>
+
+    </footer>
 
     
 
@@ -111,7 +185,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="11" class="text-center">No record found</td>
+                    <td colspan="14" class="text-center">No record found</td>
                 </tr>
             @endforelse
         </tbody>

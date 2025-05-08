@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FundSource;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\RequestingOffice;
 
 class PDFController extends Controller
 {
@@ -29,6 +30,12 @@ class PDFController extends Controller
             if (request()->filled('fund_source_id')) {
                 $requests = $requests->filter(function ($request) {
                     return $request->fund_source_id == request('fund_source_id');
+                });
+            }
+
+            if (request()->filled('requesting_office_id')) {
+                $requests = $requests->filter(function ($request) {
+                    return $request->requesting_office_id == request('requesting_office_id');
                 });
             }
 
@@ -82,9 +89,10 @@ class PDFController extends Controller
 
         $fundSource = FundSource::where('fund_source_id', $request->fund_source_id)->first();
         $year = $request->year;
+        $requestingOffice = RequestingOffice::where('requesting_office_id', $request->requesting_office_id)->first();
 
         // return response()->json($report);
-        $pdf = Pdf::loadView('pdf.monthly-summary-report-pdf', compact('report', 'fundSource', 'year'))
+        $pdf = Pdf::loadView('pdf.monthly-summary-report-pdf', compact('report', 'fundSource', 'year', 'requestingOffice'))
             ->setPaper('legal', 'landscape');
 
         return $pdf->stream('monthly_summary_report.pdf');
@@ -175,6 +183,14 @@ class PDFController extends Controller
             $query->whereYear('dts_date', '=', intval($request->year));
         }
 
+        if ($request->filled('requesting_office_id')) {
+            $query->where('requesting_office_id', $request->requesting_office_id);
+        }
+
+        if ($request->filled('transmitted_office_id')) {
+            $query->where('transmitted_office_id', $request->transmitted_office_id);
+        }
+
         if ($request->filled('search') && !empty($request->input('search')['value'])) {
             $search = $request->input('search')['value'];
             $query->where(function ($q) use ($search) {
@@ -214,9 +230,11 @@ class PDFController extends Controller
         $fundSource = FundSource::where('fund_source_id', $request->fund_source_id)->first();
         $year = $request->year;
         $month = $request->filled('month') ? \Carbon\Carbon::create()->month((int) $request->month)->format('F') : null;
+        $requestingOffice = RequestingOffice::where('requesting_office_id', $request->requesting_office_id)->first();
+        $transmittedOffice = RequestingOffice::where('requesting_office_id', $request->transmitted_office_id)->first();
 
         // return response()->json($report);
-        $pdf = Pdf::loadView('pdf.request-history-report-pdf', compact('report', 'fundSource', 'year', 'month'))
+        $pdf = Pdf::loadView('pdf.request-history-report-pdf', compact('report', 'fundSource', 'year', 'month', 'requestingOffice', 'transmittedOffice'))
             ->setPaper('legal', 'landscape');
 
 
@@ -237,6 +255,18 @@ class PDFController extends Controller
         if ($request->filled('month')) {
             $query->whereHas('request', function ($q) use ($request) {
                 $q->whereMonth('sgod_date_received', '=', intval($request->month));
+            });
+        }
+
+        if ($request->filled('requesting_office_id')) {
+            $query->whereHas('request', function ($q) use ($request) {
+                $q->where('requesting_office_id', $request->requesting_office_id);
+            });
+        }
+
+        if ($request->filled('transmitted_office_id')) {
+            $query->whereHas('request', function ($q) use ($request) {
+                $q->where('transmitted_office_id', $request->transmitted_office_id);
             });
         }
 
@@ -289,9 +319,11 @@ class PDFController extends Controller
         $fundSource = FundSource::where('fund_source_id', $request->fund_source_id)->first();
         $year = $request->year;
         $month = $request->filled('month') ? \Carbon\Carbon::create()->month((int) $request->month)->format('F') : null;
+        $requestingOffice = RequestingOffice::where('requesting_office_id', $request->requesting_office_id)->first();
+        $transmittedOffice = RequestingOffice::where('requesting_office_id', $request->transmitted_office_id)->first();
 
         // return response()->json($report);
-        $pdf = Pdf::loadView('pdf.request-logs-report-pdf', compact('report', 'fundSource', 'year', 'month'))
+        $pdf = Pdf::loadView('pdf.request-logs-report-pdf', compact('report', 'fundSource', 'year', 'month', 'requestingOffice', 'transmittedOffice'))
             ->setPaper('legal', 'landscape');
 
         return $pdf->stream('request_logs_report.pdf');

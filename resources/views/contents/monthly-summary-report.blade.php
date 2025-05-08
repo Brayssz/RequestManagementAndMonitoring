@@ -62,7 +62,7 @@
                     <table class="table report-table pb-3 fs-14 table-bordered" style="border-color: #343a40;">
                         <thead>
                             <tr>
-                                <th style="background-color: #f0f0f0;" rowspan="2">School Name</th>
+                                <th style="background-color: #f0f0f0;" rowspan="2">School/Office Name</th>
                                 <th style="background-color: #f0f0f0;" rowspan="2">Fund Source</th>
                                 <th style="background-color: #f0f0f0;" rowspan="2">Allotment Year</th>
                                 <th style="background-color: #f0f0f0;" colspan="3">Quarter 1</th>
@@ -113,7 +113,8 @@
             $('.btn-generate').on('click', function () {
                 var year = $('.year_filter').val();
                 var fund_source_id = $('.fund_source_filter').val();
-                window.open('/summary-report-pdf?year=' + year + '&fund_source_id=' + fund_source_id, '_blank');
+                var requesting_office_id = $('.office_filter').val();
+                window.open('/summary-report-pdf?year=' + year + '&fund_source_id=' + fund_source_id + '&requesting_office_id=' + requesting_office_id, '_blank');
             });
 
             if ($('.report-table').length > 0) {
