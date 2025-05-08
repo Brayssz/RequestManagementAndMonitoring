@@ -36,51 +36,63 @@ class ReportController extends Controller
 
             $summary = $offices->flatMap(function ($office) {
                 $requests = $office->requests;
-            
+    
                 if (request()->filled('year')) {
                     $requests = $requests->filter(function ($request) {
                         return $request->allotment_year == request('year');
                     });
                 }
-            
+    
                 if (request()->filled('fund_source_id')) {
                     $requests = $requests->filter(function ($request) {
                         return $request->fund_source_id == request('fund_source_id');
                     });
                 }
-
+    
                 if (request()->filled('requesting_office_id')) {
                     $requests = $requests->filter(function ($request) {
                         return $request->requesting_office_id == request('requesting_office_id');
                     });
                 }
-
-              
-            
+    
                 $groupedRequests = $requests->groupBy(function ($request) {
                     return $request->allotment_year . '-' . ($request->fundSource->name ?? 'Unknown');
                 });
-            
+    
                 return $groupedRequests->map(function ($group, $key) {
                     $months = collect([
-                        'January', 'February', 'March', 'April', 'May', 'June',
-                        'July', 'August', 'September', 'October', 'November', 'December'
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                        'August',
+                        'September',
+                        'October',
+                        'November',
+                        'December'
                     ]);
-            
+    
                     $monthlyData = $months->mapWithKeys(function ($month, $index) use ($group) {
                         $monthlyRequests = $group->filter(function ($request) use ($index) {
                             return \Carbon\Carbon::parse($request->sgod_date_received)->month === $index + 1;
                         });
-            
-                        $monthlyAmount = $monthlyRequests->sum('amount');
-            
+    
+                        $monthlyAmount = $monthlyRequests->sum(function ($request) {
+                            return $request->utilize_funds ?? $request->amount;
+                        });
+    
                         return [$month => $monthlyAmount ?: 0];
                     });
-            
-                    $totalAmount = $group->sum('amount');
-            
+    
+                    $totalAmount = $group->sum(function ($request) {
+                        return $request->utilize_funds ?? $request->amount;
+                    });
+    
                     [$year, $fundSource] = explode('-', $key);
-            
+    
                     return [
                         'school_name' => $group->first()->requestingOffice->name,
                         'year' => $year,
