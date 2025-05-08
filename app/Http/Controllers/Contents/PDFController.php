@@ -25,7 +25,7 @@ class PDFController extends Controller
                     return $request->allotment_year == request('year');
                 });
             }
-        
+
             if (request()->filled('fund_source_id')) {
                 $requests = $requests->filter(function ($request) {
                     return $request->fund_source_id == request('fund_source_id');
@@ -85,12 +85,12 @@ class PDFController extends Controller
 
         // return response()->json($report);
         $pdf = Pdf::loadView('pdf.monthly-summary-report-pdf', compact('report', 'fundSource', 'year'))
-              ->setPaper('legal', 'landscape');
+            ->setPaper('legal', 'landscape');
 
         return $pdf->stream('monthly_summary_report.pdf');
     }
 
-    
+
     // public function generateMonthlySummary(Request $request)
     // {
     //     $months = collect([
@@ -154,7 +154,7 @@ class PDFController extends Controller
     //     // return response()->json($report);
     //     $pdf = Pdf::loadView('pdf.monthly-summary-report-pdf', compact('report', 'fundSource', 'year'))
     //           ->setPaper('legal', 'landscape');
-        
+
     //     return $pdf->stream('book_requests_report.pdf');
     // }
 
@@ -179,15 +179,15 @@ class PDFController extends Controller
             $search = $request->input('search')['value'];
             $query->where(function ($q) use ($search) {
                 $q->where('dts_tracker_number', 'like', '%' . $search . '%')
-                  ->orWhereHas('requestingOffice', function ($q) use ($search) {
-                      $q->where('name', 'like', '%' . $search . '%');
-                  })
-                  ->orWhereHas('fundSource', function ($q) use ($search) {
-                      $q->where('name', 'like', '%' . $search . '%');
-                  })
-                  ->orWhereHas('requestingOffice.requestor', function ($q) use ($search) {
-                      $q->where('name', 'like', '%' . $search . '%');
-                  });
+                    ->orWhereHas('requestingOffice', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('fundSource', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('requestingOffice.requestor', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
             });
         }
 
@@ -217,7 +217,9 @@ class PDFController extends Controller
 
         // return response()->json($report);
         $pdf = Pdf::loadView('pdf.request-history-report-pdf', compact('report', 'fundSource', 'year', 'month'))
-              ->setPaper('legal', 'landscape');
+            ->setPaper('legal', 'landscape');
+
+
 
         return $pdf->stream('request_history_report.pdf');
     }
@@ -248,18 +250,18 @@ class PDFController extends Controller
             $search = $request->input('search')['value'];
             $query->where(function ($q) use ($search) {
                 $q->where('activity', 'like', '%' . $search . '%')
-                  ->orWhereHas('request', function ($q) use ($search) {
-                      $q->where('dts_tracker_number', 'like', '%' . $search . '%')
-                        ->orWhereHas('requestingOffice', function ($q) use ($search) {
-                            $q->where('name', 'like', '%' . $search . '%');
-                        })
-                        ->orWhereHas('fundSource', function ($q) use ($search) {
-                            $q->where('name', 'like', '%' . $search . '%');
-                        });
-                  })
-                  ->orWhereHas('user', function ($q) use ($search) {
-                      $q->where('name', 'like', '%' . $search . '%');
-                  });
+                    ->orWhereHas('request', function ($q) use ($search) {
+                        $q->where('dts_tracker_number', 'like', '%' . $search . '%')
+                            ->orWhereHas('requestingOffice', function ($q) use ($search) {
+                                $q->where('name', 'like', '%' . $search . '%');
+                            })
+                            ->orWhereHas('fundSource', function ($q) use ($search) {
+                                $q->where('name', 'like', '%' . $search . '%');
+                            });
+                    })
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
             });
         }
 
@@ -290,7 +292,7 @@ class PDFController extends Controller
 
         // return response()->json($report);
         $pdf = Pdf::loadView('pdf.request-logs-report-pdf', compact('report', 'fundSource', 'year', 'month'))
-              ->setPaper('legal', 'landscape');
+            ->setPaper('legal', 'landscape');
 
         return $pdf->stream('request_logs_report.pdf');
     }

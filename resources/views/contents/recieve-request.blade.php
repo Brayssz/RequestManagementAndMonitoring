@@ -220,15 +220,12 @@
                                         <a class="me-2 p-2 delete-request" data-requestid="${row.request_id}">
                                             <i data-feather="trash-2" class="feather-trash-2"></i>
                                         </a>
-                                        ${row.status === 'transmitted' ? `
-                                            <a class="me-2 p-2 return-request" data-requestid="${row.request_id}">
-                                                <i data-feather="corner-up-left" class="feather-corner-up-left"></i>
-                                            </a>
-                                        ` : `
-                                            <a class="me-2 p-2 transmit-request" data-requestid="${row.request_id}">
-                                                <i data-feather="send" class="feather-send"></i>
-                                            </a>
-                                        `}
+                                        <a class="me-2 p-2 return-request" data-requestid="${row.request_id}">
+                                            <i data-feather="corner-up-left" class="feather-corner-up-left"></i>
+                                        </a>
+                                        <a class="me-2 p-2 transmit-request" data-requestid="${row.request_id}">
+                                            <i data-feather="send" class="feather-send"></i>
+                                        </a>
                                     </div>
                                 `;
                             }
