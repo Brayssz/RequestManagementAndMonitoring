@@ -69,6 +69,9 @@ class Request extends Model
 
                 RequestActivityLog::create([
                     'request_id' => $request->request_id,
+                    'transmitted_office_id' => $request->transmitted_office_id,
+                    'transmitted_date' => $request->date_transmitted,
+                    'remarks' => $request->remarks,
                     'user_id' => Auth::id(),
                     'activity' => $newStatus, 
                     'created_at' => now(),

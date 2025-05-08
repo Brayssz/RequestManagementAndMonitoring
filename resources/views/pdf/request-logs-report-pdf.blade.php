@@ -102,7 +102,7 @@
 
             <div style="border-top: 2px solid #000; margin: 20px 0;"></div>
 
-            <h3 style="text-align: center; margin-top: 0px;">Request History Report</h3>
+            <h3 style="text-align: center; margin-top: 0px;">Request Logs Report</h3>
         </div>
         @php
             $reqOffice = $requestingOffice && $requestingOffice->name ? 'Requested by: ' . $requestingOffice->name : null;
@@ -160,6 +160,7 @@
                 <th style="background-color: #f0f0f0;">Amount</th>
                 <th style="background-color: #f0f0f0;">Utilized Amount</th>
                 <th style="background-color: #f0f0f0;">Nature of Request</th>
+                <th style="background-color: #f0f0f0;">Transmitted Office/School</th>
                 <th style="background-color: #f0f0f0;">Date Transmitted</th>
                 <th style="background-color: #f0f0f0;">Remarks</th>
             </tr>
@@ -179,6 +180,7 @@
                     <td class="currency-sign">&#8369; {{ number_format($record['amount'], 2) }}</td>
                     <td class="currency-sign">&#8369; {{ number_format($record['utilize_amount'], 2) }}</td>
                     <td>{{ $record['nature_of_request'] }}</td>
+                    <td>{{ $record['transmitted_office'] ?? '-' }}</td>
                     <td>{{ $record['date_transmitted'] ?? '-' }}</td>
                     <td>{{ $record['remarks'] ?? '-' }}</td>
                 </tr>

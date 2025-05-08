@@ -93,6 +93,7 @@
                                 <th style="background-color: #f0f0f0;">Amount</th>
                                 <th style="background-color: #f0f0f0;">Utilized Amount</th>
                                 <th style="background-color: #f0f0f0;">Nature of Request</th>
+                                <th style="background-color: #f0f0f0;">Transmitted Office</th>
                                 <th style="background-color: #f0f0f0;">Date Transmitted</th>
                                 <th style="background-color: #f0f0f0;">Remarks</th>
                             </tr>
@@ -192,6 +193,7 @@
                             }
                         },
                         { "data": "nature_of_request" },
+                        { "data": "transmitted_office" },
                         { 
                             "data": "date_transmitted",
                             "render": function(data) {

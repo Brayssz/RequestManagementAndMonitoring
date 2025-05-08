@@ -20,6 +20,9 @@ class RequestActivityLog extends Model
     protected $fillable = [
         'request_id',
         'user_id',
+        'transmitted_office_id',
+        'transmitted_date',
+        'remarks',
         'activity',
         'created_at',
     ];
@@ -32,5 +35,10 @@ class RequestActivityLog extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function transmittedOffice()
+    {
+        return $this->belongsTo(RequestingOffice::class, 'transmitted_office_id', 'requesting_office_id');
     }
 }
