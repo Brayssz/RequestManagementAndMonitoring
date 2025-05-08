@@ -120,7 +120,7 @@
                                                     <div class="mb-3">
                                                         <label class="form-label" for="transmitted_office_id">Office/School to Return</label>
                                                         <div wire:ignore>
-                                                            <select id="transmitted_office_id" class="form-control select transmit"
+                                                            <select id="transmitted_office_id" class="form-control select return"
                                                                 wire:model="transmitted_office_id">
                                                                 <option value="">Choose</option>
                                                                 @foreach ($returnOffices as $office)
@@ -206,7 +206,7 @@
             }
 
             function handleInputChangeTransmit(e) {
-                if ($(e.target).is('select.transmit')) {
+                if ($(e.target).is('select.transmit') || $(e.target).is('select.return')) {
                     const property = e.target.id;
                     const value = e.target.value;
                     @this.set(property, value);

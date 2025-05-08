@@ -26,8 +26,13 @@ class TransmitRequest extends Component
 
     public function mount()
     {
-        $this->requestingOffices = RequestingOffice::where('type', 'office')->where('status', 'active')->get();
-        $this->returnOffices = RequestingOffice::where('status', 'active')->get();
+        $this->requestingOffices = RequestingOffice::where('type', 'office')
+            ->where('status', 'active')
+            ->orderBy('name', 'asc')
+            ->get();
+        $this->returnOffices = RequestingOffice::where('status', 'active')
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     public function returnRequest($requestId)

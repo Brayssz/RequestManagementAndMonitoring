@@ -63,9 +63,9 @@ class ReceiveRequest extends Component
 
     public function mount() 
     {
-        $this->requestingOffices = RequestingOffice::where('status', 'active')->get();
+        $this->requestingOffices = RequestingOffice::where('status', 'active')->orderBy('name', 'asc')->get();
 
-        $this->fundSources = FundSource::where('status', 'active')->get();
+        $this->fundSources = FundSource::where('status', 'active')->orderBy('name', 'asc')->get();
     }
 
     public function render()

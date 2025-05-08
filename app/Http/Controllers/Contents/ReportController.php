@@ -103,9 +103,9 @@ class ReportController extends Controller
             ]);
         }
 
-        $fund_sources = FundSource::where('status', 'active')->get();
-        $offices = RequestingOffice::where('status', 'active')->where('type', 'office')->get();
-        $offices_schools = RequestingOffice::where('status', 'active')->get();
+        $fund_sources = FundSource::where('status', 'active')->orderBy('name', 'asc')->get();
+        $offices = RequestingOffice::where('status', 'active')->where('type', 'office')->orderBy('name', 'asc')->get();
+        $offices_schools = RequestingOffice::where('status', 'active')->orderBy('name', 'asc')->get();
 
         return view('contents.monthly-summary-report', compact('fund_sources', 'offices', 'offices_schools'));
     }
@@ -186,9 +186,9 @@ class ReportController extends Controller
                 "data" => $data
             ]);
         }
-        $fund_sources = FundSource::where('status', 'active')->get();
-        $offices = RequestingOffice::where('status', 'active')->where('type', 'office')->get();
-        $offices_schools = RequestingOffice::where('status', 'active')->get();
+        $fund_sources = FundSource::where('status', 'active')->orderBy('name', 'asc')->get();
+        $offices = RequestingOffice::where('status', 'active')->where('type', 'office')->orderBy('name', 'asc')->get();
+        $offices_schools = RequestingOffice::where('status', 'active')->orderBy('name', 'asc')->get();
 
 
         return view('contents.request-history-report', compact('fund_sources', 'offices', 'offices_schools'));
@@ -285,9 +285,9 @@ class ReportController extends Controller
             ]);
         }
 
-        $fund_sources = FundSource::where('status', 'active')->get();
-        $offices = RequestingOffice::where('status', 'active')->where('type', 'office')->get();
-        $offices_schools = RequestingOffice::where('status', 'active')->get();
+        $fund_sources = FundSource::where('status', 'active')->orderBy('name', 'asc')->get();
+        $offices = RequestingOffice::where('status', 'active')->where('type', 'office')->orderBy('name', 'asc')->get();
+        $offices_schools = RequestingOffice::where('status', 'active')->orderBy('name', 'asc')->get();
 
         return view('contents.request-logs-report', compact('fund_sources', 'offices', 'offices_schools'));
     }
