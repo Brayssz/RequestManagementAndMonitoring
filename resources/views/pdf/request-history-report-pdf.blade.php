@@ -65,7 +65,7 @@
 
         footer {
             position: fixed;
-            bottom: -40px;
+            bottom: -85px;
             left: 0px;
             right: 0px;
             height: 50px;
@@ -76,7 +76,7 @@
 
         @page {
             margin-top: 300px;
-            margin-bottom: 120px;
+            margin-bottom: 140px;
         }
 
         .page-number:after {
