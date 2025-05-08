@@ -14,100 +14,92 @@ class ReportController extends Controller
         if ($request->ajax()) {
             $query = RequestingOffice::query()->whereHas('requests')->with(['requests.fundSource']);
 
-            if ($request->filled('search') && !empty($request->input('search')['value'])) {
-                $search = $request->input('search')['value'];
-                $query->where('name', 'like', '%' . $search . '%');
+            $summary = $query->get()->flatMap(function ($office) {
+            $requests = $office->requests;
+
+            if (request()->filled('year')) {
+                $requests = $requests->filter(function ($request) {
+                return $request->allotment_year == request('year');
+                });
             }
 
-            $totalRecords = $query->count();
+            if (request()->filled('fund_source_id')) {
+                $requests = $requests->filter(function ($request) {
+                return $request->fund_source_id == request('fund_source_id');
+                });
+            }
+
+            if (request()->filled('requesting_office_id')) {
+                $requests = $requests->filter(function ($request) {
+                return $request->requesting_office_id == request('requesting_office_id');
+                });
+            }
+
+            $groupedRequests = $requests->groupBy(function ($request) {
+                return $request->allotment_year . '-' . ($request->fundSource->name ?? 'Unknown');
+            });
+
+            return $groupedRequests->map(function ($group, $key) {
+                $months = collect([
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December'
+                ]);
+
+                $monthlyData = $months->mapWithKeys(function ($month, $index) use ($group) {
+                $monthlyRequests = $group->filter(function ($request) use ($index) {
+                    return \Carbon\Carbon::parse($request->sgod_date_received)->month === $index + 1;
+                });
+
+                $monthlyAmount = $monthlyRequests->sum('amount');
+
+                return [$month => $monthlyAmount ?: 0];
+                });
+
+                $totalAmount = $group->sum('amount');
+
+                [$year, $fundSource] = explode('-', $key);
+
+                return [
+                'school_name' => $group->first()->requestingOffice->name,
+                'year' => $year,
+                'fund_source' => $fundSource,
+                'monthly_request_amount' => $monthlyData,
+                'total_amount' => $totalAmount,
+                ];
+            })->values();
+            });
+
+            $totalRecords = $summary->count();
 
             $orderColumnIndex = $request->input('order')[0]['column'] ?? 0;
-            $orderColumn = $request->input('columns')[$orderColumnIndex]['data'] ?? 'name';
+            $orderColumn = $request->input('columns')[$orderColumnIndex]['data'] ?? 'school_name';
 
-            if (!in_array($orderColumn, ['name', 'another_valid_column'])) {
-                $orderColumn = 'name';
+            if (!in_array($orderColumn, ['school_name', 'year', 'fund_source', 'total_amount'])) {
+            $orderColumn = 'school_name';
             }
             $orderDirection = $request->input('order')[0]['dir'] ?? 'asc';
-            $query->orderBy($orderColumn, $orderDirection);
+
+            $sortedSummary = $summary->sortBy($orderColumn, SORT_REGULAR, $orderDirection === 'desc')->values();
 
             $start = $request->input('start', 0);
             $length = $request->input('length', 10);
-            $offices = $query->skip($start)->take($length)->get();
-
-            $summary = $offices->flatMap(function ($office) {
-                $requests = $office->requests;
-    
-                if (request()->filled('year')) {
-                    $requests = $requests->filter(function ($request) {
-                        return $request->allotment_year == request('year');
-                    });
-                }
-    
-                if (request()->filled('fund_source_id')) {
-                    $requests = $requests->filter(function ($request) {
-                        return $request->fund_source_id == request('fund_source_id');
-                    });
-                }
-    
-                if (request()->filled('requesting_office_id')) {
-                    $requests = $requests->filter(function ($request) {
-                        return $request->requesting_office_id == request('requesting_office_id');
-                    });
-                }
-    
-                $groupedRequests = $requests->groupBy(function ($request) {
-                    return $request->allotment_year . '-' . ($request->fundSource->name ?? 'Unknown');
-                });
-    
-                return $groupedRequests->map(function ($group, $key) {
-                    $months = collect([
-                        'January',
-                        'February',
-                        'March',
-                        'April',
-                        'May',
-                        'June',
-                        'July',
-                        'August',
-                        'September',
-                        'October',
-                        'November',
-                        'December'
-                    ]);
-    
-                    $monthlyData = $months->mapWithKeys(function ($month, $index) use ($group) {
-                        $monthlyRequests = $group->filter(function ($request) use ($index) {
-                            return \Carbon\Carbon::parse($request->sgod_date_received)->month === $index + 1;
-                        });
-    
-                        $monthlyAmount = $monthlyRequests->sum(function ($request) {
-                            return $request->utilize_funds ?? $request->amount;
-                        });
-    
-                        return [$month => $monthlyAmount ?: 0];
-                    });
-    
-                    $totalAmount = $group->sum(function ($request) {
-                        return $request->utilize_funds ?? $request->amount;
-                    });
-    
-                    [$year, $fundSource] = explode('-', $key);
-    
-                    return [
-                        'school_name' => $group->first()->requestingOffice->name,
-                        'year' => $year,
-                        'fund_source' => $fundSource,
-                        'monthly_request_amount' => $monthlyData,
-                        'total_amount' => $totalAmount,
-                    ];
-                })->values();
-            });
+            $paginatedSummary = $sortedSummary->slice($start, $length);
 
             return response()->json([
-                "draw" => intval($request->input('draw', 1)),
-                "recordsTotal" => $totalRecords,
-                "recordsFiltered" => $totalRecords,
-                "data" => $summary
+            "draw" => intval($request->input('draw', 1)),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalRecords,
+            "data" => $paginatedSummary->values()
             ]);
         }
 
@@ -197,7 +189,7 @@ class ReportController extends Controller
         $fund_sources = FundSource::where('status', 'active')->get();
         $offices = RequestingOffice::where('status', 'active')->where('type', 'office')->get();
         $offices_schools = RequestingOffice::where('status', 'active')->get();
-        
+
 
         return view('contents.request-history-report', compact('fund_sources', 'offices', 'offices_schools'));
     }
@@ -276,7 +268,7 @@ class ReportController extends Controller
                     'amount' => $log->request->amount ?? null,
                     'utilize_amount' => $log->request->utilize_funds ?? $log->request->amount ?? null,
                     'nature_of_request' => $log->request->nature_of_request ?? null,
-                    'date_transmitted' => \Carbon\Carbon::parse($log->transmitted_date)->format('Y-m-d')?? null,
+                    'date_transmitted' => \Carbon\Carbon::parse($log->transmitted_date)->format('Y-m-d') ?? null,
                     'transmitted_office' => $log->transmittedOffice->name ?? "-",
                     'remarks' => $log->remarks ?? null,
                     'actioned_by' => $log->user->name ?? null,
