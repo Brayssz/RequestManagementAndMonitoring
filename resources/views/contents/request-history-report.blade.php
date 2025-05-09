@@ -171,9 +171,19 @@
                         "dataSrc": "data"
                     },
                     "columns": [
-                        { "data": "dts_date" },
+                        { 
+                            "data": "dts_date",
+                            "render": function(data) {
+                                return data ? moment(data).format('MM/DD/YYYY') : '-';
+                            }
+                        },
                         { "data": "dts_tracker_number" },
-                        { "data": "sgod_date_received" },
+                        { 
+                            "data": "sgod_date_received",
+                            "render": function(data) {
+                                return data ? moment(data).format('MM/DD/YYYY') : '-';
+                            }
+                        },
                         { "data": "requesting_office" },
                         { "data": "requestor" },
                         { "data": "fund_source" },
@@ -193,13 +203,13 @@
                         { 
                             "data": "signed_chief_date",
                             "render": function(data) {
-                                return data ? data : '-';
+                                return data ? moment(data).format('MM/DD/YYYY') : '-';
                             }
                         },
                         { 
                             "data": "date_transmitted",
                             "render": function(data) {
-                                return data ? data : '-';
+                                return data ? moment(data).format('MM/DD/YYYY') : '-';
                             }
                         },
                         { 

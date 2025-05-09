@@ -98,8 +98,8 @@
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="dts_date">DTS Date</label>
-                                                        <input type="date" class="form-control" id="dts_date"
-                                                            wire:model.lazy="dts_date">
+                                                        <input type="text" class="form-control" id="dts_date"
+                                                            wire:model.lazy="dts_date" placeholder="mm/dd/yyyy">
                                                         @error('dts_date')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
@@ -122,9 +122,10 @@
                                                     <div class="mb-3">
                                                         <label class="form-label" for="sgod_date_received">SGOD Date
                                                             Received</label>
-                                                        <input type="date" class="form-control"
+                                                        <input type="text" class="form-control"
                                                             id="sgod_date_received"
-                                                            wire:model.lazy="sgod_date_received">
+                                                            wire:model.lazy="sgod_date_received"
+                                                            placeholder="mm/dd/yyyy">
                                                         @error('sgod_date_received')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror

@@ -170,10 +170,10 @@
                 <tr>
                     <td>{{ $record['activity'] }}</td>
                     <td>{{ $record['actioned_by'] }}</td>
-                    <td>{{ $record['log_date'] }}</td>
-                    <td>{{ $record['dts_date'] }}</td>
+                    <td>{{ \Carbon\Carbon::parse($record['log_date'])->format('m/d/Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($record['dts_date'])->format('m/d/Y') }}</td>
                     <td>{{ $record['dts_tracker_number'] }}</td>
-                    <td>{{ $record['sgod_date_received'] }}</td>
+                    <td>{{ \Carbon\Carbon::parse($record['sgod_date_received'])->format('m/d/Y') }}</td>
                     <td>{{ $record['requesting_office'] }}</td>
                     <td>{{ $record['requestor'] }}</td>
                     <td>{{ $record['fund_source'] }}</td>
@@ -181,7 +181,7 @@
                     <td class="currency-sign">&#8369; {{ number_format($record['utilize_amount'], 2) }}</td>
                     <td>{{ $record['nature_of_request'] }}</td>
                     <td>{{ $record['transmitted_office'] ?? '-' }}</td>
-                    <td>{{ $record['date_transmitted'] ?? '-' }}</td>
+                    <td>{{ $record['date_transmitted'] ? \Carbon\Carbon::parse($record['date_transmitted'])->format('m/d/Y') : '-' }}</td>
                     <td>{{ $record['remarks'] ?? '-' }}</td>
                 </tr>
             @empty

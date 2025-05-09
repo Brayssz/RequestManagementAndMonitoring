@@ -163,18 +163,18 @@ class ReportController extends Controller
 
             $data = $requests->map(function ($request) {
                 return [
-                    'dts_date' => $request->dts_date,
+                    'dts_date' => \Carbon\Carbon::parse($request->dts_date)->format('m/d/Y'),
                     'dts_tracker_number' => $request->dts_tracker_number,
-                    'sgod_date_received' => $request->sgod_date_received,
+                    'sgod_date_received' => \Carbon\Carbon::parse($request->sgod_date_received)->format('m/d/Y'),
                     'requestor' => $request->requestingOffice->requestor_obj->name ?? null,
                     'requesting_office' => $request->requestingOffice->name ?? null,
                     'fund_source' => $request->fundSource->name ?? null,
                     'amount' => $request->amount,
                     'utilize_amount' => $request->utilize_funds ?? $request->amount,
                     'nature_of_request' => $request->nature_of_request,
-                    'signed_chief_date' => $request->signed_chief_date,
+                    'signed_chief_date' => \Carbon\Carbon::parse($request->signed_chief_date)->format('m/d/Y'),
                     'transmitted_office' => $request->transmittedOffice->name ?? null,
-                    'date_transmitted' => $request->date_transmitted,
+                    'date_transmitted' => \Carbon\Carbon::parse($request->date_transmitted)->format('m/d/Y'),
                     'remarks' => $request->remarks,
                 ];
             });
@@ -259,21 +259,21 @@ class ReportController extends Controller
 
             $data = $logs->map(function ($log) {
                 return [
-                    'dts_date' => $log->request->dts_date ?? null,
+                    'dts_date' => $log->request->dts_date ? \Carbon\Carbon::parse($log->request->dts_date)->format('m/d/Y') : null,
                     'dts_tracker_number' => $log->request->dts_tracker_number ?? null,
-                    'sgod_date_received' => $log->request->sgod_date_received ?? null,
+                    'sgod_date_received' => $log->request->sgod_date_received ? \Carbon\Carbon::parse($log->request->sgod_date_received)->format('m/d/Y') : null,
                     'requestor' => $log->request->requestingOffice->requestor_obj->name ?? null,
                     'requesting_office' => $log->request->requestingOffice->name ?? null,
                     'fund_source' => $log->request->fundSource->name ?? null,
                     'amount' => $log->request->amount ?? null,
                     'utilize_amount' => $log->request->utilize_funds ?? $log->request->amount ?? null,
                     'nature_of_request' => $log->request->nature_of_request ?? null,
-                    'date_transmitted' => \Carbon\Carbon::parse($log->transmitted_date)->format('Y-m-d') ?? null,
+                    'date_transmitted' => $log->transmitted_date ? \Carbon\Carbon::parse($log->transmitted_date)->format('m/d/Y') : null,
                     'transmitted_office' => $log->transmittedOffice->name ?? "-",
                     'remarks' => $log->remarks ?? null,
                     'actioned_by' => $log->user->name ?? null,
                     'activity' => $log->activity,
-                    'log_date' => \Carbon\Carbon::parse($log->created_at)->format('Y-m-d'),
+                    'log_date' => $log->created_at ? \Carbon\Carbon::parse($log->created_at)->format('m/d/Y') : null,
                 ];
             });
 

@@ -173,10 +173,25 @@
                     "columns": [
                         { "data": "activity" },
                         { "data": "actioned_by" },
-                        { "data": "log_date" },
-                        { "data": "dts_date" },
+                        { 
+                            "data": "log_date",
+                            "render": function(data) {
+                                return moment(data).format('MM/DD/YYYY');
+                            }
+                        },
+                        { 
+                            "data": "dts_date",
+                            "render": function(data) {
+                                return moment(data).format('MM/DD/YYYY');
+                            }
+                        },
                         { "data": "dts_tracker_number" },
-                        { "data": "sgod_date_received" },
+                        { 
+                            "data": "sgod_date_received",
+                            "render": function(data) {
+                                return moment(data).format('MM/DD/YYYY');
+                            }
+                        },
                         { "data": "requesting_office" },
                         { "data": "requestor" },
                         { "data": "fund_source" },
@@ -197,7 +212,7 @@
                         { 
                             "data": "date_transmitted",
                             "render": function(data) {
-                                return data ? data : '-';
+                                return data ? moment(data).format('MM/DD/YYYY') : '-';
                             }
                         },
                         { 
