@@ -169,6 +169,7 @@
 
             function handleTransmitActions() {
                 $('select.transmit').on('change', handleInputChangeTransmit);
+                $('select.return').on('change', handleInputChangeTransmit);
                 $(document).on('click', '.transmit-request', openTransmitRequestModal);
                 $(document).on('click', '.return-request', openReturnRequestModal);
                 $(document).on('click', '.return-btn', returnRequest);
@@ -218,10 +219,17 @@
             function openReturnRequestModal() {
                 const requestId = $(this).data('requestid');
                 @this.call('getRequest', requestId).then(() => {
-                    $('#return-request-modal').modal('show');
                     let transmitted_office_id = @this.get('transmitted_office_id');
+                    let status = @this.get('status');
+
+                    if (status != 'returned') {
+                        @this.call('resetForm');
+                    }
+
+                    $('#return-request-modal').modal('show');
+
                     if (transmitted_office_id) {
-                        $('#transmitted_office_id').val(transmitted_office_id).trigger('change');
+                        $('select.return').val(transmitted_office_id).trigger('change');
                     }
                 });
             }
@@ -229,6 +237,11 @@
             function openTransmitRequestModal() {
                 const requestId = $(this).data('requestid');
                 @this.call('getRequest', requestId).then(() => {
+                    let status = @this.get('status');
+
+                    if (status != 'transmitted') {
+                        @this.call('resetForm');
+                    }
                     $('#transmit-request-modal').modal('show');
                     let transmitted_office_id = @this.get('transmitted_office_id');
                     if (transmitted_office_id) {

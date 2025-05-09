@@ -15,6 +15,7 @@ class TransmitRequest extends Component
     public $requestingOffices = [];
     public $requestId;
 
+    public $status;
     public $returnOffices = [];
 
     protected $rules = [
@@ -54,16 +55,15 @@ class TransmitRequest extends Component
         $this->date_transmitted = $request->date_transmitted;
         $this->transmitted_office_id = $request->transmitted_office_id;
         $this->remarks = $request->remarks;
-
+        $this->status = $request->status;
        
     }
-    
-
     public function transmit_request()
     {
         $this->validate();
 
         $request = Request::findOrFail($this->requestId);
+
         $request->update([
             'signed_chief_date' => $this->signed_chief_date,
             'date_transmitted' => $this->date_transmitted,
@@ -106,13 +106,12 @@ class TransmitRequest extends Component
         return redirect()->route('receive-requests');
     }
 
-    private function resetForm()
+    public function resetForm()
     {
         $this->signed_chief_date = null;
         $this->date_transmitted = null;
         $this->transmitted_office_id = null;
         $this->remarks = null;
-        $this->requestId = null;
     }
 
     public function render()
