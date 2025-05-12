@@ -187,8 +187,12 @@ class PDFController extends Controller
             $query->where('requesting_office_id', $request->requesting_office_id);
         }
 
-        if ($request->filled('transmitted_office_id')) {
-            $query->where('transmitted_office_id', $request->transmitted_office_id);
+        // if ($request->filled('transmitted_office_id')) {
+        //     $query->where('transmitted_office_id', $request->transmitted_office_id);
+        // }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
         }
 
         if ($request->filled('search') && !empty($request->input('search')['value'])) {
@@ -232,9 +236,9 @@ class PDFController extends Controller
         $month = $request->filled('month') ? \Carbon\Carbon::create()->month((int) $request->month)->format('F') : null;
         $requestingOffice = RequestingOffice::where('requesting_office_id', $request->requesting_office_id)->first();
         $transmittedOffice = RequestingOffice::where('requesting_office_id', $request->transmitted_office_id)->first();
-
+        $status = $request->status;
         // return response()->json($report);
-        $pdf = Pdf::loadView('pdf.request-history-report-pdf', compact('report', 'fundSource', 'year', 'month', 'requestingOffice', 'transmittedOffice'))
+        $pdf = Pdf::loadView('pdf.request-history-report-pdf', compact('report', 'fundSource', 'year', 'month', 'requestingOffice', 'transmittedOffice', 'status'))
             ->setPaper('legal', 'landscape');
 
 
@@ -264,12 +268,11 @@ class PDFController extends Controller
             });
         }
 
-        if ($request->filled('transmitted_office_id')) {
-            $query->whereHas('request', function ($q) use ($request) {
-                $q->where('transmitted_office_id', $request->transmitted_office_id);
-            });
+        if ($request->filled('activity')) {
+            $query->where('activity', 'like', '%' . $request->activity . '%');
         }
 
+       
         if ($request->filled('year')) {
             $query->whereHas('request', function ($q) use ($request) {
                 $q->whereYear('sgod_date_received', '=', intval($request->year));
@@ -322,9 +325,10 @@ class PDFController extends Controller
         $month = $request->filled('month') ? \Carbon\Carbon::create()->month((int) $request->month)->format('F') : null;
         $requestingOffice = RequestingOffice::where('requesting_office_id', $request->requesting_office_id)->first();
         $transmittedOffice = RequestingOffice::where('requesting_office_id', $request->transmitted_office_id)->first();
+        $activity = $request->activity;
 
         // return response()->json($report);
-        $pdf = Pdf::loadView('pdf.request-logs-report-pdf', compact('report', 'fundSource', 'year', 'month', 'requestingOffice', 'transmittedOffice'))
+        $pdf = Pdf::loadView('pdf.request-logs-report-pdf', compact('report', 'fundSource', 'year', 'month', 'requestingOffice', 'transmittedOffice', 'activity'))
             ->setPaper('legal', 'landscape');
 
         return $pdf->stream('request_logs_report.pdf');

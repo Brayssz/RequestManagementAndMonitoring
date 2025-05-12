@@ -63,8 +63,18 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <select class="select status_filter form-control">
+                                        <option value="">Filter by Action</option>
+                                        <option value="returned">Returned</option>
+                                        <option value="transmitted">Transmitted</option>
+                                        <option value="pending">Pending</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                            <div class="col-lg-3 col-sm-12">
+                            {{-- <div class="col-lg-3 col-sm-12">
                                 <div class="form-group">
                                     <select class="select transmitted_filter form-control">
                                         <option value="">Filter by Transmitted Office</option>
@@ -73,7 +83,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -128,11 +138,12 @@
                 var month = $('.month_filter').val();
                 var requesting_office_id = $('.office_filter').val();
                 var transmitted_office_id = $('.transmitted_filter').val();
+                var status = $('.status_filter').val();
                 window.open('/request-history-report-pdf?year=' + year + 
                             '&fund_source_id=' + fund_source_id + 
                             '&month=' + month + 
                             '&requesting_office_id=' + requesting_office_id + 
-                            '&transmitted_office_id=' + transmitted_office_id, '_blank');
+                            '&status=' + status, '_blank');
             });
 
             if ($('.report-table').length > 0) {
@@ -167,6 +178,7 @@
                             d.requesting_office_id = $('.office_filter').val();
                             d.transmitted_office_id = $('.transmitted_filter').val();
                             d.year = $('.year_filter').val();
+                            d.status = $('.status_filter').val();
                         },
                         "dataSrc": "data"
                     },
@@ -233,12 +245,17 @@
                         $('.dataTables_filter').appendTo('.search-input');
                         feather.replace();
 
-                        $('.month_filter, .fund_source_filter, .year_filter, .office_filter, .transmitted_filter').on('change', function() {
+                        $('.month_filter, .fund_source_filter, .year_filter, .office_filter, .transmitted_filter, .status_filter').on('change', function() {
+                            showLoader();
                             table.draw();
                         });
                     },
                     "drawCallback": function(settings) {
+                        hideLoader();
                         feather.replace();
+                    },
+                    "preDrawCallback": function(settings) {
+                        showLoader();
                     },
                 });
             }

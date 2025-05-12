@@ -22,9 +22,10 @@
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="signed_chief_date">Signed Chief Date</label>
-                                                        <input type="date" class="form-control" id="signed_chief_date"
-                                                            wire:model.lazy="signed_chief_date">
+                                                        <label class="form-label" for="signed_chief_date">Signed Chief
+                                                            Date</label>
+                                                        <input type="date" class="form-control"
+                                                            id="signed_chief_date" wire:model.lazy="signed_chief_date">
                                                         @error('signed_chief_date')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
@@ -32,7 +33,8 @@
                                                 </div>
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="date_transmitted">Date Transmitted</label>
+                                                        <label class="form-label" for="date_transmitted">Date
+                                                            Transmitted</label>
                                                         <input type="date" class="form-control" id="date_transmitted"
                                                             wire:model.lazy="date_transmitted">
                                                         @error('date_transmitted')
@@ -42,9 +44,11 @@
                                                 </div>
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="transmitted_office_id">Transmitted Office</label>
+                                                        <label class="form-label"
+                                                            for="transmitted_office_id">Transmitted Office</label>
                                                         <div wire:ignore>
-                                                            <select id="transmitted_office_id" class="form-control select transmit"
+                                                            <select id="transmitted_office_id"
+                                                                class="form-control search-office-transmit transmit"
                                                                 wire:model="transmitted_office_id">
                                                                 <option value="">Choose</option>
                                                                 @foreach ($requestingOffices as $office)
@@ -105,10 +109,11 @@
                                     <div class="card-body">
                                         <div class="new-request-field">
                                             <div class="row">
-                                               
+
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="date_transmitted">Return Date</label>
+                                                        <label class="form-label" for="date_transmitted">Return
+                                                            Date</label>
                                                         <input type="date" class="form-control" id="date_transmitted"
                                                             wire:model.lazy="date_transmitted">
                                                         @error('date_transmitted')
@@ -118,9 +123,10 @@
                                                 </div>
                                                 <div class="col-lg-12 col-md-12">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="transmitted_office_id">Office/School to Return</label>
+                                                        <label class="form-label"
+                                                            for="transmitted_office_id">Office/School to Return</label>
                                                         <div wire:ignore>
-                                                            <select id="transmitted_office_id" class="form-control select return"
+                                                            <select class="form-control search-office-return return"
                                                                 wire:model="transmitted_office_id">
                                                                 <option value="">Choose</option>
                                                                 @foreach ($returnOffices as $office)
@@ -167,9 +173,30 @@
                 handleTransmitActions();
             });
 
+            $(document).ready(function() {
+                $('.search-office-return').select2({
+                    dropdownParent: $('#return-request-modal')
+                });
+
+                $('.search-office-transmit').select2({
+                    dropdownParent: $('#transmit-request-modal')
+                });
+
+                $('.search-office-return').on('select2:open', function() {
+                    document.querySelector('.select2-container--open .select2-search__field').placeholder =
+                        'Search offices/schools to return here...';
+                });
+
+                $('.search-office-transmit').on('select2:open', function() {
+                    document.querySelector('.select2-container--open .select2-search__field').placeholder =
+                        'Search offices to transmit here...';
+                });
+
+            });
+
             function handleTransmitActions() {
-                $('select.transmit').on('change', handleInputChangeTransmit);
-                $('select.return').on('change', handleInputChangeTransmit);
+                $('.search-office-transmit').on('change', handleInputChangeTransmit);
+                $('.search-office-return').on('change', handleInputChangeTransmit);
                 $(document).on('click', '.transmit-request', openTransmitRequestModal);
                 $(document).on('click', '.return-request', openReturnRequestModal);
                 $(document).on('click', '.return-btn', returnRequest);
@@ -207,8 +234,17 @@
             }
 
             function handleInputChangeTransmit(e) {
-                if ($(e.target).is('select.transmit') || $(e.target).is('select.return')) {
-                    const property = e.target.id;
+
+                if ($(e.target).is('.search-office-transmit')) {
+                    const property = "transmitted_office_id";
+                    const value = e.target.value;
+                    @this.set(property, value);
+
+                    console.log(`${property}: ${value}`);
+                }
+
+                if ($(e.target).is('.search-office-return')) {
+                    const property = "transmitted_office_id";
                     const value = e.target.value;
                     @this.set(property, value);
 
@@ -219,17 +255,19 @@
             function openReturnRequestModal() {
                 const requestId = $(this).data('requestid');
                 @this.call('getRequest', requestId).then(() => {
-                    let transmitted_office_id = @this.get('transmitted_office_id');
                     let status = @this.get('status');
 
                     if (status != 'returned') {
-                        @this.call('resetForm');
+                        @this.call('resetForm').then(() => {
+                            $('select.return').val('').change();
+                        });
                     }
-
                     $('#return-request-modal').modal('show');
 
+                    let transmitted_office_id = @this.get('transmitted_office_id');
+
                     if (transmitted_office_id) {
-                        $('select.return').val(transmitted_office_id).trigger('change');
+                        $('select.return').val(transmitted_office_id).change();
                     }
                 });
             }
@@ -240,7 +278,9 @@
                     let status = @this.get('status');
 
                     if (status != 'transmitted') {
-                        @this.call('resetForm');
+                        @this.call('resetForm').then(() => {
+                            $('select.transmit').val('').change();
+                        });
                     }
                     $('#transmit-request-modal').modal('show');
                     let transmitted_office_id = @this.get('transmitted_office_id');

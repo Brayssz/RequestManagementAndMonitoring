@@ -44,7 +44,7 @@
 
                             <div class="col-lg-3 col-sm-12">
                                 <div class="form-group">
-                                    <select class="select office_filter form-control">
+                                    <select class="search-offices-schools office_filter form-control">
                                         <option value="">Filter by Requesting Office/School</option>
                                         @foreach ($offices_schools as $office_school)
                                             <option value="{{ $office_school->requesting_office_id }}">{{ $office_school->name }}</option>
@@ -248,11 +248,16 @@
                         feather.replace();
 
                         $('.year_filter, .fund_source_filter, .office_filter').on('change', function() {
+                            showLoader();
                             table.draw();
                         });
                     },
                     "drawCallback": function(settings) {
+                        hideLoader();
                         feather.replace();
+                    },
+                    "preDrawCallback": function(settings) {
+                        showLoader();
                     },
                 });
             }

@@ -23,7 +23,7 @@
                         <div class="row mt-sm-3 mt-xs-3 mt-lg-0 w-sm-100 flex-grow-1">
                             <div class="col-lg-3 col-sm-12">
                                 <div class="form-group">
-                                    <select class="select office_filter form-control">
+                                    <select class="search-offices-schools office_filter form-control">
                                         <option value="">Filter by Requesting Office/School</option>
                                         @foreach ($offices_schools as $office_school)
                                             <option value="{{ $office_school->requesting_office_id }}">{{ $office_school->name }}</option>
@@ -62,13 +62,23 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-3 col-sm-12">
+                            {{-- <div class="col-lg-2 col-sm-12">
                                 <div class="form-group">
                                     <select class="select transmitted_filter form-control">
                                         <option value="">Filter by Transmitted Office</option>
                                         @foreach ($offices as $office)
                                             <option value="{{ $office->requesting_office_id }}">{{ $office->name }}</option>
                                         @endforeach
+                                    </select>
+                                </div>
+                            </div> --}}
+                            <div class="col-lg-2 col-sm-12">
+                                <div class="form-group">
+                                    <select class="select status_filter form-control">
+                                        <option value="">Filter by Action</option>
+                                        <option value="Returned">Returned</option>
+                                        <option value="Transmitted">Transmitted</option>
+                                        <option value="Received">Received</option>
                                     </select>
                                 </div>
                             </div>
@@ -128,11 +138,13 @@
                 var month = $('.month_filter').val();
                 var requesting_office_id = $('.office_filter').val();
                 var transmitted_office_id = $('.transmitted_filter').val();
+                var activity = $('.status_filter').val();
                 window.open('/request-logs-report-pdf?year=' + year + 
                             '&fund_source_id=' + fund_source_id + 
                             '&month=' + month + 
                             '&requesting_office_id=' + requesting_office_id + 
-                            '&transmitted_office_id=' + transmitted_office_id, '_blank');
+                            '&transmitted_office_id=' + transmitted_office_id + 
+                            '&activity=' + activity, '_blank');
             });
 
             if ($('.report-table').length > 0) {
@@ -167,6 +179,7 @@
                             d.year = $('.year_filter').val();
                             d.requesting_office_id = $('.office_filter').val();
                             d.transmitted_office_id = $('.transmitted_filter').val();
+                            d.activity = $('.status_filter').val();
                         },
                         "dataSrc": "data"
                     },
@@ -230,12 +243,17 @@
                         $('.dataTables_filter').appendTo('.search-input');
                         feather.replace();
 
-                        $('.month_filter, .fund_source_filter, .year_filter, .office_filter, .transmitted_filter').on('change', function() {
+                        $('.month_filter, .fund_source_filter, .year_filter, .office_filter, .transmitted_filter, .status_filter').on('change', function() {
+                            showLoader();
                             table.draw();
                         });
                     },
                     "drawCallback": function(settings) {
+                        hideLoader();
                         feather.replace();
+                    },
+                    "preDrawCallback": function(settings) {
+                        showLoader();
                     },
                 });
             }

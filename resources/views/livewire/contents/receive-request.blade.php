@@ -33,7 +33,7 @@
                                                         <label class="form-label" for="requesting_office_id">Requesting
                                                             Office</label>
                                                         <div wire:ignore>
-                                                            <select class="form-control select receive"
+                                                            <select class="form-control search-office receive"
                                                                 id="requesting_office_id" name="requesting_office_id"
                                                                 wire:model.lazy="requesting_office_id"
                                                                 @if ($requestingOffices->isEmpty()) disabled @endif>
@@ -177,8 +177,19 @@
                 handleRequestActions();
             });
 
+            $(document).ready(function() {
+                $('.search-office').select2({
+                    dropdownParent: $('#add-request-modal')
+                });
+
+                $('.search-office').on('select2:open', function () {
+                    document.querySelector('.select2-container--open .select2-search__field').placeholder = 'Search office/school here...';
+                    
+                });
+            });
+
             function handleRequestActions() {
-                $('select.receive').on('change', handleInputChange);
+                $('search-office.receive').on('change', handleInputChange);
                 $(document).on('click', '.add-request', openAddRequestModal);
                 $(document).on('click', '.edit-request', openEditRequestModal);
             }
@@ -192,7 +203,7 @@
 
             function handleInputChange(e) {
                 console.log(e.target);
-                if ($(e.target).is('select.receive')) {
+                if ($(e.target).is('search-office.receive')) {
                     const property = e.target.id;
                     const value = e.target.value;
                     @this.set(property, value);

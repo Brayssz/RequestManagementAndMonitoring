@@ -109,7 +109,7 @@
             $transOffice = $transmittedOffice && $transmittedOffice->name ? 'Transmitted to: ' . $transmittedOffice->name : null;
         @endphp
         <h4 style="text-align: center; margin-bottom: 10px;">
-            {{ collect([$month, $year, optional($fundSource)->name, $reqOffice, $transOffice])
+            {{ collect([$month, $year, optional($fundSource)->name, $reqOffice, $transOffice, $activity])
             ->filter(fn($value) => !empty($value))
             ->implode(' | ') }}
         </h4>

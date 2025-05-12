@@ -133,6 +133,9 @@ class ReportController extends Controller
             if ($request->filled('year')) {
                 $query->whereYear('dts_date', '=', intval($request->year));
             }
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
 
             if ($request->filled('search') && !empty($request->input('search')['value'])) {
                 $search = $request->input('search')['value'];
@@ -214,6 +217,10 @@ class ReportController extends Controller
                 $query->whereHas('request', function ($q) use ($request) {
                     $q->where('requesting_office_id', $request->requesting_office_id);
                 });
+            }
+
+            if ($request->filled('activity')) {
+                $query->where('activity', 'like', '%' . $request->activity . '%');
             }
 
             if ($request->filled('transmitted_office_id')) {

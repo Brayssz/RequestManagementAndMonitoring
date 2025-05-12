@@ -63,7 +63,12 @@ $(document).ready(function(){
 		}
 	});
 
+	$('.search-offices-schools').select2();
 
+	$('.search-offices-schools').on('select2:open', function() {
+		document.querySelector('.select2-container--open .select2-search__field').placeholder =
+			'Search offices/schools here...';
+	});
 
 	//theme Settings 
 
