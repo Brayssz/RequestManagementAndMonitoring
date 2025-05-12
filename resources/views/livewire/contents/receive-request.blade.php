@@ -31,7 +31,7 @@
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
                                                         <label class="form-label" for="requesting_office_id">Requesting
-                                                            Office</label>
+                                                            Office/School</label>
                                                         <div wire:ignore>
                                                             <select class="form-control search-office receive"
                                                                 id="requesting_office_id" name="requesting_office_id"
