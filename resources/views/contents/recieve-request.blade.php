@@ -240,14 +240,19 @@
                         feather.replace();
 
                         $('.status_filter').on('change', function() {
+                            showLoader();
                             table.draw();
                         });
 
                         initTippy();
                     },
                     "drawCallback": function(settings) {
+                        hideLoader();
                         feather.replace();
                         initTippy();
+                    },
+                    "preDrawCallback": function(settings) {
+                        showLoader();
                     },
                 });
             }

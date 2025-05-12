@@ -219,17 +219,21 @@
             });
 
             function openAddRequestModal() {
+                showLoader();
                 @this.set('submit_func', 'add-request');
                 @this.call('resetFields').then(() => {
+                    hideLoader();
                     $('#add-request-modal').modal('show');
                 });
             }
 
             function openEditRequestModal() {
+                showLoader();
                 const requestId = $(this).data('requestid');
                 @this.set('submit_func', 'edit-request');
 
                 @this.call('getRequest', requestId).then(() => {
+                    hideLoader();
                     $('#add-request-modal').modal('show');
                     var requesting_office_id = @this.get('requesting_office_id');
                     var fund_source_id = @this.get('fund_source_id');

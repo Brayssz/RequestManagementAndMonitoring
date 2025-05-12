@@ -253,6 +253,7 @@
             }
 
             function openReturnRequestModal() {
+                showLoader();
                 const requestId = $(this).data('requestid');
                 @this.call('getRequest', requestId).then(() => {
                     let status = @this.get('status');
@@ -262,6 +263,7 @@
                             $('select.return').val('').change();
                         });
                     }
+                    hideLoader();
                     $('#return-request-modal').modal('show');
 
                     let transmitted_office_id = @this.get('transmitted_office_id');
@@ -273,6 +275,7 @@
             }
 
             function openTransmitRequestModal() {
+                showLoader();
                 const requestId = $(this).data('requestid');
                 @this.call('getRequest', requestId).then(() => {
                     let status = @this.get('status');
@@ -282,6 +285,7 @@
                             $('select.transmit').val('').change();
                         });
                     }
+                    hideLoader();
                     $('#transmit-request-modal').modal('show');
                     let transmitted_office_id = @this.get('transmitted_office_id');
                     if (transmitted_office_id) {
