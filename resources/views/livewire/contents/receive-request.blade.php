@@ -60,7 +60,7 @@
                                                         <label class="form-label" for="fund_source_id">Fund
                                                             Source</label>
                                                         <div wire:ignore>
-                                                            <select class="form-control select receive"
+                                                            <select class="form-control search-office receive"
                                                                 id="fund_source_id" name="fund_source_id"
                                                                 wire:model.lazy="fund_source_id"
                                                                 @if ($fundSources->isEmpty()) disabled @endif>
@@ -189,7 +189,8 @@
             });
 
             function handleRequestActions() {
-                $('search-office.receive').on('change', handleInputChange);
+                $('.search-office.receive').on('change', handleInputChange);
+                $('.search-office.receive').on('change', handleInputChange);
                 $(document).on('click', '.add-request', openAddRequestModal);
                 $(document).on('click', '.edit-request', openEditRequestModal);
             }
@@ -202,8 +203,7 @@
             });
 
             function handleInputChange(e) {
-                console.log(e.target);
-                if ($(e.target).is('search-office.receive')) {
+                if ($(e.target).is('.search-office.receive')) {
                     const property = e.target.id;
                     const value = e.target.value;
                     @this.set(property, value);
