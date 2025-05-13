@@ -13,6 +13,11 @@
     "src": "resources/assets/css/applicant-sidebar.css",
     "isEntry": true
   },
+  "resources/assets/css/main.css": {
+    "file": "assets/main-GiKiH4Jo.css",
+    "src": "resources/assets/css/main.css",
+    "isEntry": true
+  },
   "resources/assets/css/sidebar.css": {
     "file": "assets/sidebar-Cb-l3zIO.css",
     "src": "resources/assets/css/sidebar.css",
@@ -21,6 +26,11 @@
   "resources/assets/css/style.css": {
     "file": "assets/style-CGmaFMyJ.css",
     "src": "resources/assets/css/style.css",
+    "isEntry": true
+  },
+  "resources/assets/css/table.css": {
+    "file": "assets/table-BnTMp9w2.css",
+    "src": "resources/assets/css/table.css",
     "isEntry": true
   },
   "resources/assets/img/authentication/email-verification-img.jpg": {
@@ -159,6 +169,12 @@
     "src": "resources/assets/js/leaflet.js",
     "isEntry": true
   },
+  "resources/assets/js/main.js": {
+    "file": "assets/main-BZsDD0WF.js",
+    "name": "main",
+    "src": "resources/assets/js/main.js",
+    "isEntry": true
+  },
   "resources/assets/js/mask.js": {
     "file": "assets/mask-Dm2Ik3xv.js",
     "name": "mask",
@@ -207,6 +223,12 @@
     "src": "resources/assets/js/swiper.js",
     "isEntry": true
   },
+  "resources/assets/js/table.js": {
+    "file": "assets/table-6nl1Y_FL.js",
+    "name": "table",
+    "src": "resources/assets/js/table.js",
+    "isEntry": true
+  },
   "resources/assets/js/theme-script.js": {
     "file": "assets/theme-script-QUWpklIf.js",
     "name": "theme-script",
@@ -220,7 +242,7 @@
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-C9QBp-4f.css",
+    "file": "assets/app-CnUb72US.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },

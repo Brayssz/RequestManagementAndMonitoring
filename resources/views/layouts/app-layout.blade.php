@@ -58,7 +58,7 @@
                         <img src="img/logo.jpg" alt="" class="me-2"
                             style="max-height: 40px; max-width: 40px;" />
                         <div class="text-start">
-                            <h5 class="mb-2">SGOD Office</h5>
+                            <h5 class="mb-2">SGOD - RMMS</h5>
                             <p class="mb-0" style="font-size: 12px;">Koronadal City Division</p>
                         </div>
                     </div>

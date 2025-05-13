@@ -41,6 +41,11 @@ class Request extends Model
         return $this->belongsTo(FundSource::class, 'fund_source_id', 'fund_source_id');
     }
 
+    public function activityLogs()
+    {
+        return $this->hasMany(RequestActivityLog::class, 'request_id', 'request_id');
+    }
+
 
     public function transmittedOffice()
     {
