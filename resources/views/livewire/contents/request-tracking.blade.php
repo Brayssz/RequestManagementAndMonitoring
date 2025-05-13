@@ -72,6 +72,10 @@
                             <ul>
                     `;
 
+                    const maxPagesToShow = 5;
+                    const startPage = Math.max(1, pagination.current_page - Math.floor(maxPagesToShow / 2));
+                    const endPage = Math.min(pagination.last_page, startPage + maxPagesToShow - 1);
+
                     if (pagination.prev_page_url) {
                         paginationHTML += `
                             <a href="javascript:void(0);" onclick="getRequest(${pagination.current_page - 1}, '${searchQuery}')">
@@ -80,7 +84,16 @@
                         `;
                     }
 
-                    for (let i = 1; i <= pagination.last_page; i++) {
+                    if (startPage > 1) {
+                        paginationHTML += `
+                            <a href="javascript:void(0);" onclick="getRequest(1, '${searchQuery}')">
+                                <li>1</li>
+                            </a>
+                            ${startPage > 2 ? '<li>...</li>' : ''}
+                        `;
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
                         if (i === pagination.current_page) {
                             paginationHTML += `
                                 <a class="is-active" href="javascript:void(0);">
@@ -94,6 +107,15 @@
                                 </a>
                             `;
                         }
+                    }
+
+                    if (endPage < pagination.last_page) {
+                        paginationHTML += `
+                            ${endPage < pagination.last_page - 1 ? '<li>...</li>' : ''}
+                            <a href="javascript:void(0);" onclick="getRequest(${pagination.last_page}, '${searchQuery}')">
+                                <li>${pagination.last_page}</li>
+                            </a>
+                        `;
                     }
 
                     if (pagination.next_page_url) {
