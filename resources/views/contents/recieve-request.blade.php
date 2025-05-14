@@ -150,7 +150,10 @@
                             }
                         },
                         {
-                            "data": "nature_of_request"
+                            "data": "nature_of_request",
+                            "render": function(data, type, row) {
+                                return `<div style="max-width: 600px; min-width: 600px; white-space: normal; word-wrap: break-word; word-break: break-word;">${data}</div>`;
+                            }
                         },
                         {
                             "data": "amount",
@@ -206,7 +209,7 @@
                         {
                             "data": "remarks",
                             "render": function(data, type, row) {
-                                return data || 'Not yet transmitted';
+                                return `<div style="max-width: 500px; min-width: 500px; white-space: normal; word-wrap: break-word; word-break: break-word;">${data || 'Not yet transmitted'}</div>`;
                             }
                         },
                         {

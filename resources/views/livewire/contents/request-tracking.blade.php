@@ -41,7 +41,7 @@
                                 </th>
                                 <td>${request.requesting_office.name}</td>
                                 <td>${request.dts_tracker_number}</td>
-                                <td>&#8369;${request.amount}</td>
+                                <td>&#8369; ${request.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
                                 <td>${request.nature_of_request}</td>
                                 <td>${request.allotment_year} - ${request.fund_source.name}</td>
                                 <td>

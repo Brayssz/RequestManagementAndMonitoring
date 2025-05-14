@@ -241,7 +241,7 @@
                                                     <th style="width: 5%;">#</th>
                                                     <th style="width: 20%;">School Name</th>
                                                     <th style="width: 10%;">DTS no.</th>
-                                                    <th style="width: 10%;">Amount</th>
+                                                    <th style="width: 12%;">Amount</th>
                                                     <th style="width: 20%;">Nature of Request</th>
                                                     <th style="width: 17%;">Fund Source</th>
                                                     <th style="width: 10%;">Status</th>
