@@ -7,7 +7,7 @@
     <meta name="keywords"
         content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>@yield('title', 'LRMDS')</title>
+    <title>@yield('title', 'SGOD - RMMS')</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('assets/images/logo-small.jpg') }}" type="image/x-icon" />
