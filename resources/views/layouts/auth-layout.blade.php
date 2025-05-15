@@ -10,7 +10,8 @@
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
     <title>SGOD - RMMS</title>
-
+    
+    <link rel="icon" href="{{ asset('img/logo.jpg') }}" type="image/x-icon" />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
