@@ -100,11 +100,11 @@
                 </p>
                 
                 <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
-                    <a href="#about" class="btn-get-started">Get Started</a>
-                    <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8"
+                    <a href="#track_request" class="btn-get-started">Track My Request</a>
+                    {{-- <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8"
                         class="glightbox btn-watch-video d-flex align-items-center"><i
                             class="bi bi-play-circle"></i><span>Watch
-                            Video</span></a>
+                            Video</span></a> --}}
                 </div>
             </div>
 
