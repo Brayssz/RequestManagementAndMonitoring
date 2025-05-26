@@ -53,7 +53,8 @@
             <a href="/" class="logo d-flex align-items-center me-auto">
                 <!-- Uncomment the line below if you also wish to use an image logo -->
                 <img src="{{ asset('img/logo.png') }}" alt="" style="width: 45px; height: 45px">
-                <h2 class="sitename">SGOD - Request Management and Tracking System</h2>
+                <h2 class="sitename d-none d-md-block">SGOD - Request Management and Tracking System</h2>
+                <h2 class="sitename d-block d-md-none">SGOD - RMTS</h2>
             </a>
 
             <nav id="navmenu" class="navmenu">
@@ -95,7 +96,7 @@
 
             <div class="container d-flex flex-column align-items-center">
                 <h2 data-aos="fade-up" data-aos-delay="100" style="color: white; text-align: center;">Efficient Requests, Streamlined Processing</h2>
-                <p data-aos="fade-up" data-aos-delay="200">
+                <p class="text-center" data-aos="fade-up" data-aos-delay="200">
                     Track and manage requests seamlessly from school to division office, from creation to fund release.
                 </p>
                 
