@@ -31,9 +31,9 @@ class AuthController extends Controller
         Auth::login($user);
 
         if(Auth::user()->position == 'admin'){
-            return redirect()->route('users')->with('success', 'Login successful!');
+            return redirect()->route('dashboard')->with('success', 'Login successful!');
         } elseif(Auth::user()->position == 'clerk'){
-            return redirect()->route('receive-requests')->with('success', 'Login successful!');
+            return redirect()->route('dashboard')->with('success', 'Login successful!');
         }
 
         // return redirect()->route('users')->with('success', 'Login successful!');
