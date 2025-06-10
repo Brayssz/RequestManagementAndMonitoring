@@ -33,7 +33,7 @@ class RequestTracking extends Component
             ->get()
             ->map(function ($log) {
             $office = $log->transmittedOffice ?? "";
-            $officeInfo = $office ? " (" . $log->activity . " to: " . $office->name . ")" : "";
+            $officeInfo = $office ? " (" . $log->activity . " to: " . $office->name . ", " . $log->remarks . ")" : "";
             return "📌 " . \Carbon\Carbon::parse($log->created_at)->format('F j, Y') . "\n" . $log->activity . $officeInfo . "\n➜";
             });
 

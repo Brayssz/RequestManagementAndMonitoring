@@ -21117,7 +21117,9 @@ body.mini-sidebar.expand-menu .sidebar .sidebar-menu > ul > li.submenu-open ul l
 .btn-white.dropdown-toggle:after {
   display: none;
 }
-
+.graph-sets > ul li:nth-child(2) span:after {
+  background-color: #007BFF; /* blue */
+}
 .graph-sets {
   display: -webkit-box;
   display: -ms-flexbox;

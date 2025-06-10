@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>SGOD - RMMS</title>
+    <title>SGOD Koronadal - Request Mananagement and Tracking System</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
 
