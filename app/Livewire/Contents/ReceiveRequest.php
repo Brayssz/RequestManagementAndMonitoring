@@ -54,7 +54,7 @@ class ReceiveRequest extends Component
             'sgod_date_received' => 'required|date',
             'requesting_office_id' => 'required|integer|exists:requesting_offices,requesting_office_id',
             'amount' => 'required|numeric|min:0',
-            'allotment_year' => 'required|integer|min:1900|max:' . date('Y'),
+            'allotment_year' => 'required|integer|min:1900|max:' . (date('Y') + 5),
             'nature_of_request' => 'required|string|max:255',
             'utilize_funds' => 'nullable|numeric',
             'fund_source_id' => 'required|integer|exists:fund_sources,fund_source_id',
