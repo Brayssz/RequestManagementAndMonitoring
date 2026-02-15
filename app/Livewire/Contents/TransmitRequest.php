@@ -4,6 +4,7 @@ namespace App\Livewire\Contents;
 
 use App\Models\Request;
 use App\Models\RequestingOffice;
+use App\Services\RequestNotificationService;
 use Livewire\Component;
 
 class TransmitRequest extends Component
@@ -17,6 +18,9 @@ class TransmitRequest extends Component
 
     public $status;
     public $returnOffices = [];
+    public $isTransmitting = false;
+    public $isReturning = false;
+    public $isDeleting = false;
 
     protected $rules = [
         'signed_chief_date' => 'required|date',
@@ -38,13 +42,22 @@ class TransmitRequest extends Component
 
     public function returnRequest($requestId)
     {
-        $request = Request::where('request_id', $requestId)->first();
-        $request->update([
-            'status' => 'returned',
-        ]);
+        $this->isReturning = true;
 
-        session()->flash('message', 'Request returned successfully.');
-        return redirect()->route('receive-requests');
+        try {
+            $request = Request::where('request_id', $requestId)->first();
+            $request->update([
+                'status' => 'returned',
+            ]);
+
+            // Send email notification for returned request
+            RequestNotificationService::sendReturnedNotification($request);
+
+            session()->flash('message', 'Request returned successfully.');
+            return redirect()->route('receive-requests');
+        } finally {
+            $this->isReturning = false;
+        }
     }
 
     public function getRequest($id)
@@ -61,19 +74,28 @@ class TransmitRequest extends Component
     public function transmit_request()
     {
         $this->validate();
+        $this->isTransmitting = true;
 
-        $request = Request::findOrFail($this->requestId);
+        try {
+            $request = Request::findOrFail($this->requestId);
 
-        $request->update([
-            'signed_chief_date' => $this->signed_chief_date,
-            'date_transmitted' => $this->date_transmitted,
-            'transmitted_office_id' => $this->transmitted_office_id,
-            'remarks' => $this->remarks,
-            'status' => 'transmitted',
-        ]);
+            $request->update([
+                'signed_chief_date' => $this->signed_chief_date,
+                'date_transmitted' => $this->date_transmitted,
+                'transmitted_office_id' => $this->transmitted_office_id,
+                'remarks' => $this->remarks,
+                'status' => 'transmitted',
+            ]);
 
-        session()->flash('message', 'Request transmitted successfully.');
-        return redirect()->route('receive-requests');
+            // Refresh the request to get updated data and send email notification
+            $request->refresh();
+            RequestNotificationService::sendTransmittedNotification($request);
+
+            session()->flash('message', 'Request transmitted successfully.');
+            return redirect()->route('receive-requests');
+        } finally {
+            $this->isTransmitting = false;
+        }
     }
 
     public function return_request()
@@ -84,26 +106,46 @@ class TransmitRequest extends Component
             'remarks' => 'nullable|string|max:255',
         ]);
 
-        $request = Request::findOrFail($this->requestId);
+        $this->isReturning = true;
 
-        $request->update([
-            'date_transmitted' => $this->date_transmitted,
-            'transmitted_office_id' => $this->transmitted_office_id,
-            'remarks' => $this->remarks,
-            'status' => 'returned',
-        ]);
+        try {
+            $request = Request::findOrFail($this->requestId);
 
-        session()->flash('message', 'Request returned successfully.');
-        return redirect()->route('receive-requests');
+            $request->update([
+                'date_transmitted' => $this->date_transmitted,
+                'transmitted_office_id' => $this->transmitted_office_id,
+                'remarks' => $this->remarks,
+                'status' => 'returned',
+            ]);
+
+            // Refresh the request to get updated data and send email notification
+            $request->refresh();
+            RequestNotificationService::sendReturnedNotification($request);
+
+            session()->flash('message', 'Request returned successfully.');
+            return redirect()->route('receive-requests');
+        } finally {
+            $this->isReturning = false;
+        }
     }
 
     public function deleteRequest($requestId)
     {
-        $request = Request::where('request_id', $requestId)->first();
-        $request->delete();
+        $this->isDeleting = true;
 
-        session()->flash('message', 'Request deleted successfully.');
-        return redirect()->route('receive-requests');
+        try {
+            $request = Request::where('request_id', $requestId)->first();
+            
+            // Send email notification before deleting the request
+            RequestNotificationService::sendDeletedNotification($request);
+            
+            $request->delete();
+
+            session()->flash('message', 'Request deleted successfully.');
+            return redirect()->route('receive-requests');
+        } finally {
+            $this->isDeleting = false;
+        }
     }
 
     public function resetForm()

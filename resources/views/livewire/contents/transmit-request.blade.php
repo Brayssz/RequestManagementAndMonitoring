@@ -78,8 +78,14 @@
                                 </div>
                                 <div class="modal-footer-btn mb-4 mt-0">
                                     <button type="button" class="btn btn-cancel me-2"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-submit">Transmit</button>
+                                        data-bs-dismiss="modal" wire:loading.attr="disabled">Cancel</button>
+                                    <button type="submit" class="btn btn-submit" wire:loading.attr="disabled">
+                                        <span wire:loading.remove wire:target="transmit_request">Transmit</span>
+                                        <span wire:loading wire:target="transmit_request" wire:loading.class.remove="d-none" class="d-none">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Transmitting...
+                                        </span>
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -156,8 +162,14 @@
                                 </div>
                                 <div class="modal-footer-btn mb-4 mt-0">
                                     <button type="button" class="btn btn-cancel me-2"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-submit return-btn">Transmit</button>
+                                        data-bs-dismiss="modal" wire:loading.attr="disabled">Cancel</button>
+                                    <button type="submit" class="btn btn-submit return-btn" wire:loading.attr="disabled">
+                                        <span wire:loading.remove wire:target="return_request">Return</span>
+                                        <span wire:loading wire:target="return_request" wire:loading.class.remove="d-none" class="d-none">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Returning...
+                                        </span>
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -199,12 +211,14 @@
                 $('.search-office-return').on('change', handleInputChangeTransmit);
                 $(document).on('click', '.transmit-request', openTransmitRequestModal);
                 $(document).on('click', '.return-request', openReturnRequestModal);
-                $(document).on('click', '.return-btn', returnRequest);
+                // Only bind returnRequest for quick return actions, not modal form buttons
+                // Modal form buttons will use wire:submit
                 $(document).on('click', '.delete-request', deleteRequest);
             }
 
             const deleteRequest = function() {
                 const requestId = $(this).data('requestid');
+                const $button = $(this);
 
                 console.log(requestId);
 
@@ -212,14 +226,26 @@
                     'Are you sure?',
                     'You want to delete this request? You won\'t be able to retrieve it.',
                     function() {
-                        @this.call('deleteRequest', requestId);
+                        // Show loading state
+                        $button.prop('disabled', true);
+                        $button.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Deleting...');
+                        
+                        @this.call('deleteRequest', requestId).then(() => {
+                            // Reset button state if redirect doesn't happen
+                            setTimeout(() => {
+                                $button.prop('disabled', false);
+                                $button.html('<i class="fa fa-trash"></i> Delete');
+                            }, 1000);
+                        });
                     },
                     'Yes, delete it!'
                 );
             }
 
             const returnRequest = function() {
+                // This function is for quick return action, not the modal form
                 const requestId = $(this).data('requestid');
+                const $button = $(this);
 
                 console.log(requestId);
 
@@ -227,7 +253,18 @@
                     'Are you sure?',
                     'You want to return this request?',
                     function() {
-                        @this.call('return_request', requestId);
+                        // Show loading state
+                        $button.prop('disabled', true);
+                        const originalText = $button.html();
+                        $button.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Returning...');
+                        
+                        @this.call('returnRequest', requestId).then(() => {
+                            // Reset button state if redirect doesn't happen
+                            setTimeout(() => {
+                                $button.prop('disabled', false);
+                                $button.html(originalText);
+                            }, 1000);
+                        });
                     },
                     'Yes, return it!'
                 );

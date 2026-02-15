@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Models\RequestingOffice;
 use App\Models\FundSource;
 use App\Models\AnnualAllotment;
+use App\Services\RequestNotificationService;
 
 use function PHPUnit\Framework\returnValue;
 
@@ -23,6 +24,7 @@ class ReceiveRequest extends Component
 
     public $fundSources;
     public $allotments;
+    public $isSubmitting = false;
 
     public $request_id, $dts_date, $utilize_funds, $dts_tracker_number, $sgod_date_received, $requesting_office_id, $amount, $fund_source_id, $allotment_year, $nature_of_request;
 
@@ -83,37 +85,44 @@ class ReceiveRequest extends Component
     public function submit_request()
     {
         $this->validate();
+        $this->isSubmitting = true;
 
+        try {
+            if ($this->submit_func == "add-request") {
+                $request = Request::create([
+                    'dts_date' => $this->dts_date,
+                    'dts_tracker_number' => $this->dts_tracker_number,
+                    'sgod_date_received' => $this->sgod_date_received,
+                    'requesting_office_id' => $this->requesting_office_id,
+                    'amount' => $this->amount,
+                    'fund_source_id' => $this->fund_source_id,
+                    'allotment_year' => $this->allotment_year,
+                    'nature_of_request' => $this->nature_of_request,
+                ]);
 
-        if ($this->submit_func == "add-request") {
-            Request::create([
-                'dts_date' => $this->dts_date,
-                'dts_tracker_number' => $this->dts_tracker_number,
-                'sgod_date_received' => $this->sgod_date_received,
-                'requesting_office_id' => $this->requesting_office_id,
-                'amount' => $this->amount,
-                'fund_source_id' => $this->fund_source_id,
-                'allotment_year' => $this->allotment_year,
-                'nature_of_request' => $this->nature_of_request,
-            ]);
+                // Send email notification for created request
+                RequestNotificationService::sendCreatedNotification($request);
 
-            session()->flash('message', 'Request successfully created.');
+                session()->flash('message', 'Request successfully created.');
 
-        } elseif ($this->submit_func == "edit-request") {
+            } elseif ($this->submit_func == "edit-request") {
 
-            $this->request->dts_date = $this->dts_date;
-            $this->request->dts_tracker_number = $this->dts_tracker_number;
-            $this->request->sgod_date_received = $this->sgod_date_received;
-            $this->request->requesting_office_id = $this->requesting_office_id;
-            $this->request->amount = $this->amount;
-            $this->request->fund_source_id = $this->fund_source_id;
-            $this->request->allotment_year = $this->allotment_year;
-            $this->request->nature_of_request = $this->nature_of_request;
+                $this->request->dts_date = $this->dts_date;
+                $this->request->dts_tracker_number = $this->dts_tracker_number;
+                $this->request->sgod_date_received = $this->sgod_date_received;
+                $this->request->requesting_office_id = $this->requesting_office_id;
+                $this->request->amount = $this->amount;
+                $this->request->fund_source_id = $this->fund_source_id;
+                $this->request->allotment_year = $this->allotment_year;
+                $this->request->nature_of_request = $this->nature_of_request;
 
-            $this->request->save();
+                $this->request->save();
 
-            session()->flash('message', 'Request successfully updated.');
+                session()->flash('message', 'Request successfully updated.');
+            }
+            return redirect()->route('receive-requests');
+        } finally {
+            $this->isSubmitting = false;
         }
-        return redirect()->route('receive-requests');
     }
 }

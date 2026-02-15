@@ -159,8 +159,14 @@
                                 </div>
                                 <div class="modal-footer-btn mb-4 mt-0">
                                     <button type="button" class="btn btn-cancel me-2"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-submit submit-request">Submit</button>
+                                        data-bs-dismiss="modal" wire:loading.attr="disabled">Cancel</button>
+                                    <button type="button" class="btn btn-submit submit-request" wire:loading.attr="disabled">
+                                        <span wire:loading.remove wire:target="submit_request">Submit</span>
+                                        <span wire:loading wire:target="submit_request" wire:loading.class.remove="d-none" class="d-none">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Submitting...
+                                        </span>
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -196,9 +202,20 @@
             }
 
             $(document).on('click', '.submit-request', function() {
+                const $button = $(this);
 
                 confirmAlert('Confirm Submission', 'Are you sure you want to submit this request?', function() {
-                    @this.call('submit_request');
+                    // Show loading state
+                    $button.prop('disabled', true);
+                    $button.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Submitting...');
+                    
+                    @this.call('submit_request').then(() => {
+                        // Reset button state if redirect doesn't happen
+                        setTimeout(() => {
+                            $button.prop('disabled', false);
+                            $button.html('Submit');
+                        }, 1000);
+                    });
                 }, 'Submit');
             });
 
