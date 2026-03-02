@@ -23,12 +23,15 @@ class AppController extends Controller
         return view('welcome', compact('totalRequests', 'totalPendingRequests', 'totalTransmittedRequests', 'totalReturnedRequests'));
     }
 
-    public function showMonthlyRequests(){
+    public function showMonthlyRequests(Request $request){
+        $year = $request->query('year', now()->year);
+
         $pending = RequestModel::select(
             DB::raw("MONTH(created_at) as month"),
             DB::raw("COUNT(*) as total")
             )
             ->where('status', 'pending')
+            ->whereYear('created_at', $year)
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month')
@@ -39,6 +42,7 @@ class AppController extends Controller
             DB::raw("COUNT(*) as total")
             )
             ->where('activity', 'Transmitted')
+            ->whereYear('created_at', $year)
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month')
@@ -49,6 +53,7 @@ class AppController extends Controller
             DB::raw("COUNT(*) as total")
             )
             ->where('activity', 'Returned')
+            ->whereYear('created_at', $year)
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month')
@@ -72,9 +77,24 @@ class AppController extends Controller
         ]);
     }
 
-    public function showDashboard()
+    public function showDashboard(Request $request)
     {
+        $year = $request->query('year', now()->year);
 
+        $availableYears = RequestModel::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
+
+        if (!in_array((int) $year, $availableYears) && !empty($availableYears)) {
+            $availableYears[] = (int) $year;
+            rsort($availableYears);
+        }
+
+        if (empty($availableYears)) {
+            $availableYears = [(int) now()->year];
+        }
 
         $totalUsers = User::where('status', 'active')->count();
         $totalOffices = RequestingOffice::where('status', 'active')->where('type', 'office')->count();
@@ -82,11 +102,11 @@ class AppController extends Controller
         $totalSchools = RequestingOffice::where('status', 'active')->where('type', 'school')->count();
         $totalFundSources = FundSource::where('status', 'active')->count();
 
-        $totalPendingRequests = RequestModel::where('status', 'pending')->count();
-        $totalTransmittedRequests = RequestModel::where('status', 'transmitted')->count();
-        $totalReturnedRequests = RequestModel::where('status', 'returned')->count();
+        $totalPendingRequests = RequestModel::where('status', 'pending')->whereYear('created_at', $year)->count();
+        $totalTransmittedRequests = RequestModel::where('status', 'transmitted')->whereYear('created_at', $year)->count();
+        $totalReturnedRequests = RequestModel::where('status', 'returned')->whereYear('created_at', $year)->count();
 
-        $pendingRequest = RequestModel::where('status', 'pending')->limit(10)->get();
+        $pendingRequest = RequestModel::where('status', 'pending')->whereYear('created_at', $year)->limit(10)->get();
 
         return view('contents.dashboard', compact(
             'totalUsers',
@@ -97,7 +117,9 @@ class AppController extends Controller
             'totalPendingRequests',
             'totalTransmittedRequests',
             'totalReturnedRequests',
-            'pendingRequest'
+            'pendingRequest',
+            'availableYears',
+            'year'
         ));
     }
 }

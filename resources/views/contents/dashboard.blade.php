@@ -4,6 +4,18 @@
 
 @section('content')
     <div class="content">
+        <div class="row mb-3">
+            <div class="col-12 d-flex justify-content-end">
+                <div class="d-flex align-items-center">
+                    <label for="yearFilter" class="me-2 mb-0 fw-bold">Filter by Year:</label>
+                    <select id="yearFilter" class="form-select" style="width: auto;" onchange="filterByYear(this.value)">
+                        @foreach ($availableYears as $yr)
+                            <option value="{{ $yr }}" {{ $yr == $year ? 'selected' : '' }}>{{ $yr }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-xl-3 col-sm-6 col-12 d-flex">
                 <div class="dash-widget w-100">
@@ -210,11 +222,18 @@
 @endsection
 @push('scripts')
     <script>
+        function filterByYear(year) {
+            window.location.href = "{{ route('dashboard') }}?year=" + year;
+        }
+
         $(document).ready(function() {
+            var selectedYear = {{ $year }};
+
             if ($("#application_charts").length > 0) {
                 $.ajax({
-                    url: "/monthly-request", // Laravel route
+                    url: "/monthly-request",
                     method: "GET",
+                    data: { year: selectedYear },
                     dataType: "json",
                     success: function(response) {
                         var maxPending = Math.max(...response.pending.map(Number));
