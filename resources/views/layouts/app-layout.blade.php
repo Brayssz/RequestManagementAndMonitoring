@@ -214,6 +214,10 @@
                                     <a href="/receive-requests"><i
                                             data-feather="archive"></i><span>Requests</span></a>
                                 </li>
+                                <li class="{{ Request::is('document-trackers') ? 'active' : '' }}">
+                                    <a href="/document-trackers"><i
+                                            data-feather="file-text"></i><span>Document Tracker</span></a>
+                                </li>
 
                             </ul>
                         </li>

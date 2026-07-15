@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Contents\AuthController;
 use App\Http\Controllers\Contents\FundSourceController;
 use App\Http\Controllers\Contents\PDFController;
+use App\Http\Controllers\Contents\DocumentTrackerController;
 use App\Http\Controllers\Contents\ReportController;
 use App\Http\Controllers\Contents\RequestingOfficeController;
 use App\Http\Controllers\Contents\RequestorController;
@@ -27,6 +28,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [AppController::class,'showDashboard'])->name('dashboard');
     Route::get('fund-sources', [FundSourceController::class, 'showFundSources'])->name('fund-sources');
     Route::get('receive-requests', [RequestController::class, 'showRequests'])->name('receive-requests');
+    Route::get('document-trackers', [DocumentTrackerController::class, 'showDocumentTrackers'])->name('document-trackers');
+    Route::get('document-tracker-slip-pdf/{id}', [PDFController::class, 'documentTrackingSlip'])->name('document-tracker-slip-pdf');
     Route::get('summary-report', [ReportController::class, 'generateMonthlySummary'])->name('summary-report');
     Route::get('summary-report-pdf', [PDFController::class, 'generateMonthlySummary'])->name('summary-report-pdf');
     Route::get('request-history-report', [ReportController::class, 'requestHistoryReport'])->name('request-history-report');

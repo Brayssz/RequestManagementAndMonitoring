@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FundSource;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\DocumentTracker;
 use App\Models\RequestingOffice;
 
 class PDFController extends Controller
@@ -332,5 +333,19 @@ class PDFController extends Controller
             ->setPaper('legal', 'landscape');
 
         return $pdf->stream('request_logs_report.pdf');
+    }
+
+    public function documentTrackingSlip($id)
+    {
+        $documentTracker = DocumentTracker::with([
+            'currentOffice',
+            'receivedByUser',
+            'releasedByUser',
+        ])->findOrFail($id);
+
+        $pdf = Pdf::loadView('pdf.document-tracking-slip-pdf', compact('documentTracker'))
+            ->setPaper('legal', 'portrait');
+
+        return $pdf->stream('document_tracking_slip.pdf');
     }
 }
