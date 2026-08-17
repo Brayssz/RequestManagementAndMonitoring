@@ -55,6 +55,16 @@ class DocumentTrackerController extends Controller
             ]);
         }
 
-        return view('contents.document-trackers');
+        $totalDocumentTrackers = DocumentTracker::count();
+        $totalPendingDocumentTrackers = DocumentTracker::where('status', 'pending')->count();
+        $totalForwardedDocumentTrackers = DocumentTracker::where('status', 'transmitted')->count();
+        $totalReturnedDocumentTrackers = DocumentTracker::where('status', 'returned')->count();
+
+        return view('contents.document-trackers', compact(
+            'totalDocumentTrackers',
+            'totalPendingDocumentTrackers',
+            'totalForwardedDocumentTrackers',
+            'totalReturnedDocumentTrackers'
+        ));
     }
 }

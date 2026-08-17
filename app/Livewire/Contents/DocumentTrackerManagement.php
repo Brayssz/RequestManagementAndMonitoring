@@ -6,6 +6,10 @@ use App\Models\DocumentTracker;
 use App\Models\RequestingOffice;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\DocumentTrackerCreatedNotification;
+use App\Mail\DocumentTrackerTransmittedNotification;
 use Livewire\Component;
 
 class DocumentTrackerManagement extends Component
@@ -15,6 +19,9 @@ class DocumentTrackerManagement extends Component
     public $documentTracker;
 
     public $document_tracker_id, $tracking_number, $requestor_name, $current_office_id, $document_type, $details, $status;
+    public $requestor_email;
+    public $requestingOffices;
+    public $selected_requesting_office_id;
 
     public $transfer_action, $target_office_id, $transfer_notes;
 
@@ -23,6 +30,32 @@ class DocumentTrackerManagement extends Component
     public function mount()
     {
         $this->currentOffices = RequestingOffice::where('status', 'active')->orderBy('name', 'asc')->get();
+        $this->requestingOffices = RequestingOffice::where('status', 'active')->orderBy('name', 'asc')->get();
+
+        if (Auth::check()) {
+            $this->current_office_id = Auth::user()->requesting_office_id ?? null;
+        }
+    }
+
+    public function updatedSelectedRequestingOfficeId($value)
+    {
+        // If external or empty, leave fields editable
+        if (empty($value) || $value === 'external') {
+            $this->requestor_name = $this->requestor_name ?? null;
+            $this->requestor_email = $this->requestor_email ?? null;
+            return;
+        }
+
+        $office = RequestingOffice::find($value);
+
+        if ($office && $office->requestor_obj) {
+            $this->requestor_name = $office->requestor_obj->name;
+            $this->requestor_email = $office->requestor_obj->email;
+        } else {
+            // If no linked requestor, default the requestor name to office name
+            $this->requestor_name = $office->name ?? $this->requestor_name;
+            $this->requestor_email = $this->requestor_email ?? null;
+        }
     }
 
     public function getDocumentTracker($documentTrackerId)
@@ -33,6 +66,7 @@ class DocumentTrackerManagement extends Component
             $this->document_tracker_id = $this->documentTracker->id;
             $this->tracking_number = $this->documentTracker->tracking_number;
             $this->requestor_name = $this->documentTracker->requestor_name;
+            $this->requestor_email = $this->documentTracker->requestor_email;
             $this->current_office_id = $this->documentTracker->current_office_id;
             $this->document_type = $this->documentTracker->document_type;
             $this->details = $this->documentTracker->details;
@@ -47,13 +81,25 @@ class DocumentTrackerManagement extends Component
     protected function rules()
     {
         return [
-            'tracking_number' => 'required|string|max:255',
+            'tracking_number' => 'nullable|string|max:255',
             'requestor_name' => 'required|string|max:255',
+            'requestor_email' => 'nullable|email|max:255',
             'current_office_id' => 'nullable|exists:requesting_offices,requesting_office_id',
             'document_type' => 'required|string|max:255',
             'details' => 'nullable|string',
             'status' => 'nullable|string|max:255',
         ];
+    }
+
+    protected function generateUniqueTrackingNumber(): string
+    {
+        do {
+            $year = substr(date('Y'), -2);
+            $randomNumber = random_int(100000, 999999);
+            $trackingNumber = $year . '-' . $randomNumber;
+        } while (DocumentTracker::where('tracking_number', $trackingNumber)->exists());
+
+        return $trackingNumber;
     }
 
     protected function transferRules()
@@ -72,8 +118,12 @@ class DocumentTrackerManagement extends Component
     public function resetFields()
     {
         $this->reset([
-            'tracking_number', 'requestor_name', 'current_office_id', 'document_type', 'details', 'status'
+            'tracking_number', 'requestor_name', 'requestor_email', 'current_office_id', 'document_type', 'details', 'status'
         ]);
+
+        if (Auth::check()) {
+            $this->current_office_id = Auth::user()->requesting_office_id ?? null;
+        }
     }
 
     public function resetTransferFields()
@@ -85,12 +135,19 @@ class DocumentTrackerManagement extends Component
 
     public function submit_document_tracker()
     {
+        if (empty($this->current_office_id) && Auth::check()) {
+            $this->current_office_id = Auth::user()->requesting_office_id ?? null;
+        }
+
+        $this->tracking_number = $this->tracking_number ?: $this->generateUniqueTrackingNumber();
+
         $this->validate();
 
         if ($this->submit_func == 'add-document-tracker') {
-            DocumentTracker::create([
+            $tracker = DocumentTracker::create([
                 'tracking_number' => $this->tracking_number,
                 'requestor_name' => $this->requestor_name,
+                'requestor_email' => $this->requestor_email,
                 'current_office_id' => $this->current_office_id,
                 'document_type' => $this->document_type,
                 'details' => $this->details,
@@ -99,10 +156,21 @@ class DocumentTrackerManagement extends Component
                 'received_at' => now(),
             ]);
 
+            // Send notification email to requestor if email provided
+            if (!empty($this->requestor_email) && $tracker) {
+                try {
+                    Mail::to($this->requestor_email)->send(new DocumentTrackerCreatedNotification($tracker));
+                } catch (\Exception $e) {
+                    // Log error but do not block the flow
+                    Log::error('Failed to send document tracker created email: ' . $e->getMessage());
+                }
+            }
+
             session()->flash('message', 'Document tracker successfully created.');
         } elseif ($this->submit_func == 'edit-document-tracker') {
             $this->documentTracker->tracking_number = $this->tracking_number;
             $this->documentTracker->requestor_name = $this->requestor_name;
+            $this->documentTracker->requestor_email = $this->requestor_email;
             $this->documentTracker->current_office_id = $this->current_office_id;
             $this->documentTracker->document_type = $this->document_type;
             $this->documentTracker->details = $this->details;
@@ -149,6 +217,15 @@ class DocumentTrackerManagement extends Component
             $this->documentTracker->status = $action;
             $this->documentTracker->save();
         });
+
+        // Send email notification to requestor if email provided
+        if (!empty($this->documentTracker->requestor_email)) {
+            try {
+                Mail::to($this->documentTracker->requestor_email)->send(new DocumentTrackerTransmittedNotification($this->documentTracker));
+            } catch (\Exception $e) {
+                Log::error('Failed to send document tracker transmitted email: ' . $e->getMessage());
+            }
+        }
 
         session()->flash('message', 'Document tracker successfully ' . $action . '.');
 

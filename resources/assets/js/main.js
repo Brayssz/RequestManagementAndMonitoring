@@ -190,6 +190,15 @@
   let navmenulinks = document.querySelectorAll('.navmenu a');
 
   function navmenuScrollspy() {
+    if (window.location.hash) {
+      const activeHashLink = document.querySelector('.navmenu a[href="' + window.location.hash + '"]');
+      if (activeHashLink) {
+        document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
+        activeHashLink.classList.add('active');
+        return;
+      }
+    }
+
     navmenulinks.forEach(navmenulink => {
       if (!navmenulink.hash) return;
       let section = document.querySelector(navmenulink.hash);

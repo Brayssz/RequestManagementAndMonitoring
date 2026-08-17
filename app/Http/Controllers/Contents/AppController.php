@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Request as RequestModel; // Avoid conflict with the global Request class
 use App\Models\RequestingOffice;
 use App\Models\Requestor;
+use App\Models\DocumentTracker;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\RequestActivityLog;
@@ -20,7 +21,21 @@ class AppController extends Controller
         $totalPendingRequests = RequestModel::where('status', 'pending')->count();
         $totalTransmittedRequests = RequestModel::where('status', 'transmitted')->count();
         $totalReturnedRequests = RequestModel::where('status', 'returned')->count();
-        return view('welcome', compact('totalRequests', 'totalPendingRequests', 'totalTransmittedRequests', 'totalReturnedRequests'));
+        $totalDocumentTrackers = DocumentTracker::count();
+        $totalPendingDocumentTrackers = DocumentTracker::where('status', 'pending')->count();
+        $totalForwardedDocumentTrackers = DocumentTracker::where('status', 'transmitted')->count();
+        $totalReturnedDocumentTrackers = DocumentTracker::where('status', 'returned')->count();
+
+        return view('welcome', compact(
+            'totalRequests',
+            'totalPendingRequests',
+            'totalTransmittedRequests',
+            'totalReturnedRequests',
+            'totalDocumentTrackers',
+            'totalPendingDocumentTrackers',
+            'totalForwardedDocumentTrackers',
+            'totalReturnedDocumentTrackers'
+        ));
     }
 
     public function showMonthlyRequests(Request $request){
@@ -101,6 +116,10 @@ class AppController extends Controller
         $totalRequestors = Requestor::where('status', 'active')->count();
         $totalSchools = RequestingOffice::where('status', 'active')->where('type', 'school')->count();
         $totalFundSources = FundSource::where('status', 'active')->count();
+        $totalDocumentTrackers = DocumentTracker::count();
+        $totalPendingDocumentTrackers = DocumentTracker::where('status', 'pending')->count();
+        $totalForwardedDocumentTrackers = DocumentTracker::where('status', 'transmitted')->count();
+        $totalReturnedDocumentTrackers = DocumentTracker::where('status', 'returned')->count();
 
         $totalPendingRequests = RequestModel::where('status', 'pending')->whereYear('created_at', $year)->count();
         $totalTransmittedRequests = RequestModel::where('status', 'transmitted')->whereYear('created_at', $year)->count();
@@ -114,6 +133,10 @@ class AppController extends Controller
             'totalRequestors',
             'totalSchools',
             'totalFundSources',
+            'totalDocumentTrackers',
+            'totalPendingDocumentTrackers',
+            'totalForwardedDocumentTrackers',
+            'totalReturnedDocumentTrackers',
             'totalPendingRequests',
             'totalTransmittedRequests',
             'totalReturnedRequests',

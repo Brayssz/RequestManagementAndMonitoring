@@ -63,6 +63,25 @@
                                                     @enderror
                                                 </div>
                                             </div>
+                                            <div class="col-lg-6 col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="requesting_office_id">Office</label>
+                                                    <div wire:ignore>
+                                                        <select id="requesting_office_id" class="form-control select"
+                                                            wire:model="requesting_office_id">
+                                                            <option value="">Choose</option>
+                                                            @foreach ($offices as $office)
+                                                                <option value="{{ $office->requesting_office_id }}">
+                                                                    {{ $office->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    @error('requesting_office_id')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
                                             @if ($submit_func == 'edit-user')
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
@@ -161,6 +180,9 @@
                 @this.set('submit_func', 'add-user');
 
                 @this.call('resetFields').then(() => {
+                    initSelect();
+                    $('#position').val('').change();
+                    $('#requesting_office_id').val('').change();
                     initSelectVal("");
                     $('#add-user-modal').modal('show');
                 });
@@ -182,9 +204,11 @@
 
             function populateEditForm() {
                 const status = @this.get('status');
+                const officeId = @this.get('requesting_office_id');
 
                 initSelect();
                 initSelectVal(status);
+                $('#requesting_office_id').val(officeId).change();
             }
         </script>
     @endpush

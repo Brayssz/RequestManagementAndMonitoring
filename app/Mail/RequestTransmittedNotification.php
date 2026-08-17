@@ -34,7 +34,7 @@ class RequestTransmittedNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Request Transmitted - DTS Tracker #' . $this->requestData['dts_tracker_number'],
+            subject: 'Request Forwarded - DTS Tracker #' . $this->requestData['dts_tracker_number'],
         );
     }
 

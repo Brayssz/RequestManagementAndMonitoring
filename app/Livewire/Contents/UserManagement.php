@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Contents;
 
+use App\Models\RequestingOffice;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
@@ -11,8 +12,9 @@ class UserManagement extends Component
     public $submit_func;
 
     public $user;
+    public $offices = [];
 
-    public $user_id, $name, $email, $position, $status, $password, $password_confirmation;
+    public $user_id, $name, $email, $position, $requesting_office_id, $status, $password, $password_confirmation;
 
     public function getUser($userId)
     {
@@ -23,6 +25,7 @@ class UserManagement extends Component
             $this->name = $this->user->name;
             $this->email = $this->user->email;
             $this->position = $this->user->position;
+            $this->requesting_office_id = $this->user->requesting_office_id;
             $this->status = $this->user->status;
 
             $this->password = null;
@@ -47,6 +50,7 @@ class UserManagement extends Component
                 Rule::unique('users', 'email')->ignore($this->user_id, 'id'),
             ],
             'position' => 'nullable|string|max:255',
+            'requesting_office_id' => 'nullable|exists:requesting_offices,requesting_office_id',
             'status' => 'nullable|string|max:255',
             'password' => $passwordRules,
         ];
@@ -54,13 +58,15 @@ class UserManagement extends Component
 
     public function render()
     {
+        $this->offices = RequestingOffice::where('status', 'active')->orderBy('name', 'asc')->get();
+
         return view('livewire.contents.user-management');
     }
 
     public function resetFields()
     {
         $this->reset([
-            'name', 'email', 'position', 'status', 'password', 'password_confirmation'
+            'name', 'email', 'position', 'requesting_office_id', 'status', 'password', 'password_confirmation'
         ]);
     }
 
@@ -73,6 +79,7 @@ class UserManagement extends Component
                 'name' => $this->name,
                 'email' => $this->email,
                 'position' => $this->position,
+                'requesting_office_id' => $this->requesting_office_id,
                 'status' => 'active',
                 'password' => bcrypt($this->password),
             ]);
@@ -82,6 +89,7 @@ class UserManagement extends Component
             $this->user->name = $this->name;
             $this->user->email = $this->email;
             $this->user->position = $this->position;
+            $this->user->requesting_office_id = $this->requesting_office_id;
             $this->user->status = $this->status;
 
             if (!empty($this->password)) {

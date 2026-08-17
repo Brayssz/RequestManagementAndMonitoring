@@ -12,6 +12,7 @@ class DocumentTracker extends Model
     protected $fillable = [
         'tracking_number',
         'requestor_name',
+        'requestor_email',
         'current_office_id',
         'document_type',
         'details',

@@ -27,39 +27,41 @@
                                             </div>
 
                                             <div class="row">
+                                                {{-- Tracking number hidden; kept in model for submit --}}
+                                                <input type="hidden" id="tracking_number" wire:model.lazy="tracking_number">
+
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="tracking_number">Tracking Number</label>
-                                                        <input type="text" class="form-control" id="tracking_number" wire:model.lazy="tracking_number" placeholder="Enter tracking number">
-                                                        @error('tracking_number')
+                                                        <label class="form-label" for="selected_requesting_office_id">Requestor / Office</label>
+                                                        <div wire:ignore>
+                                                            <select id="selected_requesting_office_id" class="form-control select requestor-select">
+                                                                <option value="">Choose</option>
+                                                                @foreach ($requestingOffices as $office)
+                                                                    <option value="{{ $office->requesting_office_id }}">{{ ucfirst($office->type) }} - {{ $office->name }}</option>
+                                                                @endforeach
+                                                                <option value="external">External / Other</option>
+                                                            </select>
+                                                        </div>
+                                                        @error('requestor_name')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
+                                                        <small class="text-muted">Select an office/school to autofill requestor details or choose External to enter manually.</small>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="requestor_name">Requestor</label>
-                                                        <input type="text" class="form-control" id="requestor_name" wire:model.lazy="requestor_name" placeholder="Enter requestor name">
+                                                        <label class="form-label" for="requestor_name_input">Requestor Name</label>
+                                                        <input type="text" class="form-control" id="requestor_name_input" wire:model.lazy="requestor_name" placeholder="Enter requestor name">
                                                         @error('requestor_name')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-6 col-md-6">
+                                                <div class="col-lg-6 col-md-6" id="requestor_email_group">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="current_office_id">Current Office</label>
-                                                        <div wire:ignore>
-                                                            <select class="form-control search-office document-tracker" id="current_office_id" wire:model="current_office_id" @if ($currentOffices->isEmpty()) disabled @endif>
-                                                                <option value="">Choose</option>
-                                                                @foreach ($currentOffices as $office)
-                                                                    <option value="{{ $office->requesting_office_id }}">{{ $office->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        @if ($currentOffices->isEmpty())
-                                                            <span class="text-danger">No available office records. Please add a new office or set an existing one to active.</span>
-                                                        @endif
-                                                        @error('current_office_id')
+                                                        <label class="form-label" for="requestor_email">Requestor Email</label>
+                                                        <input type="email" class="form-control" id="requestor_email" wire:model.lazy="requestor_email" placeholder="Enter requestor email">
+                                                        @error('requestor_email')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
@@ -107,7 +109,7 @@
                                 </div>
                                 <div class="modal-footer-btn mb-4 mt-0">
                                     <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-submit submit-document-tracker">Submit</button>
+                                    <button type="button" class="btn btn-submit submit-document-tracker">Submit</button>
                                 </div>
                             </form>
                         </div>
@@ -127,7 +129,7 @@
                                 @if ($transfer_action == 'return')
                                     <h4>Return Document</h4>
                                 @else
-                                    <h4>Transmit Document</h4>
+                                    <h4>Forward Document</h4>
                                 @endif
                             </div>
                             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -142,7 +144,7 @@
                                         <div class="row">
                                             <div class="col-lg-12 col-md-12">
                                                 <div class="mb-3">
-                                                    <label class="form-label" for="target_office_id">Office</label>
+                                                    <label class="form-label" for="target_office_id">Forward To</label>
                                                     <div wire:ignore>
                                                         <select class="form-control search-office transfer" id="target_office_id" wire:model="target_office_id">
                                                             <option value="">Choose</option>
@@ -171,9 +173,9 @@
                                 <div class="modal-footer-btn mb-4 mt-0">
                                     <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</button>
                                     @if ($transfer_action == 'return')
-                                        <button type="submit" class="btn btn-submit submit-transfer-document-tracker">Return</button>
+                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">Return</button>
                                     @else
-                                        <button type="submit" class="btn btn-submit submit-transfer-document-tracker">Transmit</button>
+                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">Forward</button>
                                     @endif
                                 </div>
                             </form>
@@ -198,10 +200,35 @@
                 $('.search-office.transfer').select2({
                     dropdownParent: $('#transfer-document-tracker-modal')
                 });
+                $('#selected_requesting_office_id').select2({
+                    dropdownParent: $('#add-document-tracker-modal'),
+                    width: '100%'
+                });
             });
 
             function handleDocumentTrackerActions() {
                 $('.search-office.document-tracker').on('change', handleInputChange);
+                $('#selected_requesting_office_id').on('change', function(e) {
+                    var val = $(this).val();
+                    @this.set('selected_requesting_office_id', val);
+
+                    if (val === 'external') {
+                        // External: only allow entering the requestor name
+                        $('#requestor_name_input').prop('readonly', false).prop('disabled', false);
+                        $('#requestor_email_group').hide();
+                    } else if (!val) {
+                        // No selection: make fields editable
+                        $('#requestor_name_input').prop('readonly', false).prop('disabled', false);
+                        $('#requestor_email_group').show();
+                    } else {
+                        // Office selected: autofill, make name readonly, show email
+                        $('#requestor_name_input').prop('readonly', true).prop('disabled', false);
+                        $('#requestor_email_group').show();
+                    }
+                });
+
+                // apply initial visibility state
+                $('#selected_requesting_office_id').trigger('change');
                 $('.search-office.transfer').on('change', handleInputChange);
                 $(document).on('click', '.add-document-tracker', openAddDocumentTrackerModal);
                 $(document).on('click', '.edit-document-tracker', openEditDocumentTrackerModal);
@@ -218,14 +245,16 @@
                 }
             }
 
-            $(document).on('click', '.submit-document-tracker', function() {
+            $(document).on('click', '.submit-document-tracker', function(e) {
+                e.preventDefault();
                 confirmAlert('Confirm Submission', 'Are you sure you want to save this document tracker?', function() {
                     @this.call('submit_document_tracker');
                 }, 'Submit');
             });
 
-            $(document).on('click', '.submit-transfer-document-tracker', function() {
-                const actionLabel = @this.get('transfer_action') === 'return' ? 'Return' : 'Transmit';
+            $(document).on('click', '.submit-transfer-document-tracker', function(e) {
+                e.preventDefault();
+                const actionLabel = @this.get('transfer_action') === 'return' ? 'Return' : 'Forward';
 
                 confirmAlert('Confirm ' + actionLabel, 'Are you sure you want to ' + actionLabel.toLowerCase() + ' this document?', function() {
                     @this.call('submit_transfer_document_tracker');
@@ -249,9 +278,7 @@
                 @this.call('getDocumentTracker', documentTrackerId).then(() => {
                     hideLoader();
                     $('#add-document-tracker-modal').modal('show');
-                    var current_office_id = @this.get('current_office_id');
                     var status = @this.get('status');
-                    $('#current_office_id').val(current_office_id).change();
                     $('#status').val(status).change();
                 });
             }

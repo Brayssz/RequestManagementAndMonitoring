@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Request Transmitted Notification</title>
+    <title>Request Forwarded Notification</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -118,20 +118,20 @@
     <div class="email-container">
         <div class="email-header">
             <div class="icon">📤</div>
-            <h1>Request Transmitted</h1>
+            <h1>Request Forwarded</h1>
         </div>
         
         <div class="email-body">
             <p class="greeting">Dear {{ $requestorName }},</p>
             
             <p class="message">
-                Great news! A request from <strong>{{ $schoolName }}</strong> has been successfully transmitted for processing.
+                Great news! A request from <strong>{{ $schoolName }}</strong> has been successfully forwarded for processing.
             </p>
             
-            <span class="status-badge">✓ Transmitted</span>
+            <span class="status-badge">✓ Forwarded</span>
             
             <div class="transmission-info">
-                <strong>Transmitted To:</strong>
+                <strong>Forwarded To:</strong>
                 {{ $transmittedOfficeName }}
             </div>
             
@@ -162,7 +162,7 @@
                     <span class="detail-value">{{ $requestData['signed_chief_date'] ? \Carbon\Carbon::parse($requestData['signed_chief_date'])->format('F d, Y') : 'N/A' }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Date Transmitted:</span>
+                    <span class="detail-label">Date Forwarded:</span>
                     <span class="detail-value">{{ $requestData['date_transmitted'] ? \Carbon\Carbon::parse($requestData['date_transmitted'])->format('F d, Y') : now()->format('F d, Y') }}</span>
                 </div>
                 @if(!empty($requestData['remarks']))

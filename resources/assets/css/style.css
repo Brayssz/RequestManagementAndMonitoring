@@ -24356,6 +24356,12 @@ table tbody td.action-table-data a .feather-corner-up-left{
   height: 14px;
 }
 
+table tbody td.action-table-data a .feather-printer{
+  color: #3577f1;
+  width: 14px;
+  height: 14px;
+}
+
 table tbody td.action-table-data a .feather-download {
   width: 14px;
   height: 14px;

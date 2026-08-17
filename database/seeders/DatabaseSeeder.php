@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Requestor;
+use App\Models\RequestingOffice;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,19 +18,42 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'position' => 'admin',
-            'password' => Hash::make('password'), // Ensure password is hashed
-            'status' => 'active',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'position' => 'admin',
+                'password' => Hash::make('password'), // Ensure password is hashed
+                'status' => 'active',
+            ]
+        );
 
-        // Requestor::create([
-        //     'name' => 'John Doe',
-        //     'email' => 'johndoe@example.com',
-        //     'position' => 'principal',
-        //     'status' => 'active',
-        // ]);
+        // Create a default requestor and five offices
+        $requestor = Requestor::firstOrCreate(
+            ['email' => 'requestor@example.com'],
+            [
+                'name' => 'Default Requestor',
+                'position' => 'principal',
+                'status' => 'active',
+            ]
+        );
+
+        $offices = [
+            'Finance Office',
+            'Human Resources',
+            'Planning and Development',
+            'Procurement Office',
+            'General Services',
+        ];
+
+        foreach ($offices as $officeName) {
+            RequestingOffice::firstOrCreate([
+                'name' => $officeName,
+            ], [
+                'type' => 'office',
+                'requestor' => $requestor->requestor_id,
+                'status' => 'active',
+            ]);
+        }
     }
 }

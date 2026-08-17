@@ -70,6 +70,7 @@
                                 <th>User</th>
                                 <th>Email</th>
                                 <th>Position</th>
+                                <th>Office</th>
                                 <th>Status</th>
                                 <th class="no-sort">Action</th>
                             </tr>
@@ -189,15 +190,25 @@
                         {
                             "data": "position",
                             "render": function(data, type, row) {
-                                return data.charAt(0).toUpperCase() + data.slice(1);
+                                return data ? data.charAt(0).toUpperCase() + data.slice(1) : '-';
                             }
                         },
                         {
-                            "data": null,
+                            "data": "office_name",
                             "render": function(data, type, row) {
-                                return row.status === "active" ?
-                                    `<span class="badge badge-linesuccess">Active</span>` :
-                                    `<span class="badge badge-linedanger">Deactivated</span>`;
+                                return data || '-';
+                            }
+                        },
+                        {
+                            "data": "status",
+                            "render": function(data, type, row) {
+                                const status = (data || '').toLowerCase();
+
+                                if (status === 'inactive') {
+                                    return `<span class="badge badge-linedanger">Inactive</span>`;
+                                }
+
+                                return `<span class="badge badge-linesuccess">Active</span>`;
                             }
                         },
                         {
@@ -214,7 +225,8 @@
                         }
                     ],
                     "createdRow": function(row, data, dataIndex) {
-                        $(row).find('td').eq(4).addClass('action-table-data');
+                        // action column is the 6th column (zero-based index 5) after adding Office column
+                        $(row).find('td').eq(5).addClass('action-table-data');
                     },
                     "initComplete": function(settings, json) {
                         $('.dataTables_filter').appendTo('#tableSearch');

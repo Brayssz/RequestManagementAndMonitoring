@@ -62,6 +62,7 @@
                     <li><a href="#hero" class="active">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#track_request">Track Request</a></li>
+                    <li><a href="#track_document">Track Document</a></li>
 
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -210,8 +211,6 @@
 
         </section><!-- /Stats Section -->
 
-
-
         <!-- Services Section -->
         <section id="track_request" class="services section ">
 
@@ -266,6 +265,103 @@
         </section>
 
         @livewire('contents.request-tracking')
+
+        <!-- Document Tracker Summary Section -->
+        <section id="track_document_summary" class="stats section light-background">
+
+            <div class="container-lg" data-aos="fade-up" data-aos-delay="100">
+                <div class="row gy-4">
+                    <div class="col-lg-3 col-md-6 d-flex">
+                        <div class="stats-item d-flex align-items-center w-100 h-100" style="outline: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #fff;">
+                            <i class="bi bi-folder2-open color-blue flex-shrink-0"></i>
+                            <div>
+                                <span data-purecounter-start="0" data-purecounter-end="{{ $totalDocumentTrackers }}" data-purecounter-duration="1" class="purecounter"></span>
+                                <p>Total Document Trackers</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 d-flex">
+                        <div class="stats-item d-flex align-items-center w-100 h-100" style="outline: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #fff;">
+                            <i class="bi bi-hourglass-split color-orange flex-shrink-0"></i>
+                            <div>
+                                <span data-purecounter-start="0" data-purecounter-end="{{ $totalPendingDocumentTrackers }}" data-purecounter-duration="1" class="purecounter"></span>
+                                <p>Pending Document Trackers</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 d-flex">
+                        <div class="stats-item d-flex align-items-center w-100 h-100" style="outline: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #fff;">
+                            <i class="bi bi-send-check color-green flex-shrink-0"></i>
+                            <div>
+                                <span data-purecounter-start="0" data-purecounter-end="{{ $totalForwardedDocumentTrackers }}" data-purecounter-duration="1" class="purecounter"></span>
+                                <p>Forwarded Document Trackers</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 d-flex">
+                        <div class="stats-item d-flex align-items-center w-100 h-100" style="outline: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #fff;">
+                            <i class="bi bi-arrow-return-left color-red flex-shrink-0"></i>
+                            <div>
+                                <span data-purecounter-start="0" data-purecounter-end="{{ $totalReturnedDocumentTrackers }}" data-purecounter-duration="1" class="purecounter"></span>
+                                <p>Returned Document Trackers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section><!-- /Document Tracker Summary Section -->
+
+        <!-- Document Tracker Table Section -->
+        <section id="track_document" class="services section">
+
+            <div class="container-lg section-title pb-5" data-aos="fade-up">
+                <h2>Track-a-Document</h2>
+                <p>Document Tracking and Monitoring<br></p>
+            </div>
+
+            <div class="container-lg" data-aos="fade-up" data-aos-delay="100">
+                <div class="mb-1 ps-1 d-flex justify-content-start">
+                    <input type="text" class="input w-100 me-1 ps-3" placeholder="Search by tracking no / requestor / office..."
+                        id="documentTrackerSearchInput" style="max-width: 420px; font-size: 12px;">
+                </div>
+
+                <div class="gy-1">
+                    <section class="ftco-section pt-0">
+                        <div class="container-lg px-0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-wrap">
+                                        <table class="table myaccordion table-hover" id="documentTrackerAccordion">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 5%;">#</th>
+                                                    <th style="width: 20%;">Current Office</th>
+                                                    <th style="width: 12%;">Tracking No.</th>
+                                                    <th style="width: 18%;">Requestor</th>
+                                                    <th style="width: 18%;">Document Type</th>
+                                                    <th style="width: 10%;">Status</th>
+                                                    <th style="width: 8%;">Received At</th>
+                                                    <th style="width: 8%;">Released At</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Dynamic rows will be appended here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div id="documentTrackerPaginationContainer" class="d-flex justify-content-center">
+                        <!-- Pagination will be dynamically appended here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @livewire('contents.document-tracking')
 
 
 
@@ -399,6 +495,37 @@
     {{-- <script src="assets/js/main.js"></script> --}}
 
     @vite(['resources/assets/js/main.js', 'resources/assets/js/table.js'])
+
+    <script>
+        $(document).ready(function() {
+            const navLinks = $('#navmenu a[href^="#"]');
+
+            function setActiveLink(hash) {
+                navLinks.removeClass('active');
+
+                if (!hash) {
+                    $('#navmenu a[href="#hero"]').addClass('active');
+                    return;
+                }
+
+                const targetLink = $('#navmenu a[href="' + hash + '"]');
+                if (targetLink.length) {
+                    targetLink.addClass('active');
+                }
+            }
+
+            navLinks.on('click', function() {
+                setActiveLink($(this).attr('href'));
+            });
+
+            setActiveLink(window.location.hash || '#hero');
+
+            $(window).on('hashchange', function() {
+                setActiveLink(window.location.hash || '#hero');
+            });
+        });
+    </script>
+
     @stack('scripts')
 
 </body>

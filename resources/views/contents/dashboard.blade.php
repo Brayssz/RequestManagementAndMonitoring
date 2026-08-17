@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-4 col-sm-6 col-12 d-flex">
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
                 <div class="dash-widget w-100">
                     <div class="dash-widgetimg">
                         <span><i class="fas fa-undo" style="color: #ffc107; font-size: 1.3rem;"></i></span>
@@ -109,6 +109,54 @@
                                 data-count="{{ $totalReturnedRequests }}">{{ $totalReturnedRequests }}</span>
                         </h5>
                         <h6>Total Returned Requests</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="dash-widget w-100">
+                    <div class="dash-widgetimg">
+                        <span><i class="fas fa-folder-open" style="color: #643bc6; font-size: 1.3rem;"></i></span>
+                    </div>
+                    <div class="dash-widgetcontent">
+                        <h5><span class="counters" data-count="{{ $totalDocumentTrackers }}">{{ $totalDocumentTrackers }}</span></h5>
+                        <h6>Total Document Trackers</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="dash-widget dash1 w-100">
+                    <div class="dash-widgetimg">
+                        <span><i class="fas fa-hourglass-half" style="color: #ffc107; font-size: 1.3rem;"></i></span>
+                    </div>
+                    <div class="dash-widgetcontent">
+                        <h5><span class="counters" data-count="{{ $totalPendingDocumentTrackers }}">{{ $totalPendingDocumentTrackers }}</span></h5>
+                        <h6>Pending Document Trackers</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="dash-widget dash2 w-100">
+                    <div class="dash-widgetimg">
+                        <span><i class="fas fa-paper-plane" style="color: #007bff; font-size: 1.3rem;"></i></span>
+                    </div>
+                    <div class="dash-widgetcontent">
+                        <h5><span class="counters" data-count="{{ $totalForwardedDocumentTrackers }}">{{ $totalForwardedDocumentTrackers }}</span></h5>
+                        <h6>Forwarded Document Trackers</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="dash-widget dash3 w-100">
+                    <div class="dash-widgetimg">
+                        <span><i class="fas fa-undo" style="color: #dc3545; font-size: 1.3rem;"></i></span>
+                    </div>
+                    <div class="dash-widgetcontent">
+                        <h5><span class="counters" data-count="{{ $totalReturnedDocumentTrackers }}">{{ $totalReturnedDocumentTrackers }}</span></h5>
+                        <h6>Returned Document Trackers</h6>
                     </div>
                 </div>
             </div>

@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'position',
+        'requesting_office_id',
         'password',
         'status',
     ];
@@ -40,6 +41,11 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    public function requestingOffice()
+    {
+        return $this->belongsTo(RequestingOffice::class, 'requesting_office_id', 'requesting_office_id');
+    }
+
     protected function casts(): array
     {
         return [

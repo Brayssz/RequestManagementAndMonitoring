@@ -11,7 +11,7 @@ class UserController extends Controller
     public function showUsers(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::query();
+            $query = User::query()->with('requestingOffice');
 
             if ($request->filled('position')) {
                 $query->where('position', $request->position);
@@ -42,6 +42,8 @@ class UserController extends Controller
             $users = $query->skip($start)->take($length)->get();
 
             $users->transform(function ($user) {
+                $user->office_name = $user->requestingOffice ? $user->requestingOffice->name : null;
+
                 return $user;
             });
 
