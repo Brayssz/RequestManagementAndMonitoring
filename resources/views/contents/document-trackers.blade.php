@@ -92,7 +92,7 @@
                                         <option value="">Status</option>
                                         <option value="pending">Pending</option>
                                         <option value="received">Received</option>
-                                        <option value="transmitted">Transmitted</option>
+                                        <option value="transmitted">Forwarded</option>
                                         <option value="returned">Returned</option>
                                     </select>
                                 </div>
@@ -140,6 +140,24 @@
                     progressBar: true,
                 });
             @endif
+
+            const initTippy = () => {
+                tippy('.print-document-tracker', {
+                    content: "Print Slip",
+                });
+                tippy('.edit-document-tracker', {
+                    content: "Edit Document Tracker",
+                });
+                tippy('.transmit-document-tracker', {
+                    content: "Transmit Document",
+                });
+                tippy('.return-document-tracker', {
+                    content: "Return Document",
+                });
+                tippy('.delete-document-tracker', {
+                    content: "Delete Document Tracker",
+                });
+            };
 
             if ($('.document-trackers-table').length > 0) {
                 var table = $('.document-trackers-table').DataTable({
@@ -210,7 +228,7 @@
                                 } else if (row.status === 'received') {
                                     return `<span class="badge badge-linesuccess">Received</span>`;
                                 } else if (row.status === 'transmitted') {
-                                    return `<span class="badge badge-lineinfo">Transmitted</span>`;
+                                    return `<span class="badge badge-lineinfo">Forwarded</span>`;
                                 } else if (row.status === 'returned') {
                                     return `<span class="badge badge-linedanger">Returned</span>`;
                                 }
@@ -260,35 +278,17 @@
                     "initComplete": function(settings, json) {
                         feather.replace();
 
-                        $('.document-tracker-search').on('keyup', function() {
-                            showLoader();
-                            table.draw();
-                        });
+                        $(document).off('keyup.docTracker', '.document-tracker-search')
+                            .on('keyup.docTracker', '.document-tracker-search', function() {
+                                showLoader();
+                                table.draw();
+                            });
 
-                        $('.status_filter').on('change', function() {
-                            showLoader();
-                            table.draw();
-                        });
-
-                        tippy('.print-document-tracker', {
-                            content: "Print Slip",
-                        });
-
-                        tippy('.edit-document-tracker', {
-                            content: "Edit Document Tracker",
-                        });
-
-                        tippy('.transmit-document-tracker', {
-                            content: "Transmit Document",
-                        });
-
-                        tippy('.return-document-tracker', {
-                            content: "Return Document",
-                        });
-
-                        tippy('.delete-document-tracker', {
-                            content: "Delete Document Tracker",
-                        });
+                        $(document).off('change.docTracker', '.status_filter')
+                            .on('change.docTracker', '.status_filter', function() {
+                                showLoader();
+                                table.ajax.reload(null, false);
+                            });
 
                         initTippy();
                     },

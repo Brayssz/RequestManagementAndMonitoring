@@ -20,12 +20,48 @@ class DocumentTracking extends Component
                         $query->where('name', 'like', "%{$search}%");
                     });
             })
-            ->with(['currentOffice'])
+            ->with([
+                'currentOffice',
+                'receivedByUser',
+                'logs' => function ($query) {
+                    $query->with(['fromOffice', 'toOffice', 'user'])
+                        ->orderBy('created_at', 'asc');
+                },
+            ])
             ->orderBy('received_at', 'desc');
 
         $documentTrackers = $documentTrackers->paginate(12, ['*'], 'page', $page);
         $documentTrackers->getCollection()->transform(function ($documentTracker) {
             $documentTracker->current_office_name = $documentTracker->currentOffice->name ?? 'N/A';
+
+            $movementLogs = $documentTracker->logs->map(function ($log) {
+                return [
+                    'action' => $log->action,
+                    'from_office' => $log->fromOffice->name ?? 'Origin',
+                    'to_office' => $log->toOffice->name ?? 'N/A',
+                    'user' => $log->user->name ?? 'System',
+                    'notes' => $log->notes,
+                    'created_at' => optional($log->created_at)->format('Y-m-d H:i:s'),
+                ];
+            })->values();
+
+            // Prepend the initial "created" event derived from the tracker itself.
+            $originOffice = optional(optional($documentTracker->logs->first())->fromOffice)->name
+                ?? $documentTracker->current_office_name;
+
+            $movementLogs->prepend([
+                'action' => 'received',
+                'from_office' => 'Origin',
+                'to_office' => $originOffice,
+                'user' => $documentTracker->receivedByUser->name ?? 'System',
+                'notes' => 'Document tracker received.',
+                'created_at' => optional($documentTracker->created_at)->format('Y-m-d H:i:s'),
+            ]);
+
+            $documentTracker->movement_logs = $movementLogs->values();
+
+            unset($documentTracker->logs);
+
             return $documentTracker;
         });
 

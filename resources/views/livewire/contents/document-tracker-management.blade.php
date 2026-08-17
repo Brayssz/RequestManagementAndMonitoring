@@ -93,7 +93,7 @@
                                                                     <option value="">Choose</option>
                                                                     <option value="pending">Pending</option>
                                                                     <option value="received">Received</option>
-                                                                    <option value="transmitted">Transmitted</option>
+                                                                    <option value="transmitted">Forwarded</option>
                                                                     <option value="returned">Returned</option>
                                                                 </select>
                                                             </div>

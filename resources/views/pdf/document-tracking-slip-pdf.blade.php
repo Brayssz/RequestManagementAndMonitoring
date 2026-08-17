@@ -96,6 +96,16 @@
 
 <body>
 
+@php
+    $statusLabels = [
+        'transmitted' => 'Forwarded',
+        'returned' => 'Returned',
+        'received' => 'Received',
+        'pending' => 'Pending',
+    ];
+    $statusLabel = $statusLabels[$documentTracker->status] ?? ucfirst($documentTracker->status);
+@endphp
+
 @foreach (['Office Copy', 'Customer Copy'] as $copyLabel)
 
 <div class="copy-page">
@@ -112,7 +122,7 @@
         $documentTracker->requestor_name,
         optional($documentTracker->currentOffice)->name,
         $documentTracker->document_type,
-        ucfirst($documentTracker->status),
+        $statusLabel,
     ])->filter()->implode(' | ') }}
 </h4>
 
@@ -133,7 +143,7 @@
 
         <th style="width:20%;">Status</th>
         <td style="width:30%;" class="slip-value">
-            {{ ucfirst($documentTracker->status) }}
+            {{ $statusLabel }}
         </td>
     </tr>
 

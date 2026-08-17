@@ -37,4 +37,9 @@ class DocumentTracker extends Model
     {
         return $this->belongsTo(User::class, 'released_by_user_id', 'id');
     }
+
+    public function logs()
+    {
+        return $this->hasMany(DocumentTrackerLog::class, 'document_tracker_id', 'id');
+    }
 }
