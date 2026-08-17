@@ -26,7 +26,11 @@ class DocumentTrackerTransmittedNotification extends Mailable
      */
     public function build()
     {
-        return $this->subject('Document Forwarded: ' . $this->documentTracker->tracking_number)
+        $subjectPrefix = $this->documentTracker->status === 'returned'
+            ? 'Document Returned: '
+            : 'Document Forwarded: ';
+
+        return $this->subject($subjectPrefix . $this->documentTracker->tracking_number)
                     ->view('emails.document-tracker-transmitted')
                     ->with(['documentTracker' => $this->documentTracker]);
     }
