@@ -16,6 +16,8 @@
 -- UP
 -- -----------------------------------------------------------------------------
 
+
+
 -- 2026_08_17_000000_add_requestor_email_to_document_trackers -------------------
 ALTER TABLE `document_trackers`
     ADD COLUMN `requestor_email` VARCHAR(255) NULL AFTER `requestor_name`;
