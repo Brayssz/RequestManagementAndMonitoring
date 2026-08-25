@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Contents;
 
 use App\Http\Controllers\Controller;
 use App\Models\DocumentTracker;
+use App\Models\RequestingOffice;
 use Illuminate\Http\Request as HttpRequest;
 
 class DocumentTrackerController extends Controller
@@ -15,6 +16,18 @@ class DocumentTrackerController extends Controller
 
             if ($request->filled('status')) {
                 $query->where('status', $request->status);
+            }
+
+            if ($request->filled('requesting_office_id')) {
+                // Trackers with no linked office fall back to the requestor name in the
+                // table, so they are filtered as their own "External" bucket.
+                $request->requesting_office_id === 'external'
+                    ? $query->whereNull('requesting_office_id')
+                    : $query->where('requesting_office_id', $request->requesting_office_id);
+            }
+
+            if ($request->filled('current_office_id')) {
+                $query->where('current_office_id', $request->current_office_id);
             }
 
             $search = $request->input('search_value');
@@ -63,11 +76,14 @@ class DocumentTrackerController extends Controller
         $totalForwardedDocumentTrackers = DocumentTracker::where('status', 'transmitted')->count();
         $totalCompletedDocumentTrackers = DocumentTracker::where('status', 'completed')->count();
 
+        $offices = RequestingOffice::where('status', 'active')->orderBy('name', 'asc')->get();
+
         return view('contents.document-trackers', compact(
             'totalDocumentTrackers',
             'totalPendingDocumentTrackers',
             'totalForwardedDocumentTrackers',
-            'totalCompletedDocumentTrackers'
+            'totalCompletedDocumentTrackers',
+            'offices'
         ));
     }
 }

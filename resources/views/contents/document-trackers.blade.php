@@ -180,6 +180,27 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <select class="search-offices-schools requesting_office_filter form-control">
+                                        <option value="">Filter by Requesting Office</option>
+                                        <option value="external">External / No Office</option>
+                                        @foreach ($offices as $office)
+                                            <option value="{{ $office->requesting_office_id }}">{{ $office->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12">
+                                <div class="form-group">
+                                    <select class="search-offices-schools current_office_filter form-control">
+                                        <option value="">Filter by Current Office</option>
+                                        @foreach ($offices as $office)
+                                            <option value="{{ $office->requesting_office_id }}">{{ $office->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -287,6 +308,8 @@
                         "data": function(d) {
                             d.search_value = $('.document-tracker-search').val();
                             d.status = $('.status_filter').val();
+                            d.requesting_office_id = $('.requesting_office_filter').val();
+                            d.current_office_id = $('.current_office_filter').val();
                         },
                         "dataSrc": "data"
                     },
@@ -432,8 +455,10 @@
                                 table.draw();
                             });
 
-                        $(document).off('change.docTracker', '.status_filter')
-                            .on('change.docTracker', '.status_filter', function() {
+                        const filterSelectors = '.status_filter, .requesting_office_filter, .current_office_filter';
+
+                        $(document).off('change.docTracker', filterSelectors)
+                            .on('change.docTracker', filterSelectors, function() {
                                 showLoader();
                                 table.ajax.reload(null, false);
                             });
