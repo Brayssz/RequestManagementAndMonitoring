@@ -99,7 +99,7 @@
                                         <p style="margin:1px 0;"><strong style="color:#0b3d91;">Address:</strong> Jaycee Avenue, Corner Rizal St., Brgy. Zone IV, City of Koronadal</p>
                                         <p style="margin:1px 0;"><strong style="color:#0b3d91;">Telephone Nos:</strong> (083) 228-1209 / (083) 228-9706</p>
                                         <p style="margin:1px 0;"><strong style="color:#0b3d91;">Email Address:</strong> Koronadal.city@deped.gov.ph</p>
-                                        <p style="margin:1px 0;"><strong style="color:#0b3d91;">Date Generated:</strong> {{ \Carbon\Carbon::now()->format('F d, Y h:i A') }}</p>
+                                        <p style="margin:1px 0;"><strong style="color:#0b3d91;">Date Generated:</strong> {{ \Carbon\Carbon::now(config('app.display_timezone'))->format('F d, Y h:i A') }}</p>
                                     </td>
                                 </tr>
                             </table>

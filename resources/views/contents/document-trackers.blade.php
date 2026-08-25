@@ -141,6 +141,29 @@
                 });
             @endif
 
+            // received_at / released_at are UTC instants serialized with an offset.
+            // Render them in the division's timezone rather than the viewer's.
+            const DISPLAY_TIMEZONE = @json(config('app.display_timezone'));
+
+            const formatDisplayDate = (value) => {
+                if (!value) {
+                    return 'N/A';
+                }
+
+                const date = new Date(value);
+
+                if (isNaN(date.getTime())) {
+                    return 'N/A';
+                }
+
+                return date.toLocaleDateString('en-US', {
+                    timeZone: DISPLAY_TIMEZONE,
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            };
+
             const initTippy = () => {
                 tippy('.print-document-tracker', {
                     content: "Print Slip",
@@ -251,13 +274,13 @@
                         {
                             "data": "received_at",
                             "render": function(data) {
-                                return data ? moment(data).format('MMMM D, YYYY') : 'N/A';
+                                return formatDisplayDate(data);
                             }
                         },
                         {
                             "data": "released_at",
                             "render": function(data) {
-                                return data ? moment(data).format('MMMM D, YYYY') : 'N/A';
+                                return formatDisplayDate(data);
                             }
                         },
                         {

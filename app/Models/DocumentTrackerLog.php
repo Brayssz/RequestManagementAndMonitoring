@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SerializesDatesInDisplayTimezone;
 use Illuminate\Database\Eloquent\Model;
 
 class DocumentTrackerLog extends Model
 {
+    use SerializesDatesInDisplayTimezone;
+
     protected $table = 'document_tracker_logs';
 
     public $timestamps = false;

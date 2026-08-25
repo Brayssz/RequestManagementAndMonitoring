@@ -133,7 +133,7 @@
                     <p style="margin: 1px 0;"><strong>Telephone Nos:</strong> (083) 228-1209 / (083) 228-9706</p>
                     <p style="margin: 1px 0;"><strong>Email Address:</strong> Koronadal.city@deped.gov.ph</p>
                     <p style="margin: 1px 0;"><strong>Date Generated:</strong>
-                        {{ \Carbon\Carbon::now()->format('F d, Y h:i A') }}</p>
+                        {{ \Carbon\Carbon::now(config('app.display_timezone'))->format('F d, Y h:i A') }}</p>
                 </td>
                 <td style="width: 10%; text-align: right; vertical-align: top; border: none; font-family: Arial, sans-serif;">
                     <div class="page-number"></div>

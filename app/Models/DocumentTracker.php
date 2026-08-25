@@ -2,12 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SerializesDatesInDisplayTimezone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DocumentTracker extends Model
 {
     use HasFactory;
+    use SerializesDatesInDisplayTimezone;
+
+    protected $casts = [
+        'received_at' => 'datetime',
+        'released_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'tracking_number',

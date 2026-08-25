@@ -280,7 +280,7 @@ class ReportController extends Controller
                     'remarks' => $log->remarks ?? null,
                     'actioned_by' => $log->user->name ?? null,
                     'activity' => $log->activity,
-                    'log_date' => $log->created_at ? \Carbon\Carbon::parse($log->created_at)->format('m/d/Y') : null,
+                    'log_date' => $log->created_at ? \Carbon\Carbon::parse($log->created_at)->setTimezone(config('app.display_timezone'))->format('m/d/Y') : null,
                 ];
             });
 

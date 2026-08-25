@@ -317,7 +317,7 @@ class PDFController extends Controller
                 'remarks' => $log->remarks ?? null,
                 'actioned_by' => $log->user->name ?? null,
                 'activity' => $log->activity,
-                'log_date' => \Carbon\Carbon::parse($log->created_at)->format('Y-m-d'),
+                'log_date' => \Carbon\Carbon::parse($log->created_at)->setTimezone(config('app.display_timezone'))->format('Y-m-d'),
             ];
         });
 

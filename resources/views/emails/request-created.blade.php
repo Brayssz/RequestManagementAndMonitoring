@@ -167,7 +167,7 @@
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Date Created:</span>
-                    <span class="detail-value">{{ now()->format('F d, Y h:i A') }}</span>
+                    <span class="detail-value">{{ now(config('app.display_timezone'))->format('F d, Y h:i A') }}</span>
                 </div>
             </div>
             

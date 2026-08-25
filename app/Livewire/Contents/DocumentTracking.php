@@ -41,7 +41,10 @@ class DocumentTracking extends Component
                     'to_office' => $log->toOffice->name ?? 'N/A',
                     'user' => $log->user->name ?? 'System',
                     'notes' => $log->notes,
-                    'created_at' => optional($log->created_at)->format('Y-m-d H:i:s'),
+                    'created_at' => $log->created_at
+                        ?->copy()
+                        ->setTimezone(config('app.display_timezone'))
+                        ->toIso8601String(),
                 ];
             })->values();
 
@@ -55,7 +58,10 @@ class DocumentTracking extends Component
                 'to_office' => $originOffice,
                 'user' => $documentTracker->receivedByUser->name ?? 'System',
                 'notes' => 'Document tracker received.',
-                'created_at' => optional($documentTracker->created_at)->format('Y-m-d H:i:s'),
+                'created_at' => $documentTracker->created_at
+                    ?->copy()
+                    ->setTimezone(config('app.display_timezone'))
+                    ->toIso8601String(),
             ]);
 
             $documentTracker->movement_logs = $movementLogs->values();

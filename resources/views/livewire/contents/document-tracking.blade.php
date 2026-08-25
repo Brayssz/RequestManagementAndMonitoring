@@ -149,6 +149,10 @@
                 getDocumentTracker(1, searchQuery);
             });
 
+            // Timestamps arrive as UTC instants carrying an offset; render them in the
+            // division's timezone so the result does not depend on the viewer's clock.
+            const DISPLAY_TIMEZONE = @json(config('app.display_timezone'));
+
             const formatTrackerDate = function(value) {
                 if (!value) {
                     return 'N/A';
@@ -161,6 +165,7 @@
                 }
 
                 return date.toLocaleDateString('en-US', {
+                    timeZone: DISPLAY_TIMEZONE,
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -193,6 +198,7 @@
                 }
 
                 return date.toLocaleString('en-US', {
+                    timeZone: DISPLAY_TIMEZONE,
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric',
@@ -226,9 +232,10 @@
                         }
 
                         return {
-                            month: date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
-                            day: date.toLocaleDateString('en-US', { day: 'numeric' }),
+                            month: date.toLocaleDateString('en-US', { timeZone: DISPLAY_TIMEZONE, month: 'short' }).toUpperCase(),
+                            day: date.toLocaleDateString('en-US', { timeZone: DISPLAY_TIMEZONE, day: 'numeric' }),
                             time: date.toLocaleTimeString('en-US', {
+                                timeZone: DISPLAY_TIMEZONE,
                                 hour: '2-digit',
                                 minute: '2-digit'
                             })

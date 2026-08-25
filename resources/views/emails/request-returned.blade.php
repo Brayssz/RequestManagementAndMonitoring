@@ -167,7 +167,7 @@
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Date Returned:</span>
-                    <span class="detail-value">{{ $requestData['date_transmitted'] ? \Carbon\Carbon::parse($requestData['date_transmitted'])->format('F d, Y') : now()->format('F d, Y') }}</span>
+                    <span class="detail-value">{{ $requestData['date_transmitted'] ? \Carbon\Carbon::parse($requestData['date_transmitted'])->format('F d, Y') : now(config('app.display_timezone'))->format('F d, Y') }}</span>
                 </div>
                 @if(!empty($requestData['remarks']))
                 <div class="detail-row">

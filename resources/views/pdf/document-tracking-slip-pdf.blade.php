@@ -164,7 +164,7 @@
         <th>Received At</th>
         <td class="slip-value">
             {{ $documentTracker->received_at
-                ? \Carbon\Carbon::parse($documentTracker->received_at)->format('F d, Y')
+                ? \Carbon\Carbon::parse($documentTracker->received_at)->setTimezone(config('app.display_timezone'))->format('F d, Y')
                 : '-' }}
         </td>
     </tr>
@@ -173,7 +173,7 @@
         <th>Released At</th>
         <td class="slip-value">
             {{ $documentTracker->released_at
-                ? \Carbon\Carbon::parse($documentTracker->released_at)->format('F d, Y')
+                ? \Carbon\Carbon::parse($documentTracker->released_at)->setTimezone(config('app.display_timezone'))->format('F d, Y')
                 : '-' }}
         </td>
 
@@ -228,7 +228,7 @@
         <th>Date/Time</th>
         <td>
             {{ $documentTracker->released_at
-                ? \Carbon\Carbon::parse($documentTracker->released_at)->format('F d, Y h:i A')
+                ? \Carbon\Carbon::parse($documentTracker->released_at)->setTimezone(config('app.display_timezone'))->format('F d, Y h:i A')
                 : '-' }}
         </td>
     </tr>
@@ -271,7 +271,7 @@
 
                 <p style="margin:1px 0;">
                     <strong>Date Generated:</strong>
-                    {{ \Carbon\Carbon::now()->format('F d, Y h:i A') }}
+                    {{ \Carbon\Carbon::now(config('app.display_timezone'))->format('F d, Y h:i A') }}
                 </p>
             </td>
         </tr>

@@ -34,7 +34,7 @@ class RequestTracking extends Component
             ->map(function ($log) {
             $office = $log->transmittedOffice ?? "";
             $officeInfo = $office ? " (" . $log->activity . " to: " . $office->name . ", " . $log->remarks . ")" : "";
-            return "📌 " . \Carbon\Carbon::parse($log->created_at)->format('F j, Y') . "\n" . $log->activity . $officeInfo . "\n➜";
+            return "📌 " . \Carbon\Carbon::parse($log->created_at)->setTimezone(config('app.display_timezone'))->format('F j, Y') . "\n" . $log->activity . $officeInfo . "\n➜";
             });
 
             $request->timeline = implode("\n", $activityLogs->toArray());

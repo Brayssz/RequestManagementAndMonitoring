@@ -69,6 +69,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Display Timezone
+    |--------------------------------------------------------------------------
+    |
+    | Timestamps are stored in UTC (see above) and converted to this timezone
+    | only when they are rendered. Keep the storage timezone as UTC so existing
+    | rows stay valid; change this value if the division ever moves offsets.
+    |
+    */
+
+    'display_timezone' => env('APP_DISPLAY_TIMEZONE', 'Asia/Manila'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |
