@@ -145,7 +145,11 @@
                                 <div class="card mb-0">
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-lg-12 col-md-12" id="target_office_group">
+                                            {{-- Kept in the DOM (never @if'd away) so select2 stays bound to the
+                                                 select; the visibility is rendered server-side so a Livewire
+                                                 re-render cannot drop it the way an inline jQuery style would. --}}
+                                            <div class="col-lg-12 col-md-12" id="target_office_group"
+                                                @if ($transfer_action == 'complete') style="display: none;" @endif>
                                                 <div class="mb-3">
                                                     <label class="form-label" for="target_office_id">Forward To</label>
                                                     <div wire:ignore>
@@ -320,7 +324,6 @@
 
                 @this.call('getDocumentTracker', documentTrackerId).then(() => {
                     hideLoader();
-                    $('#target_office_group').show();
                     $('#transfer-document-tracker-modal').modal('show');
                     $('#target_office_id').val(@this.get('target_office_id')).change();
                 });
@@ -333,7 +336,6 @@
 
                 @this.call('getDocumentTracker', documentTrackerId).then(() => {
                     hideLoader();
-                    $('#target_office_group').show();
                     $('#transfer-document-tracker-modal').modal('show');
                     $('#target_office_id').val(@this.get('target_office_id')).change();
                 });
@@ -344,11 +346,10 @@
                 const documentTrackerId = $(this).data('documenttrackerid');
                 @this.set('transfer_action', 'complete');
 
+                // Completion does not move the document, so the "Forward To" field is
+                // hidden by the Blade conditional on #target_office_group.
                 @this.call('getDocumentTracker', documentTrackerId).then(() => {
                     hideLoader();
-                    // Completion does not move the document, so no destination office.
-                    // Hidden with JS rather than Blade so select2 stays bound to the element.
-                    $('#target_office_group').hide();
                     $('#transfer-document-tracker-modal').modal('show');
                 });
             }
