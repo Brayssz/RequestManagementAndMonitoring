@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use App\Mail\DocumentTrackerCompletedNotification;
 use App\Mail\DocumentTrackerCreatedNotification;
 use App\Mail\DocumentTrackerTransmittedNotification;
 use Livewire\Component;
@@ -117,6 +118,13 @@ class DocumentTrackerManagement extends Component
         ];
     }
 
+    protected function completionRules()
+    {
+        return [
+            'transfer_notes' => 'nullable|string|max:1000',
+        ];
+    }
+
     public function render()
     {
         return view('livewire.contents.document-tracker-management');
@@ -203,6 +211,11 @@ class DocumentTrackerManagement extends Component
             return redirect()->route('document-trackers');
         }
 
+        if ($this->documentTracker->status === 'completed') {
+            session()->flash('error', 'This document is already completed and can no longer be moved.');
+            return redirect()->route('document-trackers');
+        }
+
         if ((int) $this->target_office_id === (int) $this->documentTracker->current_office_id) {
             session()->flash('error', 'The selected office is already the current office.');
             return redirect()->route('document-trackers');
@@ -238,6 +251,52 @@ class DocumentTrackerManagement extends Component
         }
 
         session()->flash('message', 'Document tracker successfully ' . $action . '.');
+
+        return redirect()->route('document-trackers');
+    }
+
+    public function submit_complete_document_tracker()
+    {
+        $this->validate($this->completionRules());
+
+        if (!$this->documentTracker) {
+            session()->flash('error', 'Document tracker not found.');
+            return redirect()->route('document-trackers');
+        }
+
+        if ($this->documentTracker->status === 'completed') {
+            session()->flash('error', 'This document is already completed.');
+            return redirect()->route('document-trackers');
+        }
+
+        DB::transaction(function () {
+            // The completion timestamp lives on the log so it also lands on the
+            // public movement timeline; the tracker itself keeps released_at
+            // meaning "last left an office".
+            DB::table('document_tracker_logs')->insert([
+                'document_tracker_id' => $this->documentTracker->id,
+                'from_office_id' => $this->documentTracker->current_office_id,
+                'to_office_id' => $this->documentTracker->current_office_id,
+                'user_id' => Auth::id(),
+                'action' => 'completed',
+                'notes' => $this->transfer_notes,
+                'created_at' => now(),
+            ]);
+
+            $this->documentTracker->status = 'completed';
+            $this->documentTracker->save();
+        });
+
+        // Send email notification to requestor if email provided
+        if (!empty($this->documentTracker->requestor_email)) {
+            try {
+                Mail::to($this->documentTracker->requestor_email)->send(new DocumentTrackerCompletedNotification($this->documentTracker));
+            } catch (\Exception $e) {
+                Log::error('Failed to send document tracker completed email: ' . $e->getMessage());
+            }
+        }
+
+        session()->flash('message', 'Document tracker successfully completed.');
 
         return redirect()->route('document-trackers');
     }

@@ -152,11 +152,11 @@
             <div class="col-xl-3 col-sm-6 col-12 d-flex">
                 <div class="dash-widget dash3 w-100">
                     <div class="dash-widgetimg">
-                        <span><i class="fas fa-undo" style="color: #dc3545; font-size: 1.3rem;"></i></span>
+                        <span><i class="fas fa-check-circle" style="color: #28a745; font-size: 1.3rem;"></i></span>
                     </div>
                     <div class="dash-widgetcontent">
-                        <h5><span class="counters" data-count="{{ $totalReturnedDocumentTrackers }}">{{ $totalReturnedDocumentTrackers }}</span></h5>
-                        <h6>Returned Document Trackers</h6>
+                        <h5><span class="counters" data-count="{{ $totalCompletedDocumentTrackers }}">{{ $totalCompletedDocumentTrackers }}</span></h5>
+                        <h6>Completed Document Trackers</h6>
                     </div>
                 </div>
             </div>

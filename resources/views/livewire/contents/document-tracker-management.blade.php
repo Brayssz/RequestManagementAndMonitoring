@@ -95,6 +95,7 @@
                                                                     <option value="received">Received</option>
                                                                     <option value="transmitted">Forwarded</option>
                                                                     <option value="returned">Returned</option>
+                                                                    <option value="completed">Completed</option>
                                                                 </select>
                                                             </div>
                                                             @error('status')
@@ -128,6 +129,8 @@
                             <div class="page-title">
                                 @if ($transfer_action == 'return')
                                     <h4>Return Document</h4>
+                                @elseif ($transfer_action == 'complete')
+                                    <h4>Complete Document</h4>
                                 @else
                                     <h4>Forward Document</h4>
                                 @endif
@@ -142,7 +145,7 @@
                                 <div class="card mb-0">
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-lg-12 col-md-12">
+                                            <div class="col-lg-12 col-md-12" id="target_office_group">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="target_office_id">Forward To</label>
                                                     <div wire:ignore>
@@ -174,6 +177,8 @@
                                     <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</button>
                                     @if ($transfer_action == 'return')
                                         <button type="button" class="btn btn-submit submit-transfer-document-tracker">Return</button>
+                                    @elseif ($transfer_action == 'complete')
+                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">Complete</button>
                                     @else
                                         <button type="button" class="btn btn-submit submit-transfer-document-tracker">Forward</button>
                                     @endif
@@ -247,6 +252,7 @@
                 $(document).on('click', '.edit-document-tracker', openEditDocumentTrackerModal);
                 $(document).on('click', '.transmit-document-tracker', openTransmitDocumentTrackerModal);
                 $(document).on('click', '.return-document-tracker', openReturnDocumentTrackerModal);
+                $(document).on('click', '.complete-document-tracker', openCompleteDocumentTrackerModal);
                 $(document).on('click', '.delete-document-tracker', deleteDocumentTracker);
             }
 
@@ -267,7 +273,16 @@
 
             $(document).on('click', '.submit-transfer-document-tracker', function(e) {
                 e.preventDefault();
-                const actionLabel = @this.get('transfer_action') === 'return' ? 'Return' : 'Forward';
+                const action = @this.get('transfer_action');
+
+                if (action === 'complete') {
+                    confirmAlert('Confirm Complete', 'Mark this document as completed? It can no longer be forwarded or returned afterwards.', function() {
+                        @this.call('submit_complete_document_tracker');
+                    }, 'Complete');
+                    return;
+                }
+
+                const actionLabel = action === 'return' ? 'Return' : 'Forward';
 
                 confirmAlert('Confirm ' + actionLabel, 'Are you sure you want to ' + actionLabel.toLowerCase() + ' this document?', function() {
                     @this.call('submit_transfer_document_tracker');
@@ -305,6 +320,7 @@
 
                 @this.call('getDocumentTracker', documentTrackerId).then(() => {
                     hideLoader();
+                    $('#target_office_group').show();
                     $('#transfer-document-tracker-modal').modal('show');
                     $('#target_office_id').val(@this.get('target_office_id')).change();
                 });
@@ -317,8 +333,23 @@
 
                 @this.call('getDocumentTracker', documentTrackerId).then(() => {
                     hideLoader();
+                    $('#target_office_group').show();
                     $('#transfer-document-tracker-modal').modal('show');
                     $('#target_office_id').val(@this.get('target_office_id')).change();
+                });
+            }
+
+            function openCompleteDocumentTrackerModal() {
+                showLoader();
+                const documentTrackerId = $(this).data('documenttrackerid');
+                @this.set('transfer_action', 'complete');
+
+                @this.call('getDocumentTracker', documentTrackerId).then(() => {
+                    hideLoader();
+                    // Completion does not move the document, so no destination office.
+                    // Hidden with JS rather than Blade so select2 stays bound to the element.
+                    $('#target_office_group').hide();
+                    $('#transfer-document-tracker-modal').modal('show');
                 });
             }
 

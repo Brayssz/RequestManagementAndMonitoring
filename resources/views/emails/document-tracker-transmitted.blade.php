@@ -1,27 +1,38 @@
+@php
+    // Shared movement notification: forwarded, returned, and completed events all
+    // render through this template so the three emails keep an identical layout.
+    $statusLabels = [
+        'transmitted' => 'Forwarded',
+        'returned' => 'Returned',
+        'received' => 'Received',
+        'completed' => 'Completed',
+        'pending' => 'Pending',
+    ];
+    $statusLabel = $statusLabels[$documentTracker->status] ?? ucfirst($documentTracker->status ?? 'Forwarded');
+
+    $isReturned = $documentTracker->status === 'returned';
+    $isCompleted = $documentTracker->status === 'completed';
+
+    $accentColor = $isReturned ? '#b91c1c' : ($isCompleted ? '#15803d' : '#0b3d91');
+    $accentSoft = $isReturned ? '#fdeaea' : ($isCompleted ? '#e7f6ec' : '#e5edfb');
+    $accentBorder = $isReturned ? '#f5c6c6' : ($isCompleted ? '#c3e6cd' : '#d6e2fb');
+    $accentBg = $isReturned ? '#fdf2f2' : ($isCompleted ? '#f2fbf5' : '#f0f5ff');
+    $headerTint = $isReturned ? '#f6dcdc' : ($isCompleted ? '#d8efe0' : '#dbe6fb');
+    $headline = $isReturned ? 'Document Returned' : ($isCompleted ? 'Document Completed' : 'Document Forwarded');
+    $actionText = $isReturned ? 'returned' : ($isCompleted ? 'completed' : 'forwarded');
+    $officeLabel = $isCompleted ? 'Completed At' : 'Current Office';
+    $followUp = $isCompleted
+        ? 'No further action is required on your part.'
+        : 'Its latest movement details are shown below.';
+@endphp
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Forwarded</title>
+    <title>{{ $headline }}</title>
 </head>
 <body style="margin:0; padding:0; background-color:#eef1f6; font-family:Arial, Helvetica, sans-serif; color:#2d3748;">
-    @php
-        $statusLabels = [
-            'transmitted' => 'Forwarded',
-            'returned' => 'Returned',
-            'received' => 'Received',
-            'pending' => 'Pending',
-        ];
-        $statusLabel = $statusLabels[$documentTracker->status] ?? ucfirst($documentTracker->status ?? 'Forwarded');
-        $isReturned = $documentTracker->status === 'returned';
-        $accentColor = $isReturned ? '#b91c1c' : '#0b3d91';
-        $accentSoft = $isReturned ? '#fdeaea' : '#e5edfb';
-        $accentBorder = $isReturned ? '#f5c6c6' : '#d6e2fb';
-        $accentBg = $isReturned ? '#fdf2f2' : '#f0f5ff';
-        $headline = $isReturned ? 'Document Returned' : 'Document Forwarded';
-        $actionText = $isReturned ? 'returned' : 'forwarded';
-    @endphp
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#eef1f6; padding:24px 12px;">
         <tr>
@@ -32,7 +43,7 @@
                     <!-- Header -->
                     <tr>
                         <td style="background-color:{{ $accentColor }}; padding:26px 32px;">
-                            <p style="margin:0; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#dbe6fb;">
+                            <p style="margin:0; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:{{ $headerTint }};">
                                 DepEd Koronadal &mdash; SGOD Office
                             </p>
                             <h1 style="margin:6px 0 0; font-size:22px; line-height:1.3; color:#ffffff; font-weight:bold;">
@@ -51,7 +62,7 @@
                             <p style="margin:0 0 24px; font-size:15px; line-height:1.6; color:#4a5568;">
                                 Your document with tracking number
                                 <strong>{{ $documentTracker->tracking_number }}</strong>
-                                has been {{ $actionText }}. Its latest movement details are shown below.
+                                has been {{ $actionText }}. {{ $followUp }}
                             </p>
 
                             <!-- Tracking number highlight -->
@@ -77,7 +88,7 @@
                                     <td style="padding:12px 16px; font-size:13px; color:#2d3748; border-bottom:1px solid #edf2f7;">{{ $documentTracker->details ?? '-' }}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding:12px 16px; font-size:13px; color:#5a6b85; background-color:#f8fafc; border-bottom:1px solid #edf2f7;"><strong>Current Office</strong></td>
+                                    <td style="padding:12px 16px; font-size:13px; color:#5a6b85; background-color:#f8fafc; border-bottom:1px solid #edf2f7;"><strong>{{ $officeLabel }}</strong></td>
                                     <td style="padding:12px 16px; font-size:13px; color:#2d3748; border-bottom:1px solid #edf2f7;">{{ optional($documentTracker->currentOffice)->name ?? '-' }}</td>
                                 </tr>
                                 <tr>

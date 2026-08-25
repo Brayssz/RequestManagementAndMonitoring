@@ -61,13 +61,13 @@ class DocumentTrackerController extends Controller
         $totalDocumentTrackers = DocumentTracker::count();
         $totalPendingDocumentTrackers = DocumentTracker::where('status', 'pending')->count();
         $totalForwardedDocumentTrackers = DocumentTracker::where('status', 'transmitted')->count();
-        $totalReturnedDocumentTrackers = DocumentTracker::where('status', 'returned')->count();
+        $totalCompletedDocumentTrackers = DocumentTracker::where('status', 'completed')->count();
 
         return view('contents.document-trackers', compact(
             'totalDocumentTrackers',
             'totalPendingDocumentTrackers',
             'totalForwardedDocumentTrackers',
-            'totalReturnedDocumentTrackers'
+            'totalCompletedDocumentTrackers'
         ));
     }
 }

@@ -176,6 +176,7 @@
                 transmitted: 'Forwarded',
                 returned: 'Returned',
                 received: 'Received',
+                completed: 'Completed',
                 pending: 'Pending'
             };
 
@@ -254,12 +255,15 @@
                             const actionLabel = log.action ? formatStatusLabel(log.action) : 'Moved';
                             const actionColor = log.action === 'transmitted' ? '#22c55e' :
                                 log.action === 'returned' ? '#ef4444' :
-                                log.action === 'received' ? '#3b82f6' : '#643bc6';
+                                log.action === 'received' ? '#3b82f6' :
+                                log.action === 'completed' ? '#16a34a' : '#643bc6';
                             const badge = movementDateParts(log.created_at);
                             const isLast = i === logs.length - 1;
 
                             const routeHtml = log.action === 'received' ?
                                 `<i class="bi bi-box-arrow-in-down"></i> Received at ${log.to_office}` :
+                                log.action === 'completed' ?
+                                `<i class="bi bi-check-circle-fill"></i> Completed at ${log.to_office}` :
                                 `${log.from_office} <i class="bi bi-arrow-right"></i> ${log.to_office}`;
 
                             html += `
@@ -293,13 +297,15 @@
                                 aria-expanded="false" aria-controls="docCollapse${index}">
                                 <th scope="row">
                                     <i class="bi ${
-                                        tracker.status === 'pending' ? 'bi-hourglass-split' : 
-                                        tracker.status === 'transmitted' ? 'bi-send-check' : 
-                                        tracker.status === 'returned' ? 'bi-arrow-return-left' : 'bi-file-earmark-fill'
+                                        tracker.status === 'pending' ? 'bi-hourglass-split' :
+                                        tracker.status === 'transmitted' ? 'bi-send-check' :
+                                        tracker.status === 'returned' ? 'bi-arrow-return-left' :
+                                        tracker.status === 'completed' ? 'bi-check-circle-fill' : 'bi-file-earmark-fill'
                                     }" style="color: ${
-                                        tracker.status === 'pending' ? '#FFA500' : 
-                                        tracker.status === 'transmitted' ? '#32CD32' : 
-                                        tracker.status === 'returned' ? '#FF0000' : '#643bc6'
+                                        tracker.status === 'pending' ? '#FFA500' :
+                                        tracker.status === 'transmitted' ? '#32CD32' :
+                                        tracker.status === 'returned' ? '#FF0000' :
+                                        tracker.status === 'completed' ? '#16a34a' : '#643bc6'
                                     }; font-size: 22px;"></i>
                                 </th>
                                 <td>${tracker.current_office_name}</td>

@@ -300,10 +300,10 @@
                     </div>
                     <div class="col-lg-3 col-md-6 d-flex">
                         <div class="stats-item d-flex align-items-center w-100 h-100" style="outline: 1px solid #ccc; padding: 10px; border-radius: 5px; background: #fff;">
-                            <i class="bi bi-arrow-return-left color-red flex-shrink-0"></i>
+                            <i class="bi bi-check-circle-fill color-green flex-shrink-0"></i>
                             <div>
-                                <span data-purecounter-start="0" data-purecounter-end="{{ $totalReturnedDocumentTrackers }}" data-purecounter-duration="1" class="purecounter"></span>
-                                <p>Returned Document Trackers</p>
+                                <span data-purecounter-start="0" data-purecounter-end="{{ $totalCompletedDocumentTrackers }}" data-purecounter-duration="1" class="purecounter"></span>
+                                <p>Completed Document Trackers</p>
                             </div>
                         </div>
                     </div>

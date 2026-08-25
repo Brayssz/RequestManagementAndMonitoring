@@ -65,11 +65,11 @@
             <div class="col-xl-3 col-sm-6 col-12 d-flex">
                 <div class="dash-widget dash3 w-100">
                     <div class="dash-widgetimg">
-                        <span><i class="fas fa-undo" style="color: #dc3545; font-size: 1.3rem;"></i></span>
+                        <span><i class="fas fa-check-circle" style="color: #28a745; font-size: 1.3rem;"></i></span>
                     </div>
                     <div class="dash-widgetcontent">
-                        <h5><span class="counters" data-count="{{ $totalReturnedDocumentTrackers }}">{{ $totalReturnedDocumentTrackers }}</span></h5>
-                        <h6>Returned Document Trackers</h6>
+                        <h5><span class="counters" data-count="{{ $totalCompletedDocumentTrackers }}">{{ $totalCompletedDocumentTrackers }}</span></h5>
+                        <h6>Completed Document Trackers</h6>
                     </div>
                 </div>
             </div>
@@ -94,6 +94,7 @@
                                         <option value="received">Received</option>
                                         <option value="transmitted">Forwarded</option>
                                         <option value="returned">Returned</option>
+                                        <option value="completed">Completed</option>
                                     </select>
                                 </div>
                             </div>
@@ -176,6 +177,9 @@
                 });
                 tippy('.return-document-tracker', {
                     content: "Return Document",
+                });
+                tippy('.complete-document-tracker', {
+                    content: "Mark as Completed",
                 });
                 tippy('.delete-document-tracker', {
                     content: "Delete Document Tracker",
@@ -267,6 +271,8 @@
                                     return `<span class="badge badge-lineinfo">Forwarded</span>`;
                                 } else if (row.status === 'returned') {
                                     return `<span class="badge badge-linedanger">Returned</span>`;
+                                } else if (row.status === 'completed') {
+                                    return `<span class="badge badge-linesuccess">Completed</span>`;
                                 }
                                 return `<span class="badge badge-lineinfo">Unknown</span>`;
                             }
@@ -286,6 +292,19 @@
                         {
                             "data": null,
                             "render": function(data, type, row) {
+                                // A completed document is terminal — it can no longer be
+                                // forwarded, returned, or completed again.
+                                const routingActions = row.status === 'completed' ? '' : `
+                                        <a class="me-2 p-2 transmit-document-tracker" data-documenttrackerid="${row.id}">
+                                            <i data-feather="send" class="feather-send"></i>
+                                        </a>
+                                        <a class="me-2 p-2 return-document-tracker" data-documenttrackerid="${row.id}">
+                                            <i data-feather="corner-up-left" class="feather-corner-up-left"></i>
+                                        </a>
+                                        <a class="me-2 p-2 complete-document-tracker" data-documenttrackerid="${row.id}">
+                                            <i data-feather="check-circle" class="feather-check-circle"></i>
+                                        </a>`;
+
                                 return `
                                     <div class="edit-delete-action">
                                         <a class="me-2 p-2 print-document-tracker" href="/document-tracker-slip-pdf/${row.id}" target="_blank">
@@ -294,12 +313,7 @@
                                         <a class="me-2 p-2 edit-document-tracker" data-documenttrackerid="${row.id}">
                                             <i data-feather="edit" class="feather-edit"></i>
                                         </a>
-                                        <a class="me-2 p-2 transmit-document-tracker" data-documenttrackerid="${row.id}">
-                                            <i data-feather="send" class="feather-send"></i>
-                                        </a>
-                                        <a class="me-2 p-2 return-document-tracker" data-documenttrackerid="${row.id}">
-                                            <i data-feather="corner-up-left" class="feather-corner-up-left"></i>
-                                        </a>
+                                        ${routingActions}
                                         <a class="me-2 p-2 delete-document-tracker" data-documenttrackerid="${row.id}">
                                             <i data-feather="trash-2" class="feather-trash-2"></i>
                                         </a>

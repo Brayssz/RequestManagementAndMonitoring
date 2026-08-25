@@ -24,7 +24,7 @@ class AppController extends Controller
         $totalDocumentTrackers = DocumentTracker::count();
         $totalPendingDocumentTrackers = DocumentTracker::where('status', 'pending')->count();
         $totalForwardedDocumentTrackers = DocumentTracker::where('status', 'transmitted')->count();
-        $totalReturnedDocumentTrackers = DocumentTracker::where('status', 'returned')->count();
+        $totalCompletedDocumentTrackers = DocumentTracker::where('status', 'completed')->count();
 
         return view('welcome', compact(
             'totalRequests',
@@ -34,7 +34,7 @@ class AppController extends Controller
             'totalDocumentTrackers',
             'totalPendingDocumentTrackers',
             'totalForwardedDocumentTrackers',
-            'totalReturnedDocumentTrackers'
+            'totalCompletedDocumentTrackers'
         ));
     }
 
@@ -119,7 +119,7 @@ class AppController extends Controller
         $totalDocumentTrackers = DocumentTracker::count();
         $totalPendingDocumentTrackers = DocumentTracker::where('status', 'pending')->count();
         $totalForwardedDocumentTrackers = DocumentTracker::where('status', 'transmitted')->count();
-        $totalReturnedDocumentTrackers = DocumentTracker::where('status', 'returned')->count();
+        $totalCompletedDocumentTrackers = DocumentTracker::where('status', 'completed')->count();
 
         $totalPendingRequests = RequestModel::where('status', 'pending')->whereYear('created_at', $year)->count();
         $totalTransmittedRequests = RequestModel::where('status', 'transmitted')->whereYear('created_at', $year)->count();
@@ -136,7 +136,7 @@ class AppController extends Controller
             'totalDocumentTrackers',
             'totalPendingDocumentTrackers',
             'totalForwardedDocumentTrackers',
-            'totalReturnedDocumentTrackers',
+            'totalCompletedDocumentTrackers',
             'totalPendingRequests',
             'totalTransmittedRequests',
             'totalReturnedRequests',
