@@ -11,7 +11,7 @@ class DocumentTrackerController extends Controller
     public function showDocumentTrackers(HttpRequest $request)
     {
         if ($request->ajax()) {
-            $query = DocumentTracker::query()->with('currentOffice');
+            $query = DocumentTracker::query()->with(['requestingOffice', 'currentOffice']);
 
             if ($request->filled('status')) {
                 $query->where('status', $request->status);
@@ -25,6 +25,9 @@ class DocumentTrackerController extends Controller
                         ->orWhere('requestor_name', 'like', '%' . $search . '%')
                         ->orWhere('document_type', 'like', '%' . $search . '%')
                         ->orWhere('details', 'like', '%' . $search . '%')
+                        ->orWhereHas('requestingOffice', function ($subQuery) use ($search) {
+                            $subQuery->where('name', 'like', '%' . $search . '%');
+                        })
                         ->orWhereHas('currentOffice', function ($subQuery) use ($search) {
                             $subQuery->where('name', 'like', '%' . $search . '%');
                         });

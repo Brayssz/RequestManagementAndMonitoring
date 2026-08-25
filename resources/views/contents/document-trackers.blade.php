@@ -107,7 +107,7 @@
                         <thead>
                             <tr>
                                 <th>Tracking Number</th>
-                                <th>Requestor</th>
+                                <th>Requesting Office</th>
                                 <th>Current Office</th>
                                 <th>Document Type</th>
                                 <th>Details</th>
@@ -193,9 +193,22 @@
                             "data": "tracking_number"
                         },
                         {
-                            "data": "requestor_name",
-                            "render": function(data) {
-                                return data || 'N/A';
+                            "data": null,
+                            "render": function(data, type, row) {
+                                // Fall back to the requestor name when no office is linked (external requests).
+                                const office = row.requesting_office;
+                                const name = office?.name || row.requestor_name || 'N/A';
+                                const subLabel = office?.type ?
+                                    office.type.charAt(0).toUpperCase() + office.type.slice(1) :
+                                    (row.requestor_name ? 'External' : '');
+                                return `
+                                    <div class="userimgname">
+                                        <div>
+                                            <a href="javascript:void(0);">${name}</a>
+                                            <span class="emp-team text-muted">${subLabel}</span>
+                                        </div>
+                                    </div>
+                                `;
                             }
                         },
                         {

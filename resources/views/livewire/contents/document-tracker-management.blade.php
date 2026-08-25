@@ -32,7 +32,7 @@
 
                                                 <div class="col-lg-6 col-md-6">
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="selected_requesting_office_id">Requestor / Office</label>
+                                                        <label class="form-label" for="selected_requesting_office_id">Requesting Office</label>
                                                         <div wire:ignore>
                                                             <select id="selected_requesting_office_id" class="form-control select requestor-select">
                                                                 <option value="">Choose</option>
@@ -42,7 +42,7 @@
                                                                 <option value="external">External / Other</option>
                                                             </select>
                                                         </div>
-                                                        @error('requestor_name')
+                                                        @error('requesting_office_id')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                         <small class="text-muted">Select an office/school to autofill requestor details or choose External to enter manually.</small>
@@ -188,9 +188,19 @@
 
     @push('scripts')
         <script>
+            // Set while we populate the office select programmatically so the change
+            // handler only refreshes the UI state and does not re-autofill the requestor.
+            let suppressRequestingOfficeSync = false;
+
             document.addEventListener('DOMContentLoaded', () => {
                 handleDocumentTrackerActions();
             });
+
+            function syncRequestingOfficeSelect(value) {
+                suppressRequestingOfficeSync = true;
+                $('#selected_requesting_office_id').val(value || '').trigger('change');
+                suppressRequestingOfficeSync = false;
+            }
 
             $(document).ready(function() {
                 $('.search-office.document-tracker').select2({
@@ -210,7 +220,10 @@
                 $('.search-office.document-tracker').on('change', handleInputChange);
                 $('#selected_requesting_office_id').on('change', function(e) {
                     var val = $(this).val();
-                    @this.set('selected_requesting_office_id', val);
+
+                    if (!suppressRequestingOfficeSync) {
+                        @this.set('selected_requesting_office_id', val);
+                    }
 
                     if (val === 'external') {
                         // External: only allow entering the requestor name
@@ -266,6 +279,7 @@
                 @this.set('submit_func', 'add-document-tracker');
                 @this.call('resetFields').then(() => {
                     hideLoader();
+                    syncRequestingOfficeSelect('');
                     $('#add-document-tracker-modal').modal('show');
                 });
             }
@@ -277,6 +291,7 @@
 
                 @this.call('getDocumentTracker', documentTrackerId).then(() => {
                     hideLoader();
+                    syncRequestingOfficeSelect(@this.get('selected_requesting_office_id'));
                     $('#add-document-tracker-modal').modal('show');
                     var status = @this.get('status');
                     $('#status').val(status).change();

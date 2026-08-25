@@ -20,6 +20,7 @@ class DocumentTrackerManagement extends Component
 
     public $document_tracker_id, $tracking_number, $requestor_name, $current_office_id, $document_type, $details, $status;
     public $requestor_email;
+    public $requesting_office_id;
     public $requestingOffices;
     public $selected_requesting_office_id;
 
@@ -41,12 +42,15 @@ class DocumentTrackerManagement extends Component
     {
         // If external or empty, leave fields editable
         if (empty($value) || $value === 'external') {
+            $this->requesting_office_id = null;
             $this->requestor_name = $this->requestor_name ?? null;
             $this->requestor_email = $this->requestor_email ?? null;
             return;
         }
 
         $office = RequestingOffice::find($value);
+
+        $this->requesting_office_id = $office->requesting_office_id ?? null;
 
         if ($office && $office->requestor_obj) {
             $this->requestor_name = $office->requestor_obj->name;
@@ -67,6 +71,8 @@ class DocumentTrackerManagement extends Component
             $this->tracking_number = $this->documentTracker->tracking_number;
             $this->requestor_name = $this->documentTracker->requestor_name;
             $this->requestor_email = $this->documentTracker->requestor_email;
+            $this->requesting_office_id = $this->documentTracker->requesting_office_id;
+            $this->selected_requesting_office_id = $this->documentTracker->requesting_office_id ?: 'external';
             $this->current_office_id = $this->documentTracker->current_office_id;
             $this->document_type = $this->documentTracker->document_type;
             $this->details = $this->documentTracker->details;
@@ -84,6 +90,7 @@ class DocumentTrackerManagement extends Component
             'tracking_number' => 'nullable|string|max:255',
             'requestor_name' => 'required|string|max:255',
             'requestor_email' => 'nullable|email|max:255',
+            'requesting_office_id' => 'nullable|exists:requesting_offices,requesting_office_id',
             'current_office_id' => 'nullable|exists:requesting_offices,requesting_office_id',
             'document_type' => 'required|string|max:255',
             'details' => 'nullable|string',
@@ -118,7 +125,8 @@ class DocumentTrackerManagement extends Component
     public function resetFields()
     {
         $this->reset([
-            'tracking_number', 'requestor_name', 'requestor_email', 'current_office_id', 'document_type', 'details', 'status'
+            'tracking_number', 'requestor_name', 'requestor_email', 'requesting_office_id', 'selected_requesting_office_id',
+            'current_office_id', 'document_type', 'details', 'status'
         ]);
 
         if (Auth::check()) {
@@ -148,6 +156,7 @@ class DocumentTrackerManagement extends Component
                 'tracking_number' => $this->tracking_number,
                 'requestor_name' => $this->requestor_name,
                 'requestor_email' => $this->requestor_email,
+                'requesting_office_id' => $this->requesting_office_id ?: null,
                 'current_office_id' => $this->current_office_id,
                 'document_type' => $this->document_type,
                 'details' => $this->details,
@@ -171,6 +180,7 @@ class DocumentTrackerManagement extends Component
             $this->documentTracker->tracking_number = $this->tracking_number;
             $this->documentTracker->requestor_name = $this->requestor_name;
             $this->documentTracker->requestor_email = $this->requestor_email;
+            $this->documentTracker->requesting_office_id = $this->requesting_office_id ?: null;
             $this->documentTracker->current_office_id = $this->current_office_id;
             $this->documentTracker->document_type = $this->document_type;
             $this->documentTracker->details = $this->details;

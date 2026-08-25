@@ -13,6 +13,7 @@ class DocumentTracker extends Model
         'tracking_number',
         'requestor_name',
         'requestor_email',
+        'requesting_office_id',
         'current_office_id',
         'document_type',
         'details',
@@ -22,6 +23,11 @@ class DocumentTracker extends Model
         'received_at',
         'released_at',
     ];
+
+    public function requestingOffice()
+    {
+        return $this->belongsTo(RequestingOffice::class, 'requesting_office_id', 'requesting_office_id');
+    }
 
     public function currentOffice()
     {
