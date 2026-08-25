@@ -5,20 +5,30 @@
 @section('content')
 
     <style>
+        /* Keep the cell a normal table-cell so it shares row height and baseline
+           with the other columns. */
+        table tbody td.action-menu-cell {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
         .action-menu-toggle {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
+            width: 34px;
+            height: 34px;
+            border: 1px solid rgba(145, 158, 171, 0.3);
+            border-radius: 8px;
+            background-color: #ffffff;
             color: #637381;
-            transition: background-color .15s ease, color .15s ease;
+            transition: background-color .15s ease, border-color .15s ease, color .15s ease;
         }
 
         .action-menu-toggle:hover,
         .action-menu-toggle[aria-expanded="true"] {
             background-color: #f1effd;
+            border-color: #643bc6;
             color: #643bc6;
         }
 
@@ -28,29 +38,37 @@
         }
 
         .action-menu-list {
-            min-width: 196px;
+            min-width: 200px;
             padding: 6px;
             border: 1px solid #e7e7e7;
-            border-radius: 8px;
-            box-shadow: 0 6px 20px rgba(16, 42, 94, .12);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(16, 42, 94, .14);
         }
 
+        /* The theme borders every <a> inside an action cell; reset that here so the
+           menu reads as one list instead of a stack of boxed buttons. */
         .action-menu-list .dropdown-item {
             display: flex;
             align-items: center;
             gap: 10px;
+            width: 100%;
             padding: 8px 10px;
+            border: 0;
             border-radius: 6px;
+            background-color: transparent;
             font-size: 14px;
+            line-height: 1.4;
             color: #2d3748;
         }
 
-        .action-menu-list .dropdown-item:hover {
+        .action-menu-list .dropdown-item:hover,
+        .action-menu-list .dropdown-item:focus {
             background-color: #f6f5fe;
             color: #643bc6;
         }
 
-        .action-menu-list .dropdown-item.text-danger:hover {
+        .action-menu-list .dropdown-item.text-danger:hover,
+        .action-menu-list .dropdown-item.text-danger:focus {
             background-color: #fdf1f1;
             color: #dc3545;
         }
@@ -59,10 +77,12 @@
             width: 16px;
             height: 16px;
             flex-shrink: 0;
+            color: inherit;
         }
 
         .action-menu-list .dropdown-divider {
             margin: 6px 2px;
+            border-top-color: #ececf1;
         }
     </style>
 
@@ -398,7 +418,10 @@
                         }
                     ],
                     "createdRow": function(row, data, dataIndex) {
-                        $(row).find('td').eq(8).addClass('action-table-data');
+                        // Deliberately NOT .action-table-data — that theme class sets
+                        // display:flex on the td (which drops it out of the table row's
+                        // box model) and borders every <a> inside it, including menu items.
+                        $(row).find('td').eq(8).addClass('action-menu-cell');
                     },
                     "initComplete": function(settings, json) {
                         feather.replace();
