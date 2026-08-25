@@ -34,7 +34,9 @@
                                                     <div class="mb-3">
                                                         <label class="form-label" for="selected_requesting_office_id">Requesting Office</label>
                                                         <div wire:ignore>
-                                                            <select id="selected_requesting_office_id" class="form-control select requestor-select">
+                                                            {{-- No "select" class on purpose: the global init in script.js gives
+                                                                 that class minimumResultsForSearch:-1, which hides the search box. --}}
+                                                            <select id="selected_requesting_office_id" class="form-control requestor-select">
                                                                 <option value="">Choose</option>
                                                                 @foreach ($requestingOffices as $office)
                                                                     <option value="{{ $office->requesting_office_id }}">{{ ucfirst($office->type) }} - {{ $office->name }}</option>
@@ -219,9 +221,16 @@
                 $('.search-office.transfer').select2({
                     dropdownParent: $('#transfer-document-tracker-modal')
                 });
+                // dropdownParent is required inside a Bootstrap modal, otherwise the
+                // modal keeps focus and the select2 search field cannot be typed into.
                 $('#selected_requesting_office_id').select2({
                     dropdownParent: $('#add-document-tracker-modal'),
                     width: '100%'
+                });
+
+                $('#selected_requesting_office_id').on('select2:open', function() {
+                    document.querySelector('.select2-container--open .select2-search__field')
+                        .placeholder = 'Search offices/schools here...';
                 });
             });
 
