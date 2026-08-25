@@ -4,6 +4,68 @@
 
 @section('content')
 
+    <style>
+        .action-menu-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            color: #637381;
+            transition: background-color .15s ease, color .15s ease;
+        }
+
+        .action-menu-toggle:hover,
+        .action-menu-toggle[aria-expanded="true"] {
+            background-color: #f1effd;
+            color: #643bc6;
+        }
+
+        .action-menu-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .action-menu-list {
+            min-width: 196px;
+            padding: 6px;
+            border: 1px solid #e7e7e7;
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(16, 42, 94, .12);
+        }
+
+        .action-menu-list .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #2d3748;
+        }
+
+        .action-menu-list .dropdown-item:hover {
+            background-color: #f6f5fe;
+            color: #643bc6;
+        }
+
+        .action-menu-list .dropdown-item.text-danger:hover {
+            background-color: #fdf1f1;
+            color: #dc3545;
+        }
+
+        .action-menu-list .dropdown-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .action-menu-list .dropdown-divider {
+            margin: 6px 2px;
+        }
+    </style>
+
     <div class="content mx-3">
         <div class="page-header">
             <div class="add-item d-flex">
@@ -165,24 +227,17 @@
                 });
             };
 
-            const initTippy = () => {
-                tippy('.print-document-tracker', {
-                    content: "Print Slip",
-                });
-                tippy('.edit-document-tracker', {
-                    content: "Edit Document Tracker",
-                });
-                tippy('.transmit-document-tracker', {
-                    content: "Transmit Document",
-                });
-                tippy('.return-document-tracker', {
-                    content: "Return Document",
-                });
-                tippy('.complete-document-tracker', {
-                    content: "Mark as Completed",
-                });
-                tippy('.delete-document-tracker', {
-                    content: "Delete Document Tracker",
+            // The table scrolls horizontally, so .table-responsive (overflow-x: auto)
+            // would clip a normally-positioned menu. Popper's fixed strategy takes the
+            // menu out of that clipping context.
+            const initActionMenus = () => {
+                document.querySelectorAll('.action-menu-toggle').forEach((toggle) => {
+                    bootstrap.Dropdown.getOrCreateInstance(toggle, {
+                        popperConfig: (defaultConfig) => ({
+                            ...defaultConfig,
+                            strategy: 'fixed'
+                        })
+                    });
                 });
             };
 
@@ -293,30 +348,50 @@
                             "data": null,
                             "render": function(data, type, row) {
                                 // A completed document is terminal — it can no longer be
-                                // forwarded, returned, or completed again.
-                                const routingActions = row.status === 'completed' ? '' : `
-                                        <a class="me-2 p-2 transmit-document-tracker" data-documenttrackerid="${row.id}">
-                                            <i data-feather="send" class="feather-send"></i>
-                                        </a>
-                                        <a class="me-2 p-2 return-document-tracker" data-documenttrackerid="${row.id}">
-                                            <i data-feather="corner-up-left" class="feather-corner-up-left"></i>
-                                        </a>
-                                        <a class="me-2 p-2 complete-document-tracker" data-documenttrackerid="${row.id}">
-                                            <i data-feather="check-circle" class="feather-check-circle"></i>
-                                        </a>`;
+                                // forwarded, returned, or completed again, so that whole
+                                // group (and its divider) drops out of the menu.
+                                const routingGroup = row.status === 'completed' ? '' : `
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item transmit-document-tracker" href="javascript:void(0);" data-documenttrackerid="${row.id}">
+                                                    <i data-feather="send"></i><span>Forward</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item return-document-tracker" href="javascript:void(0);" data-documenttrackerid="${row.id}">
+                                                    <i data-feather="corner-up-left"></i><span>Return</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item complete-document-tracker" href="javascript:void(0);" data-documenttrackerid="${row.id}">
+                                                    <i data-feather="check-circle"></i><span>Mark as Completed</span>
+                                                </a>
+                                            </li>`;
 
                                 return `
-                                    <div class="edit-delete-action">
-                                        <a class="me-2 p-2 print-document-tracker" href="/document-tracker-slip-pdf/${row.id}" target="_blank">
-                                            <i data-feather="printer" class="feather-printer"></i>
+                                    <div class="dropdown action-menu">
+                                        <a href="javascript:void(0);" class="action-menu-toggle" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                                            <i data-feather="more-vertical"></i>
                                         </a>
-                                        <a class="me-2 p-2 edit-document-tracker" data-documenttrackerid="${row.id}">
-                                            <i data-feather="edit" class="feather-edit"></i>
-                                        </a>
-                                        ${routingActions}
-                                        <a class="me-2 p-2 delete-document-tracker" data-documenttrackerid="${row.id}">
-                                            <i data-feather="trash-2" class="feather-trash-2"></i>
-                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end action-menu-list">
+                                            <li>
+                                                <a class="dropdown-item print-document-tracker" href="/document-tracker-slip-pdf/${row.id}" target="_blank">
+                                                    <i data-feather="printer"></i><span>Print Slip</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item edit-document-tracker" href="javascript:void(0);" data-documenttrackerid="${row.id}">
+                                                    <i data-feather="edit"></i><span>Edit</span>
+                                                </a>
+                                            </li>
+                                            ${routingGroup}
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item text-danger delete-document-tracker" href="javascript:void(0);" data-documenttrackerid="${row.id}">
+                                                    <i data-feather="trash-2"></i><span>Delete</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
                                 `;
                             }
@@ -340,12 +415,19 @@
                                 table.ajax.reload(null, false);
                             });
 
-                        initTippy();
+                        // A fixed-positioned menu does not follow the table as it scrolls,
+                        // so close it instead of letting it drift away from its row.
+                        $('.table-responsive').off('scroll.docTracker').on('scroll.docTracker', function() {
+                            document.querySelectorAll('.action-menu-toggle[aria-expanded="true"]')
+                                .forEach((toggle) => bootstrap.Dropdown.getInstance(toggle)?.hide());
+                        });
+
+                        initActionMenus();
                     },
                     "drawCallback": function(settings) {
                         hideLoader();
                         feather.replace();
-                        initTippy();
+                        initActionMenus();
                     },
                     "preDrawCallback": function(settings) {
                         showLoader();
