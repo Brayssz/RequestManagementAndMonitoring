@@ -84,6 +84,19 @@
             margin: 6px 2px;
             border-top-color: #ececf1;
         }
+
+        /* Each summary card opens a printable report of the trackers it counts. */
+        .document-trackers-report-card {
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        .document-trackers-report-card:hover,
+        .document-trackers-report-card:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 42, 94, .12);
+            outline: none;
+        }
     </style>
 
     <div class="content mx-3">
@@ -112,7 +125,8 @@
 
         <div class="row mb-4">
             <div class="col-xl-3 col-sm-6 col-12 d-flex">
-                <div class="dash-widget w-100">
+                <div class="dash-widget w-100 document-trackers-report-card" data-status="all" role="button" tabindex="0"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Print all document trackers">
                     <div class="dash-widgetimg">
                         <span><i class="fas fa-folder-open" style="color: #643bc6; font-size: 1.3rem;"></i></span>
                     </div>
@@ -123,7 +137,8 @@
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6 col-12 d-flex">
-                <div class="dash-widget dash1 w-100">
+                <div class="dash-widget dash1 w-100 document-trackers-report-card" data-status="pending" role="button" tabindex="0"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Print pending document trackers">
                     <div class="dash-widgetimg">
                         <span><i class="fas fa-hourglass-half" style="color: #ffc107; font-size: 1.3rem;"></i></span>
                     </div>
@@ -134,7 +149,8 @@
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6 col-12 d-flex">
-                <div class="dash-widget dash2 w-100">
+                <div class="dash-widget dash2 w-100 document-trackers-report-card" data-status="transmitted" role="button" tabindex="0"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Print forwarded document trackers">
                     <div class="dash-widgetimg">
                         <span><i class="fas fa-paper-plane" style="color: #007bff; font-size: 1.3rem;"></i></span>
                     </div>
@@ -145,7 +161,8 @@
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6 col-12 d-flex">
-                <div class="dash-widget dash3 w-100">
+                <div class="dash-widget dash3 w-100 document-trackers-report-card" data-status="completed" role="button" tabindex="0"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="Print completed document trackers">
                     <div class="dash-widgetimg">
                         <span><i class="fas fa-check-circle" style="color: #28a745; font-size: 1.3rem;"></i></span>
                     </div>
@@ -281,6 +298,24 @@
                     });
                 });
             };
+
+            // Summary cards open the printable report for the bucket they count,
+            // in a new tab like the other report "Generate/Print" buttons.
+            const openDocumentTrackersReport = (card) => {
+                const status = $(card).data('status') || 'all';
+                window.open('/document-trackers-report-pdf?status=' + encodeURIComponent(status), '_blank');
+            };
+
+            $(document).on('click', '.document-trackers-report-card', function() {
+                openDocumentTrackersReport(this);
+            });
+
+            $(document).on('keydown', '.document-trackers-report-card', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openDocumentTrackersReport(this);
+                }
+            });
 
             if ($('.document-trackers-table').length > 0) {
                 var table = $('.document-trackers-table').DataTable({

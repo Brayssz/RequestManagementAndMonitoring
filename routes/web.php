@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('receive-requests', [RequestController::class, 'showRequests'])->name('receive-requests');
     Route::get('document-trackers', [DocumentTrackerController::class, 'showDocumentTrackers'])->name('document-trackers');
     Route::get('document-tracker-slip-pdf/{id}', [PDFController::class, 'documentTrackingSlip'])->name('document-tracker-slip-pdf');
+    Route::get('document-trackers-report-pdf', [PDFController::class, 'documentTrackersReport'])->name('document-trackers-report-pdf');
     Route::get('summary-report', [ReportController::class, 'generateMonthlySummary'])->name('summary-report');
     Route::get('summary-report-pdf', [PDFController::class, 'generateMonthlySummary'])->name('summary-report-pdf');
     Route::get('request-history-report', [ReportController::class, 'requestHistoryReport'])->name('request-history-report');

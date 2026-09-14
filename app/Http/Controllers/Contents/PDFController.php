@@ -348,4 +348,45 @@ class PDFController extends Controller
 
         return $pdf->stream('document_tracking_slip.pdf');
     }
+
+    /**
+     * Printable list of document trackers, opened from the summary cards on the
+     * Document Trackers page. `status` narrows the list to one card's bucket
+     * (pending / transmitted / completed); anything else prints every tracker,
+     * so the row count always matches the card that was clicked.
+     */
+    public function documentTrackersReport(Request $request)
+    {
+        $statusOptions = [
+            'all' => 'All Document Trackers',
+            'pending' => 'Pending Document Trackers',
+            'received' => 'Received Document Trackers',
+            'transmitted' => 'Forwarded Document Trackers',
+            'returned' => 'Returned Document Trackers',
+            'completed' => 'Completed Document Trackers',
+        ];
+
+        $status = $request->query('status', 'all');
+
+        if (!array_key_exists($status, $statusOptions)) {
+            $status = 'all';
+        }
+
+        $query = DocumentTracker::with([
+            'requestingOffice',
+            'currentOffice',
+        ])->orderBy('created_at', 'desc');
+
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $documentTrackers = $query->get();
+        $reportSubtitle = $statusOptions[$status];
+
+        $pdf = Pdf::loadView('pdf.document-trackers-report-pdf', compact('documentTrackers', 'status', 'reportSubtitle'))
+            ->setPaper('legal', 'landscape');
+
+        return $pdf->stream('document_trackers_report.pdf');
+    }
 }
