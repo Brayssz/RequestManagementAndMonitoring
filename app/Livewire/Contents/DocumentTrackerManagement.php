@@ -4,12 +4,14 @@ namespace App\Livewire\Contents;
 
 use App\Models\DocumentTracker;
 use App\Models\RequestingOffice;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\DocumentTrackerCompletedNotification;
 use App\Mail\DocumentTrackerCreatedNotification;
+use App\Mail\DocumentTrackerOfficeForwardedNotification;
 use App\Mail\DocumentTrackerTransmittedNotification;
 use Livewire\Component;
 
@@ -223,6 +225,10 @@ class DocumentTrackerManagement extends Component
 
         $action = $this->transfer_action === 'return' ? 'returned' : 'transmitted';
 
+        // Captured before the transaction overwrites current_office_id so the
+        // receiving-office email can still say where the document came from.
+        $fromOfficeId = $this->documentTracker->current_office_id;
+
         DB::transaction(function () use ($action) {
             DB::table('document_tracker_logs')->insert([
                 'document_tracker_id' => $this->documentTracker->id,
@@ -250,9 +256,55 @@ class DocumentTrackerManagement extends Component
             }
         }
 
+        // Let the receiving office know the document is on its way.
+        $this->notifyTargetOfficeUsers($this->target_office_id, $fromOfficeId);
+
         session()->flash('message', 'Document tracker successfully ' . $action . '.');
 
         return redirect()->route('document-trackers');
+    }
+
+    /**
+     * Email every active user attached to the office a document was just
+     * forwarded or returned to. Offices with no users attached (or whose users
+     * have no email address) are skipped, so nothing is sent in that case.
+     * Mail failures are logged and never block the transfer.
+     */
+    protected function notifyTargetOfficeUsers($toOfficeId, $fromOfficeId = null): void
+    {
+        $toOffice = RequestingOffice::find($toOfficeId);
+
+        if (!$toOffice) {
+            return;
+        }
+
+        $recipients = User::where('requesting_office_id', $toOffice->requesting_office_id)
+            ->where('status', 'active')
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->get();
+
+        if ($recipients->isEmpty()) {
+            return;
+        }
+
+        $fromOffice = $fromOfficeId ? RequestingOffice::find($fromOfficeId) : null;
+        $forwardedBy = Auth::user();
+
+        foreach ($recipients as $recipient) {
+            try {
+                Mail::to($recipient)->send(new DocumentTrackerOfficeForwardedNotification(
+                    $this->documentTracker,
+                    $recipient,
+                    $toOffice,
+                    $fromOffice,
+                    $forwardedBy,
+                    $this->transfer_notes
+                ));
+            } catch (\Exception $e) {
+                Log::error('Failed to send document tracker office forwarded email to ' . $recipient->email . ': ' . $e->getMessage());
+            }
+        }
     }
 
     public function submit_complete_document_tracker()
