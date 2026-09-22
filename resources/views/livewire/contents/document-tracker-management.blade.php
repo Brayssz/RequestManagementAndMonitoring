@@ -182,11 +182,26 @@
                                 <div class="modal-footer-btn mb-4 mt-0">
                                     <button type="button" class="btn btn-cancel me-2" data-bs-dismiss="modal">Cancel</button>
                                     @if ($transfer_action == 'return')
-                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">Return</button>
+                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">
+                                            <span class="btn-label">Return</span>
+                                            <span class="btn-spinner d-none ms-2" aria-hidden="true">
+                                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                            </span>
+                                        </button>
                                     @elseif ($transfer_action == 'complete')
-                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">Complete</button>
+                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">
+                                            <span class="btn-label">Complete</span>
+                                            <span class="btn-spinner d-none ms-2" aria-hidden="true">
+                                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                            </span>
+                                        </button>
                                     @else
-                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">Forward</button>
+                                        <button type="button" class="btn btn-submit submit-transfer-document-tracker">
+                                            <span class="btn-label">Forward</span>
+                                            <span class="btn-spinner d-none ms-2" aria-hidden="true">
+                                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                            </span>
+                                        </button>
                                     @endif
                                 </div>
                             </form>
@@ -286,19 +301,40 @@
 
             $(document).on('click', '.submit-transfer-document-tracker', function(e) {
                 e.preventDefault();
+                const $button = $(this);
                 const action = @this.get('transfer_action');
+
+                function setTransferButtonLoading(isLoading, loadingLabel) {
+                    const $label = $button.find('.btn-label');
+
+                    $button.prop('disabled', isLoading);
+                    if (!$label.attr('data-original-label')) {
+                        $label.attr('data-original-label', $label.text());
+                    }
+
+                    $label.text(isLoading ? loadingLabel : $label.attr('data-original-label'));
+                    $label.toggleClass('d-none', false);
+                    $button.find('.btn-spinner').toggleClass('d-none', !isLoading);
+                }
 
                 if (action === 'complete') {
                     confirmAlert('Confirm Complete', 'Mark this document as completed? It can no longer be forwarded or returned afterwards.', function() {
-                        @this.call('submit_complete_document_tracker');
+                        setTransferButtonLoading(true, 'Completing...');
+                        @this.call('submit_complete_document_tracker').finally(() => {
+                            setTransferButtonLoading(false);
+                        });
                     }, 'Complete');
                     return;
                 }
 
                 const actionLabel = action === 'return' ? 'Return' : 'Forward';
+                const loadingLabel = action === 'return' ? 'Returning...' : 'Forwarding...';
 
                 confirmAlert('Confirm ' + actionLabel, 'Are you sure you want to ' + actionLabel.toLowerCase() + ' this document?', function() {
-                    @this.call('submit_transfer_document_tracker');
+                    setTransferButtonLoading(true, loadingLabel);
+                    @this.call('submit_transfer_document_tracker').finally(() => {
+                        setTransferButtonLoading(false);
+                    });
                 }, actionLabel);
             });
 

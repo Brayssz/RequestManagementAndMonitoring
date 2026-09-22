@@ -11722,35 +11722,40 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
 }
 
 .header .header-left .logo-normal .brand-lockup {
-  max-width: 220px;
+  max-width: 175px;
   line-height: 1.05;
 }
 
 .header .header-left .logo-normal .brand-title {
-  font-size: 0.93rem;
+  font-size: 0.88rem;
   line-height: 1.1;
   letter-spacing: -0.02em;
   white-space: normal;
 }
 
 .header .header-left .logo-normal .brand-subtitle {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   line-height: 1.1;
   letter-spacing: 0.03em;
   white-space: normal;
+  margin-top: 0.1rem;
+}
+
+.header .header-left .logo-normal .header-brand-row {
+  align-items: flex-start !important;
 }
 
 @media (max-width: 991.98px) {
   .header .header-left .logo-normal .brand-lockup {
-    max-width: 180px;
+    max-width: 150px;
   }
 
   .header .header-left .logo-normal .brand-title {
-    font-size: 0.82rem;
+    font-size: 0.76rem;
   }
 
   .header .header-left .logo-normal .brand-subtitle {
-    font-size: 0.62rem;
+    font-size: 0.56rem;
   }
 }
 [data-layout-mode=dark_mode] .user-menu .nav-item-box > a {

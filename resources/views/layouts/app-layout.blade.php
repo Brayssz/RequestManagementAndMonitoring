@@ -54,10 +54,10 @@
             <!-- Logo -->
             <div class="header-left active">
                 <a href="index.html" class="logo logo-normal">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center header-brand-row">
                         <img src="img/logo.jpg" alt="" class="me-2"
                             style="max-height: 40px; max-width: 40px;" />
-                        <div class="text-start brand-lockup">
+                        <div class="text-start brand-lockup d-flex flex-column align-items-start">
                             <h5 class="mb-0 brand-title">DepEd Koronadal City</h5>
                             <p class="mb-0 brand-subtitle">Document Tracking System</p>
                         </div>
