@@ -13219,7 +13219,7 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
   height: 66px;
   position: relative;
   text-align: center;
-  width: 300px;
+  width: 260px;
   z-index: 1;
   padding: 0 20px;
   -webkit-transition: all 0.5s ease;

@@ -65,12 +65,6 @@
 
 
                 </a>
-                <a href="index.html" class="logo logo-white">
-                    <img src="img/logo.jpg" alt="" style="min-height: 40px; min-width: 40px;" />
-                </a>
-                <a href="index.html" class="logo-small">
-                    <img src="img/logo.jpg" alt="" style="min-height: 40px; min-width: 40px;" />
-                </a>
                 <a id="toggle_btn" href="javascript:void(0);">
                     <i data-feather="chevrons-left" class="feather-16"></i>
                 </a>
