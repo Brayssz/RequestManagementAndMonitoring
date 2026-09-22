@@ -13211,9 +13211,9 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
   display: flex;
   align-items: center;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  justify-content: space-between;
-  -webkit-justify-content: space-between;
+  width: 300px;
+  z-index: 1;
+  padding: 0 20px;
   -ms-flex-pack: space-between;
   float: left;
   height: 66px;
@@ -13223,14 +13223,14 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
   z-index: 1;
   padding: 0 24px;
   -webkit-transition: all 0.5s ease;
-  -ms-transition: all 0.5s ease;
+  font-size: 0.95rem;
   transition: all 0.5s ease;
   border-right: 1px solid #dbe0e6;
   border-bottom: 1px solid #dbe0e6;
 }
 .header .header-left .logo {
   display: inline-block;
-  line-height: 0;
+  font-size: 0.68rem;
 }
 .header .header-left .logo img {
   width: 140px;
@@ -13239,15 +13239,15 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
   .header .header-left .logo {
     text-align: center;
     width: 100%;
-    display: flex;
+    max-width: 210px;
     justify-content: center;
   }
   .header .header-left .logo img {
-    width: 140px;
+    font-size: 0.84rem;
   }
 }
 .header .header-left .logo-small {
-  display: none;
+    font-size: 0.6rem;
 }
 @media (max-width: 991.98px) {
   .header .header-left {
