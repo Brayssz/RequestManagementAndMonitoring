@@ -11725,6 +11725,7 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
   max-width: 245px;
   min-width: 0;
   line-height: 1.05;
+  justify-content: center;
 }
 
 .header .header-left .logo-normal .brand-title {
@@ -11743,7 +11744,7 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
 }
 
 .header .header-left .logo-normal .header-brand-row {
-  align-items: flex-start !important;
+  align-items: center !important;
 }
 
 @media (max-width: 991.98px) {
