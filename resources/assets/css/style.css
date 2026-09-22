@@ -11722,23 +11722,24 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
 }
 
 .header .header-left .logo-normal .brand-lockup {
-  max-width: 175px;
+  max-width: 230px;
+  min-width: 0;
   line-height: 1.05;
 }
 
 .header .header-left .logo-normal .brand-title {
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  white-space: normal;
+  white-space: nowrap;
 }
 
 .header .header-left .logo-normal .brand-subtitle {
-  font-size: 0.62rem;
-  line-height: 1.1;
+  font-size: 0.58rem;
+  line-height: 1;
   letter-spacing: 0.03em;
-  white-space: normal;
-  margin-top: 0.1rem;
+  white-space: nowrap;
+  margin-top: 0;
 }
 
 .header .header-left .logo-normal .header-brand-row {
@@ -11747,15 +11748,15 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
 
 @media (max-width: 991.98px) {
   .header .header-left .logo-normal .brand-lockup {
-    max-width: 150px;
+    max-width: 185px;
   }
 
   .header .header-left .logo-normal .brand-title {
-    font-size: 0.76rem;
+    font-size: 0.72rem;
   }
 
   .header .header-left .logo-normal .brand-subtitle {
-    font-size: 0.56rem;
+    font-size: 0.52rem;
   }
 }
 [data-layout-mode=dark_mode] .user-menu .nav-item-box > a {
