@@ -7,7 +7,7 @@
     <meta name="keywords"
         content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>@yield('title', 'SGOD - RMMS')</title>
+    <title>@yield('title', 'DepEd Koronadal City Document Tracking System')</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('img/logo.jpg') }}" type="image/x-icon" />
@@ -57,9 +57,9 @@
                     <div class="d-flex align-items-center">
                         <img src="img/logo.jpg" alt="" class="me-2"
                             style="max-height: 40px; max-width: 40px;" />
-                        <div class="text-start">
-                            <h5 class="mb-2">SGOD - RMMS</h5>
-                            <p class="mb-0" style="font-size: 12px;">Koronadal City Division</p>
+                        <div class="text-start brand-lockup">
+                            <h5 class="mb-0 brand-title">DepEd Koronadal City</h5>
+                            <p class="mb-0 brand-subtitle">Document Tracking System</p>
                         </div>
                     </div>
 

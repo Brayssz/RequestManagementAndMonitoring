@@ -9,7 +9,7 @@
         content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>SGOD - RMMS</title>
+    <title>DepEd Koronadal City Document Tracking System</title>
     
     <link rel="icon" href="{{ asset('img/logo.jpg') }}" type="image/x-icon" />
     <!-- Bootstrap CSS -->

@@ -11720,6 +11720,39 @@ th .checkboxs .checkmarks::after, td .checkboxs .checkmarks::after {
 [data-layout-mode=dark_mode] .user-info .user-name {
   color: #97A2D2;
 }
+
+.header .header-left .logo-normal .brand-lockup {
+  max-width: 220px;
+  line-height: 1.05;
+}
+
+.header .header-left .logo-normal .brand-title {
+  font-size: 0.93rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  white-space: normal;
+}
+
+.header .header-left .logo-normal .brand-subtitle {
+  font-size: 0.68rem;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  white-space: normal;
+}
+
+@media (max-width: 991.98px) {
+  .header .header-left .logo-normal .brand-lockup {
+    max-width: 180px;
+  }
+
+  .header .header-left .logo-normal .brand-title {
+    font-size: 0.82rem;
+  }
+
+  .header .header-left .logo-normal .brand-subtitle {
+    font-size: 0.62rem;
+  }
+}
 [data-layout-mode=dark_mode] .user-menu .nav-item-box > a {
   background: #092C4C;
 }
