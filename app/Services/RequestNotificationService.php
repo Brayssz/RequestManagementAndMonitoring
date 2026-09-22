@@ -127,11 +127,34 @@ class RequestNotificationService
                 'remarks' => $request->remarks,
             ];
 
-            Mail::to($requestor->email)->send(
-                new RequestTransmittedNotification($requestData, $requestor->name, $requestingOffice->name, $transmittedOfficeName)
-            );
+            $officeRecipientEmails = collect($transmittedOffice
+                ? $transmittedOffice->users()
+                    ->where('status', 'active')
+                    ->whereNotNull('email')
+                    ->pluck('email')
+                    ->all()
+                : [])
+                ->filter()
+                ->unique()
+                ->values();
 
-            Log::info('Transmitted notification sent to ' . $requestor->email . ' for request ' . $request->request_id);
+            $recipientEmails = collect([$requestor->email])
+                ->merge($officeRecipientEmails)
+                ->filter()
+                ->unique()
+                ->values();
+
+            if ($transmittedOffice && $officeRecipientEmails->isEmpty()) {
+                Log::warning('No active office users found for transmitted office ' . $transmittedOffice->requesting_office_id . ' on request ' . $request->request_id);
+            }
+
+            foreach ($recipientEmails as $email) {
+                Mail::to($email)->send(
+                    new RequestTransmittedNotification($requestData, $requestor->name, $requestingOffice->name, $transmittedOfficeName)
+                );
+            }
+
+            Log::info('Transmitted notification sent to ' . $recipientEmails->implode(', ') . ' for request ' . $request->request_id);
             return true;
 
         } catch (\Exception $e) {
