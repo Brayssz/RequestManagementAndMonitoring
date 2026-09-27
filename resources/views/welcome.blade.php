@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>SGOD Koronadal - Request Mananagement and Tracking System</title>
+    <title>DepEd Koronadal City Document Tracking System</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
 
@@ -53,8 +53,8 @@
             <a href="/" class="logo d-flex align-items-center me-auto">
                 <!-- Uncomment the line below if you also wish to use an image logo -->
                 <img src="{{ asset('img/logo.png') }}" alt="" style="width: 45px; height: 45px">
-                <h2 class="sitename d-none d-md-block">SGOD - Request Management and Tracking System</h2>
-                <h2 class="sitename d-block d-md-none">SGOD - RMTS</h2>
+                <h2 class="sitename d-none d-md-block">DepEd Koronadal City Document Tracking System</h2>
+                <h2 class="sitename d-block d-md-none">DepEd Koronadal City</h2>
             </a>
 
             <nav id="navmenu" class="navmenu">
@@ -118,16 +118,16 @@
 
                 <div class="row gy-4">
                     <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                        <h3>SGOD - Request Management and Tracking System</h3>
+                        <h3>DepEd Koronadal City Document Tracking System</h3>
                         <img src="{{ asset('img/koronadal-division.jpg') }}" class="img-fluid rounded-4 mb-4" alt="Default Image">
-                        <p>The Request Management and Tracking System is a centralized, web-based platform designed to streamline the process of submitting, managing, and monitoring various types of requests within an organization. This system was developed to enhance transparency, accountability, and efficiency by digitizing the entire request lifecycle—from submission to approval and tracking.</p>
-                        <p>Built to support both administrative and financial operations, the system allows users to easily submit requests such as fund disbursements, purchase orders, modifications, and payment processing. It ensures that all requests are properly logged, tracked, and transmitted through the appropriate channels.</p>
+                        <p>The DepEd Koronadal City Document Tracking System is a centralized, web-based platform designed to streamline the process of receiving, managing, monitoring, and tracking office documents and requests within the Department of Education. This system was developed to enhance transparency, accountability, and efficiency by digitizing the entire document lifecycle—from receipt to action and follow-up.</p>
+                        <p>Built to support administrative and operational workflows, the system allows users to record requests and document transactions, monitor their status, and ensure timely communication and movement across offices. It helps maintain accurate records, improve coordination, and support faster processing of documents and requests.</p>
                     </div>
                     <div class="col-lg-6" data-aos="fade-up" data-aos-delay="250">
                         <div class="content ps-0 ps-lg-5">
                             
                             <p>
-                                Tailored to the needs of the Department of Education, this system helps reduce paperwork, improves coordination between schools and division offices, and ensures timely processing of all requests.
+                                Tailored to the needs of the Department of Education, this system helps reduce paperwork, improves coordination between schools and division offices, and ensures timely processing of documents and requests.
                             </p>
 
                             <p class="fst-italic">
@@ -138,7 +138,7 @@
                                 <li><i class="bi bi-check-circle-fill"></i> <span style="font-size: 14px;">Real-Time Status Tracking with clearly labeled progress indicators.</span></li>
                                 <li><i class="bi bi-check-circle-fill"></i> <span style="font-size: 14px;">Role-Based Access Control to manage user permissions securely.</span></li>
                                 <li><i class="bi bi-check-circle-fill"></i> <span style="font-size: 14px;">Search and Filter Functions to quickly locate specific requests or records.</span></li>
-                                <li><i class="bi bi-check-circle-fill"></i> <span style="font-size: 14px;">Detailed Transmission Logs that document every step and action taken on a request.</span></li>
+                                <li><i class="bi bi-check-circle-fill"></i> <span style="font-size: 14px;">Detailed Transmission Logs that document every step and action taken on a document or request.</span></li>
                             </ul>
 
                             <div class="mt-4">
@@ -432,7 +432,7 @@
         </div> --}}
 
         <div class="container copyright text-center mt-4">
-            <p>© <span>Copyright 2025</span> <strong class="px-1 sitename"></strong>SGOD - Request Management and Tracking System <span>All
+            <p>© <span>Copyright 2025</span> <strong class="px-1 sitename"></strong>DepEd Koronadal City Document Tracking System <span>All
                     Rights Reserved</span>
             </p>
             <div class="credits">
